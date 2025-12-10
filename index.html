@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v2.0</title>
+    <title>周期律分析 | Cosmic Neural Network v2.1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -102,7 +102,7 @@
 
     <div id="start-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:100; background:rgba(2,2,5,0.95); display:flex; flex-direction:column; justify-content:center; align-items:center; backdrop-filter:blur(10px); transition:opacity 0.8s;">
         <h1 style="font-size: 3rem; margin-bottom: 10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:#8899aa; margin-bottom:40px;">COSMIC NEURAL NETWORK v2.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:#8899aa; margin-bottom:40px;">COSMIC NEURAL NETWORK v2.1</p>
         <button class="btn-analyze" style="width:auto; padding:15px 50px;" onclick="app.init()">INITIALIZE SYSTEM</button>
     </div>
 
@@ -128,7 +128,8 @@
             </div>
             <div class="form-group">
                 <label>Place of Birth</label>
-                <select id="inp-city"></select>
+                <select id="inp-city">
+                    </select>
             </div>
             <button class="btn-analyze" onclick="app.runAnalysis()">START SYNCHRONIZATION</button>
             <div id="status-text" style="font-size:0.7rem; color:var(--c-accent); margin-top:15px; text-align:right; opacity:0.6;">SYSTEM STANDBY</div>
@@ -235,36 +236,39 @@
             ]
         };
 
-        // Populate Select Box
-        const citySelect = document.getElementById('inp-city');
-        Object.keys(cityDB).forEach(region => {
-            const group = document.createElement('optgroup');
-            group.label = region.toUpperCase();
-            cityDB[region].forEach(city => {
-                const opt = document.createElement('option');
-                opt.value = JSON.stringify(city);
-                opt.text = city.name;
-                if(city.id === 'tokyo') opt.selected = true;
-                group.appendChild(opt);
-            });
-            citySelect.appendChild(group);
+        // Populate Select Box on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            const citySelect = document.getElementById('inp-city');
+            if(citySelect) {
+                Object.keys(cityDB).forEach(region => {
+                    const group = document.createElement('optgroup');
+                    group.label = region.toUpperCase();
+                    cityDB[region].forEach(city => {
+                        const opt = document.createElement('option');
+                        opt.value = JSON.stringify(city);
+                        opt.text = city.name;
+                        if(city.id === 'tokyo') opt.selected = true;
+                        group.appendChild(opt);
+                    });
+                    citySelect.appendChild(group);
+                });
+            }
         });
 
         /**
          * ----------------------------------------------------
-         * LOGIC ENGINE v2 (With 13 Element Simulation)
+         * LOGIC ENGINE
          * ----------------------------------------------------
          */
         class LogicEngine {
             constructor() {
                 this.cosmicState = {
-                    jupiter: 'GEMINI', // 2024-2025 approx
+                    jupiter: 'GEMINI', 
                     saturn: 'PISCES',
                     gate_open: true
                 };
             }
 
-            // Helpers for simulated astronomical calc
             getZodiac(m, d) {
                 const signs = ["山羊座", "水瓶座", "魚座", "牡羊座", "牡牛座", "双子座", "蟹座", "獅子座", "乙女座", "天秤座", "蠍座", "射手座"];
                 const cutoffs = [20, 19, 20, 20, 21, 21, 22, 23, 23, 23, 22, 22];
@@ -274,8 +278,8 @@
             }
 
             getMoonPhase(y, m, d) {
-                // Simple algorithm to estimate moon age (0-29)
-                let c = e = j = 0;
+                // FIXED: Variable declaration
+                let c = 0, e = 0, j = 0; 
                 if (m < 3) { y--; m += 12; }
                 c = 365.25 * y;
                 e = 30.6 * m;
@@ -301,7 +305,6 @@
             }
 
             getKyusei(year) {
-                // Nine Star Ki logic (sum digits until <10, subtract from 11)
                 let sum = 0;
                 let yStr = year.toString();
                 for(let i=0; i<yStr.length; i++) sum += parseInt(yStr[i]);
@@ -312,30 +315,25 @@
                 }
                 let star = 11 - sum;
                 if(star > 9) star -= 9;
-                if(star === 0) star = 9; // Exception (hardly happens with this logic but safe)
+                if(star === 0) star = 9; 
                 const names = ["一白水星", "二黒土星", "三碧木星", "四緑木星", "五黄土星", "六白金星", "七赤金星", "八白土星", "九紫火星"];
-                return names[star - 1];
+                return names[star - 1] || "不明";
             }
 
-            // Main Calculation
             calculate(dateStr, timeStr, cityData) {
                 const d = new Date(dateStr);
                 const y = d.getFullYear();
                 const m = d.getMonth() + 1;
                 const day = d.getDate();
 
-                // 13 Elements Analysis (Simulated Source Data)
                 const zodiac = this.getZodiac(m, day);
                 const jukkan = this.getJukkan(y);
                 const kyusei = this.getKyusei(y);
                 const moon = this.getMoonPhase(y, m, day);
                 
-                // Determine Element Type for overall result
-                // Using Last Digit of Year for simplicity in this demo (Metal/Water/Wood/Fire/Earth)
                 const lastDigit = y % 10;
                 let elementType = "";
                 let elementColor = "";
-                let mainTheme = "";
                 
                 if([0,1].includes(lastDigit)) { elementType="METAL"; elementColor="#aaddff"; }
                 else if([2,3].includes(lastDigit)) { elementType="WATER"; elementColor="#3366ff"; }
@@ -343,11 +341,10 @@
                 else if([6,7].includes(lastDigit)) { elementType="FIRE"; elementColor="#ff3300"; }
                 else { elementType="EARTH"; elementColor="#D4AF37"; }
 
-                // --- Generate 13 Detailed Sources ---
                 const details = [
                     { id:1, label:"生年月日 (SOLAR)", val: `${dateStr} / ${zodiac}`, comm:"太陽の位置座標。あなたの自我の基盤。" },
                     { id:2, label:"十干 (HEAVEN)", val: jukkan, comm:"天から与えられたエネルギーの質。" },
-                    { id:3, label:"八卦 (BAGUA)", val: "乾 (Heaven)", comm:"環境における立ち位置。リーダーシップの象徴。" }, // Simulated
+                    { id:3, label:"八卦 (BAGUA)", val: "乾 (Heaven)", comm:"環境における立ち位置。リーダーシップの象徴。" },
                     { id:4, label:"九星 (QI)", val: kyusei, comm:"行動パターンと気質の傾向。" },
                     { id:5, label:"三元九運 (ERA)", val: "第九運 (Fire)", comm:"2024年からの新時代。精神性が物質を超える。" },
                     { id:6, label:"木星 (JUPITER)", val: "双子座滞在中", comm:"情報・通信・移動における拡大の恩恵。" },
@@ -360,7 +357,6 @@
                     { id:13, label:"歳差運動 (AXIS)", val: "25772年周期", comm:"地球軸の変動による文明レベルのシフト。" }
                 ];
 
-                // Synthesis Logic (Example)
                 let title = "";
                 let strategy = "";
                 let type = "STABLE";
@@ -386,18 +382,15 @@
                     elementColor = "#D4AF37";
                 }
 
-                return {
-                    title, strategy, type, color: elementColor, scores, details
-                };
+                return { title, strategy, type, color: elementColor, scores, details };
             }
         }
 
         /**
          * ----------------------------------------------------
-         * VISUAL & AUDIO ENGINES (Unchanged for stability)
+         * VISUAL ENGINE
          * ----------------------------------------------------
          */
-        // (VisualEngine and AudioEngine classes are the same as v1, kept short here for brevity but fully functional in logic)
         class VisualEngine {
             constructor() {
                 this.scene = new THREE.Scene();
@@ -501,32 +494,33 @@
             },
 
             runAnalysis: function() {
-                const date = document.getElementById('inp-date').value;
-                const time = document.getElementById('inp-time').value;
-                const cityJson = document.getElementById('inp-city').value;
-                if(!date || !cityJson) return;
+                try {
+                    const date = document.getElementById('inp-date').value;
+                    const time = document.getElementById('inp-time').value;
+                    const cityJson = document.getElementById('inp-city').value;
+                    if(!date || !cityJson) return;
 
-                const cityData = JSON.parse(cityJson);
+                    const cityData = JSON.parse(cityJson);
 
-                // UI Transition
-                document.getElementById('status-text').innerText = "CALCULATING VECTORS...";
-                document.getElementById('control-panel').style.opacity = 0;
-                document.getElementById('control-panel').style.pointerEvents = 'none';
+                    document.getElementById('status-text').innerText = "CALCULATING VECTORS...";
+                    document.getElementById('control-panel').style.opacity = 0;
+                    document.getElementById('control-panel').style.pointerEvents = 'none';
 
-                // Logic Execution
-                this.resultData = this.logic.calculate(date, time, cityData);
-                
-                // Audio/Visual
-                this.visual.setMode(true, this.resultData.color);
-                const freq = 50 + (parseInt(date.slice(-2)) * 2); 
-                this.audio.tune(freq);
-                this.saveToHistory(date, this.resultData);
+                    this.resultData = this.logic.calculate(date, time, cityData);
+                    
+                    this.visual.setMode(true, this.resultData.color);
+                    const freq = 50 + (parseInt(date.slice(-2)) * 2); 
+                    this.audio.tune(freq);
+                    this.saveToHistory(date, this.resultData);
 
-                // Show Result
-                setTimeout(() => {
-                    this.visual.setMode(false);
-                    this.showResult(this.resultData);
-                }, 2000);
+                    setTimeout(() => {
+                        this.visual.setMode(false);
+                        this.showResult(this.resultData);
+                    }, 2000);
+                } catch (err) {
+                    alert("System Error: " + err.message);
+                    this.resetUI();
+                }
             },
 
             showResult: function(data) {
@@ -539,7 +533,6 @@
                 document.getElementById('res-strategy').innerText = data.strategy;
                 document.getElementById('result-panel').style.borderColor = data.color;
 
-                // Render 13 Details
                 const grid = document.getElementById('detail-grid');
                 grid.innerHTML = "";
                 data.details.forEach(item => {
