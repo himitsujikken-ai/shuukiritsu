@@ -142,7 +142,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; margin-bottom:10px; color:#fff;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px;">COSMIC NEURAL NETWORK v4.3</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px;">COSMIC NEURAL NETWORK v4.4</p>
         <button class="start-btn" onclick="app.start()">INITIALIZE</button>
     </div>
 
@@ -210,7 +210,7 @@
     <div id="modal-logic" class="modal-wrap">
         <div class="modal-box">
             <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">×</span>
-            <h2 style="color:var(--c-accent);">解析ロジック (v4.3)</h2>
+            <h2 style="color:var(--c-accent);">解析ロジック (v4.4)</h2>
             <p style="color:#ccc; line-height:1.8; margin-top:20px; font-size:0.9rem;">
                 本システムは「13次元」のマトリクスを用いて、単純な吉凶ではなく「エネルギーのベクトル」を計算します。<br><br>
                 性別入力は行いません。九星や惑星配置といった「魂の設計図」に男女差はないという思想に基づいています。<br><br>
@@ -314,99 +314,111 @@
 
         /**
          * ============================================================
-         * 3. VISUAL ENGINE (RESTORED ORBITS + STARS)
+         * 3. VISUAL ENGINE (SOLAR SYSTEM EDITION)
          * ============================================================
          */
         class VisualEngine {
             constructor() {
                 this.scene = new THREE.Scene();
-                this.scene.fog = new THREE.FogExp2(0x020205, 0.0015);
-                
+                this.scene.fog = new THREE.FogExp2(0x020205, 0.001);
                 this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
-                this.camera.position.z = 30; this.camera.position.y = 5;
+                this.camera.position.z = 40; // カメラを少し引く
+                this.camera.position.y = 10;
+                this.camera.lookAt(0,0,0);
                 
                 this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
                 this.renderer.setPixelRatio(window.devicePixelRatio);
                 document.getElementById('canvas-wrapper').appendChild(this.renderer.domElement);
 
-                this.orbits = []; // Array to store orbit data
+                this.planets = [];
                 this.initObjects();
                 this.animate();
             }
 
             initObjects() {
-                // 1. Central Core (User Consciousness)
-                const geo = new THREE.IcosahedronGeometry(1.5, 1);
-                const mat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent:true, opacity:0.4 });
-                this.core = new THREE.Mesh(geo, mat);
-                this.scene.add(this.core);
+                // 1. Central Sun (Core)
+                const sunGeo = new THREE.IcosahedronGeometry(2.5, 1);
+                const sunMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, wireframe: true, transparent:true, opacity:0.6 });
+                this.sun = new THREE.Mesh(sunGeo, sunMat);
+                this.scene.add(this.sun);
 
-                // 2. Restored Planetary Orbits (The 13 Dimensions)
-                // We create rings AND planets moving on them.
-                for(let i=1; i<=10; i++) {
-                    // Radius
-                    const r = i * 3.5; 
-                    
-                    // Orbit Ring (Visual Line)
-                    const ringGeo = new THREE.RingGeometry(r, r+0.05, 128);
-                    const ringMat = new THREE.MeshBasicMaterial({color:0x445566, side:THREE.DoubleSide, transparent:true, opacity:0.15});
-                    const ring = new THREE.Mesh(ringGeo, ringMat);
-                    ring.rotation.x = Math.PI/2; // Lay flat
-                    
-                    // Orbit Pivot (Invisible container for rotation)
-                    const pivot = new THREE.Group();
-                    
-                    // Planet Sphere
-                    const planetGeo = new THREE.SphereGeometry(0.3, 16, 16);
-                    const planetMat = new THREE.MeshBasicMaterial({color: 0x00f0ff}); // Initial Cyan
-                    const planet = new THREE.Mesh(planetGeo, planetMat);
-                    
-                    // Position planet on the ring
-                    planet.position.x = r; 
-                    
-                    // Tilt the orbit slightly for "Armillary Sphere" effect
-                    pivot.rotation.x = (Math.random() - 0.5) * 0.5;
-                    pivot.rotation.z = (Math.random() - 0.5) * 0.5;
-
-                    pivot.add(planet); // Add planet to pivot
-                    this.scene.add(ring); // Add ring to scene (static orientation)
-                    this.scene.add(pivot); // Add pivot to scene (rotating)
-
-                    // Store reference for animation
-                    this.orbits.push({
-                        pivot: pivot, 
-                        ring: ring, 
-                        planet: planet,
-                        speed: (0.002 + Math.random() * 0.003) * (i%2==0?1:-1) // Alternate direction
-                    });
-                }
-
-                // 3. Fixed Star Field (Background Depth)
+                // 2. Fixed Star Field (Background)
                 const sGeo = new THREE.BufferGeometry();
-                const sCount = 4000;
+                const sCount = 6000;
                 const sPos = new Float32Array(sCount * 3);
-                for(let i=0; i<sCount*3; i++) sPos[i] = (Math.random()-0.5)*700;
+                for(let i=0; i<sCount*3; i++) sPos[i] = (Math.random() - 0.5) * 1000;
                 sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
-                const sMat = new THREE.PointsMaterial({color:0x88ccee, size:0.5, transparent:true, opacity:0.8, sizeAttenuation:true});
+                const sMat = new THREE.PointsMaterial({color:0xffffff, size:0.7, transparent:true, opacity:0.8, sizeAttenuation:true});
                 this.starSystem = new THREE.Points(sGeo, sMat);
                 this.scene.add(this.starSystem);
+
+                // 3. Planets Data (Deformed Scale)
+                const planetData = [
+                    { name: 'Venus', color: 0xffcc33, size: 0.5, dist: 6, speed: 0.008 },
+                    { name: 'Earth', color: 0x3366ff, size: 0.6, dist: 9, speed: 0.006, hasMoon: true },
+                    { name: 'Mars', color: 0xff3300, size: 0.4, dist: 12, speed: 0.005 },
+                    { name: 'Jupiter', color: 0xcc9966, size: 1.8, dist: 18, speed: 0.002 },
+                    { name: 'Saturn', color: 0xddbb88, size: 1.5, dist: 24, speed: 0.0015, hasRing: true }
+                ];
+
+                // Create Planets
+                planetData.forEach(pd => {
+                    // Orbit Ring (Visual)
+                    const ringGeo = new THREE.RingGeometry(pd.dist, pd.dist+0.05, 128);
+                    const ringMat = new THREE.MeshBasicMaterial({color:0x445566, side:THREE.DoubleSide, transparent:true, opacity:0.1});
+                    const ring = new THREE.Mesh(ringGeo, ringMat);
+                    ring.rotation.x = Math.PI/2;
+                    this.scene.add(ring);
+
+                    // Pivot for Rotation
+                    const pivot = new THREE.Group();
+                    pivot.rotation.x = Math.random() * 0.2; // Slight tilt
+
+                    // Planet Mesh
+                    const planetGeo = new THREE.SphereGeometry(pd.size, 32, 32);
+                    const planetMat = new THREE.MeshBasicMaterial({color: pd.color});
+                    const planet = new THREE.Mesh(planetGeo, planetMat);
+                    planet.position.x = pd.dist;
+                    pivot.add(planet);
+
+                    // Special Additions
+                    let moonPivot = null;
+                    if(pd.hasMoon) {
+                        moonPivot = new THREE.Group();
+                        const moonGeo = new THREE.SphereGeometry(0.15, 16, 16);
+                        const moonMat = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
+                        const moon = new THREE.Mesh(moonGeo, moonMat);
+                        moon.position.x = 1.2; // Distance from Earth
+                        moonPivot.add(moon);
+                        planet.add(moonPivot); // Add moon pivot to Earth
+                    }
+                    if(pd.hasRing) {
+                        const sRingGeo = new THREE.RingGeometry(pd.size*1.2, pd.size*2, 64);
+                        const sRingMat = new THREE.MeshBasicMaterial({color: 0xccaaff, side:THREE.DoubleSide, transparent:true, opacity:0.5});
+                        const sRing = new THREE.Mesh(sRingGeo, sRingMat);
+                        sRing.rotation.x = Math.PI/2.2;
+                        planet.add(sRing);
+                    }
+
+                    this.scene.add(pivot);
+                    this.planets.push({ pivot, planet, moonPivot, speed: pd.speed, selfRot: Math.random()*0.02 });
+                });
             }
 
             animate() {
                 requestAnimationFrame(this.animate.bind(this));
                 
-                // Core Rotation
-                this.core.rotation.y -= 0.005;
-                this.core.rotation.x -= 0.002;
-
-                // Orbit Animation
-                this.orbits.forEach(o => {
-                    o.pivot.rotation.y += o.speed;
-                });
-
-                // Background Stars Slow Rotation
+                // Sun & Stars Rotation
+                this.sun.rotation.y -= 0.002;
                 if(this.starSystem) this.starSystem.rotation.y += 0.0001;
+
+                // Planet Animation
+                this.planets.forEach(p => {
+                    p.pivot.rotation.y += p.speed; // Revolution
+                    p.planet.rotation.y += p.selfRot; // Rotation
+                    if(p.moonPivot) p.moonPivot.rotation.y += 0.05; // Moon revolution
+                });
 
                 this.renderer.render(this.scene, this.camera);
             }
