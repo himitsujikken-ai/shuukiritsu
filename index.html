@@ -14,8 +14,8 @@
             --c-accent-dim: rgba(0, 240, 255, 0.1);
             --c-text-main: #ffffff;
             --c-text-sub: #8899aa;
-            --c-card-bg: rgba(20, 25, 40, 0.7);
-            --c-border: rgba(255, 255, 255, 0.15);
+            --c-card-bg: rgba(15, 20, 35, 0.85); /* カードの視認性を上げるため少し濃く */
+            --c-border: rgba(0, 240, 255, 0.3);
             --font-main: 'Noto Sans JP', sans-serif;
             --font-serif: 'Shippori Mincho', serif;
             --font-tech: 'Rajdhani', sans-serif;
@@ -31,10 +31,8 @@
 
         /* --- HEADER --- */
         header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); pointer-events: auto; }
-        .brand { text-align: left; }
         .brand h1 { font-family: var(--font-serif); font-size: 1.5rem; margin: 0; letter-spacing: 0.15em; background: linear-gradient(to right, #fff, #88ccee); -webkit-background-clip: text; color: transparent; }
         .brand span { font-family: 'Cinzel'; font-size: 0.6rem; letter-spacing: 0.3em; color: var(--c-accent); }
-        
         .nav-menu { display: flex; gap: 15px; }
         .nav-btn { background: rgba(0,0,0,0.5); border: 1px solid #334; color: var(--c-text-sub); padding: 6px 12px; font-family: var(--font-tech); font-size: 0.75rem; cursor: pointer; transition: 0.3s; letter-spacing: 0.1em; }
         .nav-btn:hover { border-color: var(--c-accent); color: var(--c-accent); }
@@ -58,11 +56,10 @@
         .form-label { display: block; font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-text-sub); margin-bottom: 8px; letter-spacing: 0.15em; text-transform: uppercase; }
         .form-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #334; color: #fff; padding: 12px; font-family: var(--font-tech); font-size: 1.1rem; outline: none; transition: 0.3s; }
         .form-input:focus { border-color: var(--c-accent); background: rgba(0, 20, 30, 0.6); }
-        
         .submit-btn { width: 100%; padding: 16px; background: linear-gradient(90deg, transparent, var(--c-accent-dim), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel'; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; margin-top: 10px; }
         .submit-btn:hover { background: var(--c-accent); color: #000; box-shadow: 0 0 30px var(--c-accent); }
 
-        /* --- RESULT PANEL (The Main Output) --- */
+        /* --- RESULT PANEL --- */
         #result-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 3, 5, 0.92); z-index: 20;
@@ -72,15 +69,14 @@
         }
         #result-overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* Scrollable Area */
         .result-scroll {
-            width: 100%; max-width: 1100px; height: 100%; overflow-y: auto;
-            padding: 40px 20px 100px 20px; /* Bottom padding for buttons */
+            width: 100%; max-width: 1200px; height: 100%; overflow-y: auto;
+            padding: 40px 20px 100px 20px;
         }
         .result-scroll::-webkit-scrollbar { width: 6px; }
         .result-scroll::-webkit-scrollbar-thumb { background: #334; border-radius: 3px; }
 
-        /* Summary Section */
+        /* Summary Header */
         .summary-header { text-align: center; margin-bottom: 50px; border-bottom: 1px solid #334; padding-bottom: 30px; }
         .main-title { font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
         .sub-tag { display: inline-block; padding: 4px 16px; border: 1px solid var(--c-accent); color: var(--c-accent); font-family: var(--font-tech); letter-spacing: 0.2em; font-size: 0.9rem; margin-bottom: 20px; }
@@ -91,29 +87,31 @@
             font-size: 1.05rem; line-height: 1.8; color: #eef;
         }
 
-        /* 13 Grid Layout */
+        /* 13 GRID LAYOUT */
         .grid-container {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;
             margin-top: 30px;
         }
+        /* CARD DESIGN (Based on screenshot) */
         .info-card {
-            background: var(--c-card-bg); border: 1px solid var(--c-border);
-            border-radius: 6px; padding: 25px;
-            display: flex; flex-direction: column; gap: 12px;
+            background: var(--c-card-bg); 
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 25px;
+            display: flex; flex-direction: column; gap: 15px;
             transition: transform 0.3s, border-color 0.3s;
+            position: relative; overflow: hidden;
         }
-        .info-card:hover { border-color: #667799; transform: translateY(-3px); }
+        .info-card:hover { border-color: var(--c-accent); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        .card-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
-        .card-name { font-family: var(--font-serif); font-size: 1.1rem; font-weight: 500; }
-        .card-badge { font-size: 0.65rem; background: rgba(0,0,0,0.5); color: var(--c-accent); padding: 2px 8px; border-radius: 4px; border: 1px solid #223; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+        .card-title { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; color: #fff; }
+        .card-badge { font-size: 0.7rem; background: rgba(0,240,255,0.1); color: var(--c-accent); padding: 3px 10px; border-radius: 12px; border: 1px solid var(--c-accent); white-space: nowrap; }
         
-        .card-value { font-family: var(--font-tech); font-size: 1rem; color: #fff; font-weight: 700; }
-        .card-text { font-size: 0.85rem; color: #ccc; line-height: 1.6; text-align: justify; }
-        .card-advice { font-size: 0.8rem; color: #99aab5; margin-top: auto; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); }
-        .card-advice::before { content: "💡 "; }
-
-        /* Sticky Action Bar */
+        .card-value { font-family: var(--font-main); font-size: 0.95rem; color: #ccc; margin-bottom: 5px; opacity: 0.8; }
+        .card-text { font-size: 0.9rem; color: #ddd; line-height: 1.7; text-align: justify; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+        .card-advice { font-size: 0.9rem; color: #99aab5; margin-top: auto; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 4px; border-left: 2px solid #556677; }
+        
+        /* Sticky Footer */
         .action-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: #05080c; border-top: 1px solid #334;
@@ -145,7 +143,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; margin-bottom:10px; color:#fff;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px;">COSMIC NEURAL NETWORK v4.1</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px;">COSMIC NEURAL NETWORK v4.2</p>
         <button class="start-btn" onclick="app.start()">INITIALIZE</button>
     </div>
 
@@ -187,12 +185,10 @@
                     <div class="result-type" style="font-family:'Cinzel'; color:#667; font-size:0.8rem; letter-spacing:0.2em; margin-bottom:10px;">DIAGNOSIS RESULT</div>
                     <div class="main-title" id="out-title">ANALYZING...</div>
                     <div class="sub-tag" id="out-type">WAIT</div>
-                    <div class="strategy-box" id="out-strategy">
-                        </div>
+                    <div class="strategy-box" id="out-strategy"></div>
                 </div>
 
-                <div class="grid-container" id="out-grid">
-                    </div>
+                <div class="grid-container" id="out-grid"></div>
             </div>
             
             <div class="action-bar">
@@ -215,9 +211,10 @@
     <div id="modal-logic" class="modal-wrap">
         <div class="modal-box">
             <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">×</span>
-            <h2 style="color:var(--c-accent);">解析ロジック (v4.0)</h2>
+            <h2 style="color:var(--c-accent);">解析ロジック (v4.2)</h2>
             <p style="color:#ccc; line-height:1.8; margin-top:20px; font-size:0.9rem;">
                 本システムは「13次元」のマトリクスを用いて、単純な吉凶ではなく「エネルギーのベクトル」を計算します。<br><br>
+                性別入力は行いません。九星や惑星配置といった「魂の設計図」に男女差はないという思想に基づいています。<br><br>
                 1. <strong>個の資質:</strong> 生年月日から九星・十干を算出し、OSのバージョンを特定。<br>
                 2. <strong>時の運気:</strong> 木星・土星・三元九運から、現在吹いている風向きを計算。<br>
                 3. <strong>矛盾の調停:</strong> 「アクセル」と「ブレーキ」が同時に発生した場合、それを「ドリフト走行（高度な制御）」と定義し、具体的戦略を提示します。
@@ -231,32 +228,32 @@
     <script>
         /**
          * ============================================================
-         * 1. TEXT DICTIONARY (The "Brain" of the app)
+         * 1. TEXT DICTIONARY (DETAILED)
          * ============================================================
          */
         const DICT = {
             kyusei: {
-                "一白水星": { tag: "思考のスタイル", desc: "水のように柔軟で、どんな器にも合わせられる知性派。表面は穏やかですが、内面には強い芯と秘密主義的な一面を持ちます。", advice: "人脈が資産です。裏方や参謀としてのポジションで、静かに全体をコントロールする戦略が最も機能します。" },
-                "二黒土星": { tag: "行動の基盤", desc: "大地のような包容力と、着実な育成能力を持ちます。派手さはありませんが、裏付けのある実務能力で周囲から絶大な信頼を得ます。", advice: "急激な変化よりも「継続」が武器になります。既存事業の改善や、チームのメンター役を買って出てください。" },
-                "三碧木星": { tag: "初動のエネルギー", desc: "雷のような瞬発力と、新しいもの好きのパイオニア精神を持ちます。声が大きく、発信力があり、ムードメーカーとして機能します。", advice: "スタートダッシュは最強ですが、詰めの甘さに注意。アイデアを出したら、実務は得意な人に任せる分業体制を。" },
-                "四緑木星": { tag: "調整力", desc: "風のように軽やかで、人の縁を運ぶコミュニケーター。信用と調和を重んじ、ネットワークビジネスや仲介業で才能が開花します。", advice: "「断れない」が弱点になりがち。八方美人にならず、重要なパートナー（取引先）を絞り込む勇気を持ってください。" },
-                "五黄土星": { tag: "帝王の気質", desc: "腐敗と再生を司る、強烈なカリスマ性。ゼロからイチを生み出す力、あるいはどん底から這い上がる力がずば抜けています。", advice: "トップダウンで周囲を引っ張るべきです。あなたの迷いは組織の迷いになります。独善的にならぬよう、参謀を一人置いてください。" },
-                "六白金星": { tag: "決断のスタイル", desc: "天（宇宙）のエネルギーを宿す、高潔なリーダー。完璧主義で責任感が強く、妥協を許さないプロフェッショナルです。", advice: "正論は人を傷つけることもあります。部下やパートナーには、あなたの7割の完成度でOKを出す寛容さを持つと組織が回ります。" },
-                "七赤金星": { tag: "経済感覚", desc: "喜びと収穫の星。話術に優れ、人を楽しませながらお金を回す天才的なセンスを持ちます。飲食やエンタメに強い適性。", advice: "「楽しさ」を収益化する仕組みを作ってください。ただし、口が災いすることもあるため、契約書周りは慎重に。" },
-                "八白土星": { tag: "改革力", desc: "高い山のようにどっしり構え、動くべき時に動く改革者。現状維持を良しとせず、継承と革新を同時に行う役割があります。", advice: "動くまでの腰は重いですが、一度決めたら止まりません。事業承継や、組織の再編プロジェクトで本領を発揮します。" },
-                "九紫火星": { tag: "先見性", desc: "太陽のように明るく、全てを明らかにする情熱家。直感力と美的センスに優れ、時代の先を読む能力があります。", advice: "熱しやすく冷めやすい点がリスク。短期決戦型のプロジェクトや、ビジュアル重視のブランディング戦略に注力してください。" }
+                "一白水星": { tag: "基礎気質", desc: "水のように柔軟で、どんな器にも合わせられる知性派。表面は穏やかですが、内面には強い芯と秘密主義的な一面を持ちます。", advice: "人脈が資産です。裏方や参謀としてのポジションで、静かに全体をコントロールする戦略が最も機能します。" },
+                "二黒土星": { tag: "基礎気質", desc: "大地のような包容力と、着実な育成能力を持ちます。派手さはありませんが、裏付けのある実務能力で周囲から絶大な信頼を得ます。", advice: "急激な変化よりも「継続」が武器になります。既存事業の改善や、チームのメンター役を買って出てください。" },
+                "三碧木星": { tag: "基礎気質", desc: "雷のような瞬発力と、新しいもの好きのパイオニア精神を持ちます。声が大きく、発信力があり、ムードメーカーとして機能します。", advice: "スタートダッシュは最強ですが、詰めの甘さに注意。アイデアを出したら、実務は得意な人に任せる分業体制を。" },
+                "四緑木星": { tag: "基礎気質", desc: "風のように軽やかで、人の縁を運ぶコミュニケーター。信用と調和を重んじ、ネットワークビジネスや仲介業で才能が開花します。", advice: "「断れない」が弱点になりがち。八方美人にならず、重要なパートナー（取引先）を絞り込む勇気を持ってください。" },
+                "五黄土星": { tag: "基礎気質", desc: "腐敗と再生を司る、強烈なカリスマ性。ゼロからイチを生み出す力、あるいはどん底から這い上がる力がずば抜けています。", advice: "トップダウンで周囲を引っ張るべきです。あなたの迷いは組織の迷いになります。独善的にならぬよう、参謀を一人置いてください。" },
+                "六白金星": { tag: "基礎気質", desc: "天（宇宙）のエネルギーを宿す、高潔なリーダー。完璧主義で責任感が強く、妥協を許さないプロフェッショナルです。", advice: "正論は人を傷つけることもあります。部下やパートナーには、あなたの7割の完成度でOKを出す寛容さを持つと組織が回ります。" },
+                "七赤金星": { tag: "基礎気質", desc: "喜びと収穫の星。話術に優れ、人を楽しませながらお金を回す天才的なセンスを持ちます。飲食やエンタメに強い適性。", advice: "「楽しさ」を収益化する仕組みを作ってください。ただし、口が災いすることもあるため、契約書周りは慎重に。" },
+                "八白土星": { tag: "基礎気質", desc: "高い山のようにどっしり構え、動くべき時に動く改革者。現状維持を良しとせず、継承と革新を同時に行う役割があります。", advice: "動くまでの腰は重いですが、一度決めたら止まりません。事業承継や、組織の再編プロジェクトで本領を発揮します。" },
+                "九紫火星": { tag: "基礎気質", desc: "太陽のように明るく、全てを明らかにする情熱家。直感力と美的センスに優れ、時代の先を読む能力があります。", advice: "熱しやすく冷めやすい点がリスク。短期決戦型のプロジェクトや、ビジュアル重視のブランディング戦略に注力してください。" }
             },
             jukkan: {
-                "甲(木)": { tag: "本質", desc: "大樹。一本気で向上心が強い。曲がったことが嫌い。", advice: "挫折に脆いので、柔軟性を持つこと。" },
-                "乙(木)": { tag: "本質", desc: "草花。環境適応力が高く、粘り強い交渉人。", advice: "単独より組織の力を使ってください。" },
-                "丙(火)": { tag: "本質", desc: "太陽。裏表がなく、そこにいるだけで中心になる。", advice: "気分のムラを仕事に出さないこと。" },
-                "丁(火)": { tag: "本質", desc: "灯火。洞察力が鋭く、内面に情熱を秘める。", advice: "爆発する前に小出しにガス抜きを。" },
-                "戊(土)": { tag: "本質", desc: "山岳。動じない包容力。信頼と信用の塊。", advice: "フットワークの重さが機会損失に。" },
-                "己(土)": { tag: "本質", desc: "田畑。人を育て、実りをもたらす育成者。", advice: "器用貧乏にならぬよう専門性を。" },
-                "庚(金)": { tag: "本質", desc: "鋼鉄。攻撃力と改革力に優れる武闘派。", advice: "叩かれて強くなる。試練を歓迎せよ。" },
-                "辛(金)": { tag: "本質", desc: "宝石。繊細で美意識が高い。特別扱いを好む。", advice: "磨かれないと輝かない。苦労は研磨剤。" },
-                "壬(水)": { tag: "本質", desc: "大海。スケールが大きく、流動的で自由。", advice: "目標がないと氾濫する。堤防（ルール）を。" },
-                "癸(水)": { tag: "本質", desc: "雨露。慈愛に満ち、隅々まで行き渡る知性。", advice: "忍耐強いが、積もり積もって決壊せぬよう。" }
+                "甲(木)": { tag: "本質ID", desc: "大樹。一本気で向上心が強い。曲がったことが嫌いなリーダー気質。", advice: "挫折に脆いので、柔軟性を持つパートナーと組むこと。" },
+                "乙(木)": { tag: "本質ID", desc: "草花。環境適応力が高く、粘り強い交渉人。どこでも根を張れる。", advice: "単独より組織の力を使ってください。" },
+                "丙(火)": { tag: "本質ID", desc: "太陽。裏表がなく、そこにいるだけで中心になるカリスマ。", advice: "気分のムラを仕事に出さないことが信頼の鍵。" },
+                "丁(火)": { tag: "本質ID", desc: "灯火。洞察力が鋭く、内面に情熱を秘める参謀タイプ。", advice: "爆発する前に小出しにガス抜きを。" },
+                "戊(土)": { tag: "本質ID", desc: "山岳。動じない包容力。信頼と信用の塊で、人が集まる。", advice: "フットワークの重さが機会損失にならぬよう注意。" },
+                "己(土)": { tag: "本質ID", desc: "田畑。人を育て、実りをもたらす育成者。教育事業に適性。", advice: "器用貧乏にならぬよう専門性を持つこと。" },
+                "庚(金)": { tag: "本質ID", desc: "鋼鉄。攻撃力と改革力に優れる武闘派。斧のように切り拓く。", advice: "叩かれて強くなる。試練を歓迎せよ。" },
+                "辛(金)": { tag: "本質ID", desc: "宝石。繊細で美意識が高い。特別扱いされることで輝く。", advice: "磨かれないと輝かない。苦労は研磨剤と思うこと。" },
+                "壬(水)": { tag: "本質ID", desc: "大海。スケールが大きく、流動的で自由。海外との縁。", advice: "目標がないと氾濫する。堤防（ルール）を設けること。" },
+                "癸(水)": { tag: "本質ID", desc: "雨露。慈愛に満ち、隅々まで行き渡る知性。企画力がある。", advice: "忍耐強いが、積もり積もって決壊せぬよう。" }
             }
         };
 
@@ -268,78 +265,67 @@
 
         /**
          * ============================================================
-         * 2. LOGIC ENGINE (Calculator)
+         * 2. LOGIC ENGINE
          * ============================================================
          */
         class LogicEngine {
             constructor() {
-                // Simulated current cosmic state
                 this.state = { jupiter: 'Gemini', gate: true }; 
             }
 
-            // --- Algorithms ---
             getKyusei(y) {
                 let sum = 0; String(y).split('').forEach(n => sum += parseInt(n));
                 while(sum > 9) sum = String(sum).split('').reduce((a,b)=>parseInt(a)+parseInt(b), 0);
-                let star = 11 - sum;
-                if(star > 9) star -= 9; if(star===0) star=9;
-                const map = ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"];
-                return map[star-1];
+                let star = 11 - sum; if(star > 9) star -= 9; if(star===0) star=9;
+                return ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"][star-1];
             }
 
             getJukkan(y) {
-                const map = ["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"];
-                return map[y % 10];
+                return ["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y % 10];
             }
 
             getMoon(y,m,d) {
                 if(m<3){y--;m+=12;}
-                let c=365.25*y, e=30.6*m;
-                let j=c+e+d-694039.09; j/=29.53058;
-                let phase=parseInt((j-parseInt(j))*29.53);
-                return phase;
+                let j = (365.25*y) + (30.6*m) + d - 694039.09;
+                j /= 29.53058;
+                return parseInt((j-parseInt(j))*29.53);
             }
 
-            // --- Main Analysis ---
-            analyze(dateStr, timeStr) {
+            analyze(dateStr) {
                 const d = new Date(dateStr);
                 const y = d.getFullYear(); const m = d.getMonth()+1; const day = d.getDate();
-                
                 const kyusei = this.getKyusei(y);
                 const jukkan = this.getJukkan(y);
                 const moonAge = this.getMoon(y,m,day);
-
-                // Determine Strategy Type
                 const lastDigit = y % 10;
+                
                 let strategy = {};
-
-                if([6,7].includes(lastDigit)) { // Fire
+                if([6,7].includes(lastDigit)) { 
                     strategy = { type: "MUTATION (変異)", title: "破壊と再生のワルツ", body: "ライオンズゲートのエネルギーとあなたの本質（火）が共鳴しています。今はロジックより「違和感」を信じて、既存のレールを破壊し、新しい軌道を敷くべきタイミングです。", color: "#9D00FF" };
-                } else if([0,1,8,9].includes(lastDigit)) { // Metal/Earth
+                } else if([0,1,8,9].includes(lastDigit)) {
                     strategy = { type: "CONFLICT (葛藤)", title: "試練の坩堝", body: "拡大しようとする木星と、固めようとするあなたの性質が摩擦を起こしています。これは故障ではなく「鍛造」です。外に出るより、内部システムの刷新（学習・組織化）にリソースを集中してください。", color: "#ff3366" };
                 } else {
                     strategy = { type: "SYNERGY (覚醒)", title: "完全なる追い風", body: "全パラメータが噛み合っています。あなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今まで温めてきた計画を、今すぐ実行に移してください。", color: "#D4AF37" };
                 }
 
-                // Compile 13 Elements
                 const moonLabel = moonAge==0?"新月":moonAge==15?"満月":`月齢${moonAge}`;
                 const jData = DICT.jukkan[jukkan] || DICT.jukkan["甲(木)"];
                 const kData = DICT.kyusei[kyusei] || DICT.kyusei["五黄土星"];
 
                 const gridData = [
                     { t:"九星気学", v:kyusei, ...kData },
-                    { t:"十干", v:jukkan, ...jData },
-                    { t:"月齢", v:moonLabel, tag:"バイオリズム", desc:"内面的な感情の波。潮の満ち引きのように、今は「"+(moonAge<15?"満ちていく":"手放す")+"」時期です。", advice:"直感に従い、無理なスケジュールを避けてください。" },
-                    { t:"三元九運", v:"第九運 (火)", tag:"時代の潮流", desc:"2024年から始まった20年間の新時代。物質から精神・情報へ価値がシフトします。", advice:"「可視化」と「知の共有」が成功の鍵です。" },
-                    { t:"木星", v:"双子座期", tag:"拡大のテーマ", desc:"情報、通信、移動、そして「浅く広い学び」に幸運が宿る1年です。", advice:"一つのことに固執せず、マルチタスクで可能性を広げてください。" },
-                    { t:"土星", v:"魚座(逆行)", tag:"課題", desc:"見ないふりをしてきた「精神的な課題」や「過去の精算」を迫られる時期。", advice:"逃げずに向き合えば、強固な基盤になります。" },
-                    { t:"八卦", v:"震 (雷)", tag:"行動指針", desc:"雷のような瞬発力と、突破力を持つ卦。スタートアップの気運。", advice:"迷ったら動く。走りながら考えるスタイルで。" },
+                    { t:"十干十二支", v:jukkan, ...jData },
+                    { t:"月齢", v:moonLabel, tag:"短期コンディション", desc:`内面的な感情の波。潮の満ち引きのように、今は「${moonAge<15?"満ちていく":"手放す"}」時期です。`, advice:"直感に従い、無理なスケジュールを避けてください。" },
+                    { t:"三元九運", v:"第九運 (火)", tag:"時代の流れ", desc:"2024年から始まった20年間の新時代。物質から精神・情報へ価値がシフトします。火と可視化の運。", advice:"「可視化」と「知の共有」が成功の鍵です。" },
+                    { t:"木星", v:"双子座期", tag:"中期サイクル", desc:"情報、通信、移動、そして「浅く広い学び」に幸運が宿る1年です。", advice:"一つのことに固執せず、マルチタスクで可能性を広げてください。" },
+                    { t:"土星", v:"魚座(逆行)", tag:"試練と課題", desc:"見ないふりをしてきた「精神的な課題」や「過去の精算」を迫られる時期。", advice:"逃げずに向き合えば、強固な基盤になります。" },
+                    { t:"八卦盤", v:"震 (雷)", tag:"意思決定スタイル", desc:"雷のような瞬発力と、突破力を持つ卦。スタートアップの気運。迷ったら動く。", advice:"走りながら考えるスタイルで、スピードを重視。" },
                     { t:"火星", v:"獅子座", tag:"情熱", desc:"自己表現への欲求が高まっています。ドラマティックな展開を好む配置。", advice:"あなたの情熱を物語（ストーリー）にして語ってください。" },
                     { t:"金星", v:"8年周期", tag:"価値観", desc:"8年前に起きた「愛やお金」に関する出来事がリバイバルするタイミング。", advice:"過去の成功パターンを現代版にアップデートして。" },
                     { t:"G.CONJUNCTION", v:"風の時代", tag:"パラダイム", desc:"縦社会（ピラミッド）から横社会（ネットワーク）への完全移行。", advice:"所有するよりシェアするビジネスモデルを。" },
                     { t:"ライオンズゲート", v:"OPEN", tag:"宇宙線", desc:"シリウスからの高次エネルギーが流入中。覚醒と混乱が同時に起きます。", advice:"体調不良は好転反応。無理せず休息を。" },
                     { t:"歳差運動", v:"水瓶座", tag:"文明", desc:"2000年単位の文明のシフト。個の自立と友愛がテーマ。", advice:"古い権威に頼らない生き方を模索して。" },
-                    { t:"座標", v:dateStr, tag:"原点", desc:"あなたのユニークな時間座標ID。", advice:"全ての運命はこの一点から始まります。" },
+                    { t:"座標 (TIME)", v:dateStr, tag:"原点", desc:"あなたのユニークな時間座標ID。", advice:"全ての運命はこの一点から始まります。" },
                 ];
 
                 return { ...strategy, grid: gridData };
@@ -348,14 +334,16 @@
 
         /**
          * ============================================================
-         * 3. VISUAL ENGINE (Three.js)
+         * 3. VISUAL ENGINE (FIXED STARS)
          * ============================================================
          */
         class VisualEngine {
             constructor() {
                 this.scene = new THREE.Scene();
-                this.scene.fog = new THREE.FogExp2(0x020205, 0.002);
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+                // 霧を少し薄くして遠くの星を見えやすくする
+                this.scene.fog = new THREE.FogExp2(0x020205, 0.001); 
+                
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
                 this.camera.position.z = 30; this.camera.position.y = 5;
                 
                 this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -383,13 +371,29 @@
                     this.rings.push({mesh:r, speed: i*0.001});
                 }
 
-                // Stars (Fixed in v4.1)
+                // --- FIXED STAR FIELD ---
                 const sGeo = new THREE.BufferGeometry();
-                const sCount = 3000;
+                const sCount = 5000; // 星の数を増やす
                 const sPos = new Float32Array(sCount * 3);
-                for(let i=0; i<sCount*3; i++) sPos[i] = (Math.random()-0.5)*250;
+                
+                for(let i=0; i<sCount*3; i++) {
+                    // 範囲を広げてカメラの前後左右に配置
+                    sPos[i] = (Math.random() - 0.5) * 800; 
+                }
+                
                 sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
-                this.scene.add(new THREE.Points(sGeo, new THREE.PointsMaterial({color:0xaaaacc, size:0.15, transparent:true, opacity:0.8})));
+                
+                // 星のサイズを大きくし、減衰を有効化
+                const sMat = new THREE.PointsMaterial({
+                    color: 0xffffff, 
+                    size: 0.7, // サイズアップ
+                    transparent: true, 
+                    opacity: 0.9,
+                    sizeAttenuation: true // 遠くの星は小さく、近くは大きく
+                });
+                
+                this.starSystem = new THREE.Points(sGeo, sMat);
+                this.scene.add(this.starSystem);
             }
 
             animate() {
@@ -397,6 +401,12 @@
                 this.core.rotation.y -= 0.005;
                 this.core.rotation.x -= 0.002;
                 this.rings.forEach(r => r.mesh.rotation.z += r.speed);
+                
+                // 星をゆっくり回転させる
+                if(this.starSystem) {
+                    this.starSystem.rotation.y += 0.0002;
+                }
+                
                 this.renderer.render(this.scene, this.camera);
             }
         }
@@ -409,8 +419,7 @@
         const app = {
             logic: new LogicEngine(),
             visual: null,
-            data: null, // Current Result
-            
+            data: null,
             audio: {
                 ctx: null, muted: false,
                 init: function() {
@@ -419,9 +428,7 @@
                     this.osc = this.ctx.createOscillator();
                     this.gain = this.ctx.createGain();
                     this.osc.connect(this.gain); this.gain.connect(this.ctx.destination);
-                    this.osc.frequency.value = 55; // Drone
-                    this.gain.gain.value = 0.05;
-                    this.osc.start();
+                    this.osc.frequency.value = 55; this.gain.gain.value = 0.05; this.osc.start();
                 },
                 toggle: function() {
                     this.muted = !this.muted;
@@ -429,51 +436,32 @@
                     document.getElementById('btn-audio').innerText = this.muted ? "AUDIO: OFF" : "AUDIO: ON";
                 }
             },
-
             start: function() {
                 document.getElementById('start-screen').style.opacity = 0;
                 setTimeout(() => document.getElementById('start-screen').style.display = 'none', 800);
-                
                 this.visual = new VisualEngine();
                 this.audio.init();
-                
-                // Init City Select
                 const sel = document.getElementById('inp-city');
                 Object.keys(CITIES).forEach(region => {
                     const optgroup = document.createElement('optgroup'); optgroup.label = region.toUpperCase();
                     CITIES[region].forEach(c => {
                         let opt = document.createElement('option');
-                        opt.value = JSON.stringify(c); opt.text = c.name;
-                        optgroup.appendChild(opt);
+                        opt.value = JSON.stringify(c); opt.text = c.name; optgroup.appendChild(opt);
                     });
                     sel.appendChild(optgroup);
                 });
             },
-
             analyze: function() {
                 const date = document.getElementById('inp-date').value;
                 if(!date) return;
-
-                // UI Transition
                 document.getElementById('input-container').style.opacity = 0;
                 document.getElementById('input-container').style.pointerEvents = 'none';
-                document.getElementById('status-bar').innerText = "CALCULATING VECTORS...";
-
-                // Process
                 this.data = this.logic.analyze(date);
-                
-                // Save History
                 let history = JSON.parse(localStorage.getItem('cnn_hist') || '[]');
                 history.unshift({date: new Date().toLocaleDateString(), title: this.data.title});
                 localStorage.setItem('cnn_hist', JSON.stringify(history.slice(0,10)));
-
-                // Render
-                setTimeout(() => {
-                    this.renderResult(this.data);
-                    document.getElementById('status-bar').innerText = "SYSTEM STANDBY";
-                }, 1500);
+                setTimeout(() => { this.renderResult(this.data); }, 1000);
             },
-
             renderResult: function(d) {
                 const overlay = document.getElementById('result-overlay');
                 document.getElementById('out-title').innerText = d.title;
@@ -482,15 +470,14 @@
                 document.getElementById('out-type').style.borderColor = d.color;
                 document.getElementById('out-strategy').innerText = d.body;
                 document.getElementById('out-strategy').style.borderLeftColor = d.color;
-
                 const grid = document.getElementById('out-grid');
                 grid.innerHTML = "";
                 d.grid.forEach(item => {
                     const card = document.createElement('div');
                     card.className = "info-card";
                     card.innerHTML = `
-                        <div class="card-top">
-                            <span class="card-name">${item.t}</span>
+                        <div class="card-header">
+                            <span class="card-title">${item.t}</span>
                             <span class="card-badge" style="color:${d.color}">${item.tag}</span>
                         </div>
                         <div class="card-value">${item.v}</div>
@@ -499,10 +486,8 @@
                     `;
                     grid.appendChild(card);
                 });
-
                 overlay.classList.add('active');
             },
-
             ui: {
                 reset: function() {
                     document.getElementById('result-overlay').classList.remove('active');
@@ -516,19 +501,13 @@
                     const h = JSON.parse(localStorage.getItem('cnn_hist') || '[]');
                     list.innerHTML = h.length ? h.map(i=>`<div class="history-item"><span>${i.date}</span><span style="color:var(--c-accent)">${i.title}</span></div>`).join('') : "<div style='color:#666'>NO HISTORY</div>";
                 },
-                toggleLogic: function() {
-                    document.getElementById('modal-logic').style.display = 'flex';
-                }
+                toggleLogic: function() { document.getElementById('modal-logic').style.display = 'flex'; }
             },
-
             export: {
                 image: function() {
                     const target = document.getElementById('capture-target');
                     html2canvas(target, { backgroundColor: '#020305', scale: 2, useCORS: true }).then(canvas => {
-                        const a = document.createElement('a');
-                        a.href = canvas.toDataURL("image/png");
-                        a.download = 'cosmic_analysis.png';
-                        a.click();
+                        const a = document.createElement('a'); a.href = canvas.toDataURL("image/png"); a.download = 'cosmic_analysis.png'; a.click();
                     });
                 },
                 calendar: function() {
@@ -545,11 +524,7 @@
                 }
             }
         };
-
-        // Modal Close Logic
-        window.onclick = function(e) {
-            if(e.target.className === 'modal-wrap') e.target.style.display = 'none';
-        }
+        window.onclick = function(e) { if(e.target.className === 'modal-wrap') e.target.style.display = 'none'; }
     </script>
 </body>
 </html>
