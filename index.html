@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v6.2</title>
+    <title>周期律分析 | Cosmic Neural Network v7.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -11,7 +11,8 @@
         :root {
             --c-bg: #020205;
             --c-accent: #00f0ff;
-            --c-accent-dim: rgba(0, 240, 255, 0.1);
+            --c-gold: #D4AF37; /* Premium Gold */
+            --c-gold-dim: rgba(212, 175, 55, 0.15);
             --c-card-bg: rgba(12, 18, 30, 0.9);
             --c-border: rgba(0, 240, 255, 0.25);
             --font-main: 'Noto Sans JP', sans-serif;
@@ -43,19 +44,19 @@
         .form-label { display: block; font-family: var(--font-tech); font-size: 0.7rem; color: #889; margin-bottom: 5px; letter-spacing: 0.15em; }
         .form-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #334; color: #fff; padding: 10px; font-family: var(--font-tech); font-size: 1.1rem; outline: none; margin-bottom: 20px; transition: 0.3s; }
         .form-input:focus { border-color: var(--c-accent); background: rgba(0, 20, 30, 0.8); }
-        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, transparent, var(--c-accent-dim), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel'; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; }
+        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.1), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel'; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; }
         .submit-btn:hover { background: var(--c-accent); color: #000; box-shadow: 0 0 30px var(--c-accent); }
 
         /* --- SYNCHRO OVERLAY --- */
         #synchro-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.5s;
+            z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.5s; background: rgba(0,0,0,0.8);
         }
         .synchro-text { font-family: var(--font-tech); font-size: 2rem; color: var(--c-accent); letter-spacing: 0.5em; text-shadow: 0 0 20px var(--c-accent); }
         .synchro-sub { font-family: var(--font-serif); font-size: 0.9rem; color: #fff; margin-top: 10px; letter-spacing: 0.2em; opacity: 0.8; }
 
-        /* --- RESULT PANEL --- */
+        /* --- RESULT PANEL (LEVEL 1) --- */
         #result-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 3, 5, 0.95); z-index: 20;
@@ -69,11 +70,8 @@
         .result-scroll::-webkit-scrollbar { width: 6px; }
         .result-scroll::-webkit-scrollbar-thumb { background: #334; border-radius: 3px; }
 
-        /* DASHBOARD (Top) */
-        .dashboard-box {
-            border: 1px solid #334455; background: rgba(5, 10, 20, 0.6);
-            border-radius: 8px; padding: 30px; margin-bottom: 40px;
-        }
+        /* DASHBOARD & SUMMARY */
+        .dashboard-box { border: 1px solid #334455; background: rgba(5, 10, 20, 0.6); border-radius: 8px; padding: 30px; margin-bottom: 40px; }
         .dash-title { font-size: 0.9rem; color: #8899aa; border-bottom: 1px solid #334; padding-bottom: 10px; margin-bottom: 20px; }
         .param-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
         .param-item { margin-bottom: 5px; }
@@ -82,25 +80,14 @@
         .param-bar-fill { height: 100%; background: var(--c-accent); width: 0%; transition: width 1.5s ease-out; box-shadow: 0 0 8px var(--c-accent); }
         .param-meta { font-family: var(--font-tech); font-size: 0.7rem; color: #667; margin-top: 3px; display: flex; justify-content: space-between; }
 
-        /* STRATEGY TEXT (Summary) */
-        .strategy-container {
-            max-width: 900px; margin: 0 auto 50px auto;
-            border-left: 4px solid var(--c-accent);
-            background: linear-gradient(90deg, rgba(0,240,255,0.05), transparent);
-            padding: 30px;
-        }
+        .strategy-container { max-width: 900px; margin: 0 auto 50px auto; border-left: 4px solid var(--c-accent); background: linear-gradient(90deg, rgba(0,240,255,0.05), transparent); padding: 30px; }
         .strategy-title { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 15px; color: #fff; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
-        .strategy-type { display: inline-block; font-family: var(--font-tech); color: var(--c-accent); border: 1px solid var(--c-accent); padding: 4px 12px; font-size: 0.8rem; letter-spacing: 0.1em; margin-bottom: 20px; }
         .strategy-body { font-size: 1.05rem; line-height: 1.9; color: #ddd; text-align: justify; white-space: pre-wrap; }
 
-        /* 13 GRID (Bottom) */
+        /* 13 GRID */
         .grid-header { font-family: 'Cinzel'; text-align: center; color: #667; letter-spacing: 0.3em; margin: 40px 0 20px 0; border-top: 1px dashed #334; padding-top: 20px; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
-        .info-card {
-            background: var(--c-card-bg); border: 1px solid var(--c-border);
-            border-radius: 4px; padding: 25px; display: flex; flex-direction: column; gap: 12px;
-            transition: transform 0.3s;
-        }
+        .info-card { background: var(--c-card-bg); border: 1px solid var(--c-border); border-radius: 4px; padding: 25px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.3s; }
         .info-card:hover { border-color: #fff; transform: translateY(-3px); }
         .card-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
         .card-name { font-family: var(--font-serif); font-size: 1.1rem; color: #fff; font-weight: bold; }
@@ -108,17 +95,57 @@
         .card-val { font-family: var(--font-tech); font-size: 1rem; color: #ccc; }
         .card-desc { font-size: 0.9rem; line-height: 1.7; color: #ddd; text-align: justify; }
         .card-adv { font-size: 0.85rem; color: #9ab; margin-top: auto; padding-top: 12px; border-top: 1px dashed #445; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px; }
-        .card-adv::before { content: "💡 ADVICE: "; color: var(--c-accent); font-weight: bold; font-family: var(--font-tech); }
+        
+        /* --- PREMIUM GATE (The Funnel) --- */
+        .premium-gate {
+            margin-top: 60px; padding: 40px; text-align: center;
+            background: linear-gradient(180deg, rgba(0,0,0,0), rgba(212, 175, 55, 0.1));
+            border: 1px solid var(--c-gold); border-radius: 8px;
+            position: relative; overflow: hidden;
+        }
+        .premium-gate h3 { font-family: var(--font-serif); color: var(--c-gold); font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 0.2em; }
+        .premium-gate p { color: #ccc; margin-bottom: 30px; font-size: 0.9rem; }
+        .premium-btn {
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+            border: 1px solid var(--c-gold); color: var(--c-gold);
+            padding: 15px 50px; font-family: 'Cinzel'; font-size: 1.1rem; letter-spacing: 0.2em; cursor: pointer;
+            transition: 0.4s; position: relative; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        .premium-btn:hover { background: var(--c-gold); color: #000; box-shadow: 0 0 50px var(--c-gold); }
+
+        /* --- MVP SCREEN (LEVEL 2) --- */
+        #mvp-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 8, 0.98); z-index: 100;
+            display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: 1s;
+        }
+        #mvp-screen.active { opacity: 1; pointer-events: auto; }
+        
+        .mvp-header { text-align: center; padding: 40px; border-bottom: 1px solid var(--c-gold); }
+        .mvp-title { font-family: var(--font-serif); color: var(--c-gold); font-size: 2rem; letter-spacing: 0.2em; }
+        
+        .mvp-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;
+            padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; overflow-y: auto;
+        }
+        .mvp-card {
+            background: rgba(20, 15, 5, 0.8); border: 1px solid var(--c-gold);
+            padding: 30px; border-radius: 4px; display: flex; flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5); position: relative;
+        }
+        .mvp-card::before { content:''; position: absolute; top:0; left:0; width:100%; height:4px; background:var(--c-gold); }
+        .mvp-label { font-family: 'Cinzel'; color: var(--c-gold); font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 15px; }
+        .mvp-val { font-family: var(--font-serif); font-size: 1.5rem; color: #fff; margin-bottom: 20px; line-height: 1.4; }
+        .mvp-desc { font-size: 0.9rem; color: #ccc; line-height: 1.8; text-align: justify; }
+
+        .back-btn { position: absolute; top: 20px; right: 20px; color: #666; cursor: pointer; font-size: 2rem; transition: 0.3s; }
+        .back-btn:hover { color: #fff; }
 
         /* FOOTER */
-        .action-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #05080c; border-top: 1px solid #334;
-            padding: 15px; display: flex; justify-content: center; gap: 15px; z-index: 30;
-        }
+        .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #05080c; border-top: 1px solid #334; padding: 15px; display: flex; justify-content: center; gap: 15px; z-index: 30; }
         .action-btn { background: transparent; border: 1px solid #556; color: #889; padding: 10px 30px; font-family: var(--font-tech); cursor: pointer; transition: 0.2s; }
         .action-btn:hover { border-color: var(--c-accent); color: var(--c-accent); }
 
-        /* START SCREEN */
         #start-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; background: rgba(2,2,5,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s; }
     </style>
 </head>
@@ -126,7 +153,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; color:#fff;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v6.2</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.0</p>
         <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()">INITIALIZE SYSTEM</button>
     </div>
 
@@ -149,31 +176,49 @@
         </div>
 
         <div id="synchro-overlay">
-            <div class="synchro-text">TUNING...</div>
-            <div class="synchro-sub">Aligning Vectors with Cosmic Cycles</div>
+            <div class="synchro-text" id="sync-text">TUNING...</div>
+            <div class="synchro-sub" id="sync-sub">Aligning Vectors with Cosmic Cycles</div>
         </div>
 
         <div id="result-overlay">
             <div class="result-scroll" id="capture-target">
-                
                 <div class="dashboard-box">
-                    <div class="dash-title">あなたの現在位置 (サイクル進行度イメージ)</div>
+                    <div class="dash-title">あなたの現在位置 (サイクル進行度)</div>
                     <div class="param-grid" id="param-grid"></div>
                 </div>
 
                 <div class="strategy-container">
                     <div class="strategy-title" id="st-title">ANALYZING...</div>
-                    <div class="strategy-type" id="st-type">CALCULATING VECTOR</div>
                     <div class="strategy-body" id="st-body"></div>
                 </div>
 
                 <div class="grid-header">SOURCE CODE: 13 DIMENSIONS</div>
                 <div class="grid-container" id="grid-container"></div>
+
+                <div class="premium-gate">
+                    <h3>MVP STRATEGY</h3>
+                    <p>経営者・自立した女性のための「意思決定」特化型分析。<br>X-DAY、契約、リスク管理の核心に迫ります。</p>
+                    <button class="premium-btn" onclick="app.ui.showMVP()">UNLOCK MVP DIAGNOSIS</button>
+                </div>
             </div>
 
             <div class="action-bar">
-                <button class="action-btn" onclick="app.export()">📷 SAVE IMAGE</button>
+                <button class="action-btn" onclick="app.export()">📷 SAVE</button>
                 <button class="action-btn" onclick="app.reset()">↺ RESET</button>
+            </div>
+        </div>
+
+        <div id="mvp-screen">
+            <span class="back-btn" onclick="app.ui.hideMVP()">×</span>
+            <div class="mvp-header">
+                <div class="mvp-title">MVP STRATEGIC CORE</div>
+                <p style="color:#aaa; letter-spacing:0.2em; margin-top:10px;">DEEP DIVE COMPLETE</p>
+            </div>
+            <div class="mvp-grid" id="mvp-grid">
+                </div>
+            <div style="text-align:center; padding-bottom:40px;">
+                <p style="color:#666; margin-bottom:20px;">Unlock remaining 17 dimensions in Full Session.</p>
+                <button class="nav-btn">VIEW FULL MENU</button>
             </div>
         </div>
     </div>
@@ -182,37 +227,33 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <script>
-        /* --- DATA & LOGIC --- */
+        /* --- CONSTANTS --- */
         const DICT = {
             kyusei: {
-                "一白水星": { tag: "思考のスタイル", desc: "水のように柔軟で、どんな器にも合わせられる知性派。表面は穏やかですが、内面には強い芯と秘密主義的な一面を持ちます。", advice: "人脈が資産です。裏方や参謀としてのポジションで、静かに全体をコントロールする戦略が最も機能します。" },
-                "二黒土星": { tag: "行動の基盤", desc: "大地のような包容力と、着実な育成能力を持ちます。派手さはありませんが、裏付けのある実務能力で周囲から絶大な信頼を得ます。", advice: "急激な変化よりも「継続」が武器になります。既存事業の改善や、チームのメンター役を買って出てください。" },
-                "三碧木星": { tag: "初動のエネルギー", desc: "雷のような瞬発力と、新しいもの好きのパイオニア精神を持ちます。声が大きく、発信力があり、ムードメーカーとして機能します。", advice: "スタートダッシュは最強ですが、詰めの甘さに注意。アイデアを出したら、実務は得意な人に任せる分業体制を。" },
-                "四緑木星": { tag: "調整力", desc: "風のように軽やかで、人の縁を運ぶコミュニケーター。信用と調和を重んじ、ネットワークビジネスや仲介業で才能が開花します。", advice: "「断れない」が弱点になりがち。八方美人にならず、重要なパートナー（取引先）を絞り込む勇気を持ってください。" },
-                "五黄土星": { tag: "帝王の気質", desc: "腐敗と再生を司る、強烈なカリスマ性。ゼロからイチを生み出す力、あるいはどん底から這い上がる力がずば抜けています。", advice: "トップダウンで周囲を引っ張るべきです。あなたの迷いは組織の迷いになります。独善的にならぬよう、参謀を一人置いてください。" },
-                "六白金星": { tag: "決断のスタイル", desc: "天（宇宙）のエネルギーを宿す、高潔なリーダー。完璧主義で責任感が強く、妥協を許さないプロフェッショナルです。", advice: "正論は人を傷つけることもあります。部下やパートナーには、あなたの7割の完成度でOKを出す寛容さを持つと組織が回ります。" },
-                "七赤金星": { tag: "経済感覚", desc: "喜びと収穫の星。話術に優れ、人を楽しませながらお金を回す天才的なセンスを持ちます。飲食やエンタメに強い適性。", advice: "「楽しさ」を収益化する仕組みを作ってください。ただし、口が災いすることもあるため、契約書周りは慎重に。" },
-                "八白土星": { tag: "改革力", desc: "高い山のようにどっしり構え、動くべき時に動く改革者。現状維持を良しとせず、継承と革新を同時に行う役割があります。", advice: "動くまでの腰は重いですが、一度決めたら止まりません。事業承継や、組織の再編プロジェクトで本領を発揮します。" },
-                "九紫火星": { tag: "先見性", desc: "太陽のように明るく、全てを明らかにする情熱家。直感力と美的センスに優れ、時代の先を読む能力があります。", advice: "熱しやすく冷めやすい点がリスク。短期決戦型のプロジェクトや、ビジュアル重視のブランディング戦略に注力してください。" }
+                "一白水星": { tag: "思考", desc: "水のように柔軟で、どんな器にも合わせられる知性派。表面は穏やかですが、内面には強い芯と秘密主義的な一面を持ちます。", advice: "人脈が資産です。裏方や参謀としてのポジションで、静かに全体をコントロールする戦略が最も機能します。" },
+                "二黒土星": { tag: "基盤", desc: "大地のような包容力と、着実な育成能力を持ちます。派手さはありませんが、裏付けのある実務能力で周囲から絶大な信頼を得ます。", advice: "急激な変化よりも「継続」が武器になります。既存事業の改善や、チームのメンター役を買って出てください。" },
+                "三碧木星": { tag: "初動", desc: "雷のような瞬発力と、新しいもの好きのパイオニア精神を持ちます。声が大きく、発信力があり、ムードメーカーとして機能します。", advice: "スタートダッシュは最強ですが、詰めの甘さに注意。アイデアを出したら、実務は得意な人に任せる分業体制を。" },
+                "四緑木星": { tag: "調整", desc: "風のように軽やかで、人の縁を運ぶコミュニケーター。信用と調和を重んじ、ネットワークビジネスや仲介業で才能が開花します。", advice: "「断れない」が弱点になりがち。八方美人にならず、重要なパートナー（取引先）を絞り込む勇気を持ってください。" },
+                "五黄土星": { tag: "帝王", desc: "腐敗と再生を司る、強烈なカリスマ性。ゼロからイチを生み出す力、あるいはどん底から這い上がる力がずば抜けています。", advice: "トップダウンで周囲を引っ張るべきです。あなたの迷いは組織の迷いになります。独善的にならぬよう、参謀を一人置いてください。" },
+                "六白金星": { tag: "決断", desc: "天（宇宙）のエネルギーを宿す、高潔なリーダー。完璧主義で責任感が強く、妥協を許さないプロフェッショナルです。", advice: "正論は人を傷つけることもあります。部下やパートナーには、あなたの7割の完成度でOKを出す寛容さを持つと組織が回ります。" },
+                "七赤金星": { tag: "経済", desc: "喜びと収穫の星。話術に優れ、人を楽しませながらお金を回す天才的なセンスを持ちます。飲食やエンタメに強い適性。", advice: "「楽しさ」を収益化する仕組みを作ってください。ただし、口が災いすることもあるため、契約書周りは慎重に。" },
+                "八白土星": { tag: "改革", desc: "高い山のようにどっしり構え、動くべき時に動く改革者。現状維持を良しとせず、継承と革新を同時に行う役割があります。", advice: "動くまでの腰は重いですが、一度決めたら止まりません。事業承継や、組織の再編プロジェクトで本領を発揮します。" },
+                "九紫火星": { tag: "先見", desc: "太陽のように明るく、全てを明らかにする情熱家。直感力と美的センスに優れ、時代の先を読む能力があります。", advice: "熱しやすく冷めやすい点がリスク。短期決戦型のプロジェクトや、ビジュアル重視のブランディング戦略に注力してください。" }
             },
             jukkan: {
-                "甲(木)": { tag: "本質ID", desc: "大樹。一本気で向上心が強い。曲がったことが嫌いなリーダー気質。", advice: "挫折に脆いので、柔軟性を持つパートナーと組むこと。" },
-                "乙(木)": { tag: "本質ID", desc: "草花。環境適応力が高く、粘り強い交渉人。どこでも根を張れる。", advice: "単独より組織の力を使ってください。" },
-                "丙(火)": { tag: "本質ID", desc: "太陽。裏表がなく、そこにいるだけで中心になるカリスマ。", advice: "気分のムラを仕事に出さないことが信頼の鍵。" },
-                "丁(火)": { tag: "本質ID", desc: "灯火。洞察力が鋭く、内面に情熱を秘める参謀タイプ。", advice: "爆発する前に小出しにガス抜きを。" },
-                "戊(土)": { tag: "本質ID", desc: "山岳。動じない包容力。信頼と信用の塊で、人が集まる。", advice: "フットワークの重さが機会損失にならぬよう注意。" },
-                "己(土)": { tag: "本質ID", desc: "田畑。人を育て、実りをもたらす育成者。教育事業に適性。", advice: "器用貧乏にならぬよう専門性を持つこと。" },
-                "庚(金)": { tag: "本質ID", desc: "鋼鉄。攻撃力と改革力に優れる武闘派。斧のように切り拓く。", advice: "叩かれて強くなる。試練を歓迎せよ。" },
-                "辛(金)": { tag: "本質ID", desc: "宝石。繊細で美意識が高い。特別扱いされることで輝く。", advice: "磨かれないと輝かない。苦労は研磨剤と思うこと。" },
-                "壬(水)": { tag: "本質ID", desc: "大海。スケールが大きく、流動的で自由。海外との縁。", advice: "目標がないと氾濫する。堤防（ルール）を設けること。" },
-                "癸(水)": { tag: "本質ID", desc: "雨露。慈愛に満ち、隅々まで行き渡る知性。企画力がある。", advice: "忍耐強いが、積もり積もって決壊せぬよう。" }
+                "甲(木)": { tag: "本質", desc: "大樹。一本気で向上心が強いリーダー。", advice: "挫折に脆いので、柔軟性を持つパートナーと組むこと。" },
+                "乙(木)": { tag: "本質", desc: "草花。環境適応力が高く粘り強い。", advice: "単独より組織の力を使ってください。" },
+                "丙(火)": { tag: "本質", desc: "太陽。裏表がなく中心になる存在。", advice: "気分のムラを仕事に出さないこと。" },
+                "丁(火)": { tag: "本質", desc: "灯火。鋭い洞察力と内なる情熱。", advice: "爆発する前に小出しにガス抜きを。" },
+                "戊(土)": { tag: "本質", desc: "山岳。動じない信頼と信用の塊。", advice: "フットワークを軽くする工夫を。" },
+                "己(土)": { tag: "本質", desc: "田畑。人を育て実りをもたらす。", advice: "器用貧乏にならぬよう専門性を。" },
+                "庚(金)": { tag: "本質", desc: "鋼鉄。攻撃力と改革力に優れる。", advice: "叩かれて強くなる。試練を歓迎せよ。" },
+                "辛(金)": { tag: "本質", desc: "宝石。繊細で美意識が高い。", advice: "磨かれないと輝かない。苦労は研磨剤。" },
+                "壬(水)": { tag: "本質", desc: "大海。スケールが大きく自由。", advice: "目標がないと氾濫する。堤防を。" },
+                "癸(水)": { tag: "本質", desc: "雨露。隅々まで行き渡る知性。", advice: "忍耐強いが、積もり積もって決壊せぬよう。" }
             }
         };
-
-        const CITIES = [
-            {name:"Tokyo", tz:9}, {name:"New York", tz:-5}, {name:"London", tz:0}, {name:"Paris", tz:1}
-        ];
-
+        const CITIES = [{name:"Tokyo", tz:9}, {name:"New York", tz:-5}, {name:"London", tz:0}, {name:"Paris", tz:1}];
         const CYCLES = [
             { name: "木星 (Jupiter)", days: 4333, color: "#D4AF37" },
             { name: "土星 (Saturn)", days: 10759, color: "#A9A9A9" },
@@ -222,238 +263,167 @@
             { name: "歳差 (Precession)", days: 9414075, color: "#8A2BE2" }
         ];
 
-        /* --- VISUAL ENGINE (Classic 5 Orbits & Deep Stars) --- */
+        /* --- VISUAL ENGINE --- */
         class VisualEngine {
             constructor() {
                 this.scene = new THREE.Scene();
-                this.scene.fog = new THREE.FogExp2(0x020205, 0.0015); // Deep fog
+                this.scene.fog = new THREE.FogExp2(0x020205, 0.0015);
                 this.camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 3000);
-                this.camera.position.set(0, 30, 50);
-                this.camera.lookAt(0, 0, 0);
-                
+                this.camera.position.set(0, 30, 50); this.camera.lookAt(0, 0, 0);
                 this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
                 this.renderer.setPixelRatio(window.devicePixelRatio);
                 document.getElementById('canvas-wrapper').appendChild(this.renderer.domElement);
-
-                this.initScene();
-                this.animate();
+                this.initScene(); this.animate();
             }
-
             initScene() {
-                // 1. Core: Buckyball (Icosahedron Wireframe)
-                const geo = new THREE.IcosahedronGeometry(2.5, 1);
-                const mat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent:true, opacity:0.6 });
-                this.core = new THREE.Mesh(geo, mat);
-                this.scene.add(this.core);
-
-                // 2. Stars: Increased Count for Depth
-                const sGeo = new THREE.BufferGeometry();
-                const sCount = 12000; // Increased
-                const sPos = new Float32Array(sCount * 3);
-                for(let i=0; i<sCount*3; i++) sPos[i] = (Math.random()-0.5) * 1500;
-                sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
-                const sMat = new THREE.PointsMaterial({color:0xaaccff, size:0.8, transparent:true, opacity:0.8, sizeAttenuation:true});
-                this.stars = new THREE.Points(sGeo, sMat);
+                // Dual Core
+                const g1 = new THREE.DodecahedronGeometry(2.2,0);
+                const m1 = new THREE.MeshBasicMaterial({color:0x00ffff, wireframe:true, transparent:true, opacity:0.8});
+                this.c1=new THREE.Mesh(g1,m1); this.scene.add(this.c1);
+                const g2 = new THREE.IcosahedronGeometry(2.5,0);
+                const m2 = new THREE.MeshBasicMaterial({color:0x0088ff, wireframe:true, transparent:true, opacity:0.4});
+                this.c2=new THREE.Mesh(g2,m2); this.scene.add(this.c2);
+                
+                // Stars
+                const sG = new THREE.BufferGeometry(); const sP = new Float32Array(12000*3);
+                for(let i=0;i<12000*3;i++) sP[i]=(Math.random()-0.5)*1500;
+                sG.setAttribute('position',new THREE.BufferAttribute(sP,3));
+                this.stars=new THREE.Points(sG,new THREE.PointsMaterial({color:0xaaccff,size:0.8,transparent:true,opacity:0.8}));
                 this.scene.add(this.stars);
 
-                // 3. Planets (Classic 5, Wireframe)
-                this.planets = [];
-                const pData = [
-                    {r:8, s:0.5, sp:0.008},
-                    {r:12, s:0.6, sp:0.006},
-                    {r:16, s:0.4, sp:0.005},
-                    {r:24, s:0.8, sp:0.002},
-                    {r:32, s:0.7, sp:0.0015}
-                ];
-                pData.forEach(p => {
-                    const ring = new THREE.Mesh(new THREE.RingGeometry(p.r, p.r+0.05, 128), new THREE.MeshBasicMaterial({color:0x445566, side:THREE.DoubleSide, opacity:0.2, transparent:true}));
-                    ring.rotation.x = Math.PI/2;
-                    this.scene.add(ring);
-                    
-                    const pivot = new THREE.Group();
-                    const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(p.s, 1), new THREE.MeshBasicMaterial({color:0x00f0ff, wireframe:true}));
-                    mesh.position.x = p.r;
-                    pivot.add(mesh);
-                    
-                    pivot.rotation.y = Math.random() * Math.PI * 2;
-                    this.scene.add(pivot);
-                    this.planets.push({pivot, mesh, speed:p.sp});
+                // Planets (Classic 5)
+                this.planets=[];
+                const d=[{r:8,s:0.5,sp:0.008},{r:12,s:0.6,sp:0.006},{r:16,s:0.4,sp:0.005},{r:24,s:0.8,sp:0.002},{r:32,s:0.7,sp:0.0015}];
+                d.forEach(p=>{
+                    const r=new THREE.Mesh(new THREE.RingGeometry(p.r,p.r+0.05,128),new THREE.MeshBasicMaterial({color:0x445566,side:THREE.DoubleSide,opacity:0.2,transparent:true}));
+                    r.rotation.x=Math.PI/2; this.scene.add(r);
+                    const piv=new THREE.Group();
+                    const m=new THREE.Mesh(new THREE.IcosahedronGeometry(p.s,1),new THREE.MeshBasicMaterial({color:0x00f0ff,wireframe:true,transparent:true,opacity:0.7}));
+                    m.position.x=p.r; piv.add(m); piv.rotation.y=Math.random()*6;
+                    this.scene.add(piv); this.planets.push({p:piv,m:m,s:p.sp});
                 });
             }
-
             animate() {
                 requestAnimationFrame(this.animate.bind(this));
-                if(!app.isTuning) {
-                    this.core.rotation.y += 0.002;
-                    this.core.rotation.x += 0.001;
-                    this.stars.rotation.y += 0.0003;
-                } else {
-                    this.core.rotation.y += 0.1;
-                    this.core.rotation.x += 0.05;
-                    this.stars.rotation.y += 0.002;
-                }
-                this.planets.forEach(p => p.pivot.rotation.y += p.speed);
-                this.renderer.render(this.scene, this.camera);
+                if(!app.isTuning){this.c1.rotation.y+=0.003;this.c2.rotation.y-=0.003;this.stars.rotation.y+=0.0003;}
+                else{this.c1.rotation.y+=0.1;this.c2.rotation.y-=0.1;this.stars.rotation.y+=0.002;}
+                this.planets.forEach(x=>{x.p.rotation.y+=x.s;x.m.rotation.y+=0.02;});
+                this.renderer.render(this.scene,this.camera);
             }
         }
 
-        /* --- LOGIC & APP --- */
-        const Astro = {
-            getKyusei: y => {
-                let s = 0; String(y).split('').forEach(n=>s+=parseInt(n));
-                while(s>9) s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);
-                let st = 11-s; if(st>9) st-=9; if(st===0) st=9;
-                return ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"][st-1];
-            },
-            getJukkan: y => ["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y%10],
-            getStats: (bd, days) => {
-                const diff = (new Date() - bd)/(1000*60*60*24);
-                return { prog: Math.floor((diff%days)/days*100), cycle: Math.floor(diff/days)+1 };
-            }
-        };
+        /* --- APP --- */
+        const Astro={getKyusei:y=>{let s=0;String(y).split('').forEach(n=>s+=parseInt(n));while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);let t=11-s;if(t>9)t-=9;if(t===0)t=9;return ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"][t-1];},getJukkan:y=>["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y%10],getStats:(b,d)=>{const f=(new Date()-b)/(1000*60*60*24);return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1}}};
 
         const app = {
-            visual: null, isTuning: false,
+            visual: null, isTuning: false, date: null,
             init: function() {
                 document.getElementById('start-screen').style.opacity = 0;
                 setTimeout(()=>document.getElementById('start-screen').style.display='none', 800);
-                this.visual = new VisualEngine();
-                app.audio.init();
-                const sel = document.getElementById('inp-city');
-                CITIES.forEach(c => {
-                    let o = document.createElement('option');
-                    o.text = c.name; o.value = JSON.stringify(c); sel.add(o);
-                });
+                this.visual = new VisualEngine(); app.audio.init();
+                const s = document.getElementById('inp-city');
+                CITIES.forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);s.add(o)});
             },
-            
             audio: {
                 ctx: null, mute: false,
-                init: function() {
-                    const AC = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AC();
-                    this.osc = this.ctx.createOscillator(); this.g = this.ctx.createGain();
-                    this.osc.connect(this.g); this.g.connect(this.ctx.destination);
-                    this.osc.frequency.value = 55; this.g.gain.value = 0.05; this.osc.start();
-                },
-                toggle: function() {
-                    this.mute = !this.mute;
-                    if(this.ctx) this.g.gain.setTargetAtTime(this.mute?0:0.05, this.ctx.currentTime, 0.1);
-                    document.getElementById('btn-audio').innerText = this.mute?"AUDIO: OFF":"AUDIO: ON";
-                },
-                ramp: function() { if(!this.ctx || this.mute) return; this.osc.frequency.linearRampToValueAtTime(110, this.ctx.currentTime + 3); },
-                reset: function() { if(!this.ctx || this.mute) return; this.osc.frequency.linearRampToValueAtTime(55, this.ctx.currentTime + 1); }
+                init: function() { const A=window.AudioContext||window.webkitAudioContext; this.ctx=new A(); this.o=this.ctx.createOscillator(); this.g=this.ctx.createGain(); this.o.connect(this.g); this.g.connect(this.ctx.destination); this.o.frequency.value=55; this.g.gain.value=0.05; this.o.start(); },
+                toggle: function() { this.mute=!this.mute; if(this.ctx)this.g.gain.setTargetAtTime(this.mute?0:0.05,this.ctx.currentTime,0.1); document.getElementById('btn-audio').innerText=this.mute?"AUDIO: OFF":"AUDIO: ON"; },
+                ramp: function() { if(!this.ctx||this.mute)return; this.o.frequency.linearRampToValueAtTime(110,this.ctx.currentTime+3); },
+                reset: function() { if(!this.ctx||this.mute)return; this.o.frequency.linearRampToValueAtTime(55,this.ctx.currentTime+1); }
             },
-
             startSequence: function() {
-                const date = document.getElementById('inp-date').value;
-                if(!date) return;
-                document.getElementById('input-container').style.opacity = 0;
-                document.getElementById('input-container').style.pointerEvents = 'none';
-                this.isTuning = true;
-                this.audio.ramp();
-                document.getElementById('synchro-overlay').style.opacity = 1;
-                setTimeout(() => { this.analyze(date); }, 3000);
+                const d = document.getElementById('inp-date').value; if(!d) return;
+                this.date = new Date(d);
+                document.getElementById('input-container').style.opacity=0;
+                document.getElementById('input-container').style.pointerEvents='none';
+                this.isTuning=true; app.audio.ramp();
+                document.getElementById('synchro-overlay').style.opacity=1;
+                setTimeout(()=>{ this.analyze(); },3000);
             },
+            analyze: function() {
+                const bd = this.date; const y = bd.getFullYear();
+                const k = Astro.getKyusei(y); const j = Astro.getJukkan(y);
+                const kData = DICT.kyusei[k]; const jData = DICT.jukkan[j];
 
-            analyze: function(dateStr) {
-                const bd = new Date(dateStr);
-                const kyusei = Astro.getKyusei(bd.getFullYear());
-                const jukkan = Astro.getJukkan(bd.getFullYear());
-                const kData = DICT.kyusei[kyusei];
-                const jData = DICT.jukkan[jukkan];
+                // Dashboard
+                const pG = document.getElementById('param-grid'); pG.innerHTML="";
+                CYCLES.forEach(c=>{ const s=Astro.getStats(bd,c.days); pG.innerHTML+=`<div class="param-item"><div class="param-head"><span style="color:${c.color}">● ${c.name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div><div class="param-meta"><span>Cycle #${s.c}</span><span>${Math.floor(c.days)} days</span></div></div>`; });
 
-                // 1. DASHBOARD
-                const pGrid = document.getElementById('param-grid');
-                pGrid.innerHTML = "";
-                CYCLES.forEach(c => {
-                    const s = Astro.getStats(bd, c.days);
-                    pGrid.innerHTML += `
-                        <div class="param-item">
-                            <div class="param-head"><span style="color:${c.color}">● ${c.name}</span><span>${s.prog}%</span></div>
-                            <div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.prog}%; background:${c.color}"></div></div>
-                            <div class="param-meta"><span>Cycle #${s.cycle}</span><span>${Math.floor(c.days)} days</span></div>
-                        </div>`;
-                });
-
-                // 2. STRATEGY TEXT GENERATION
-                const y = bd.getFullYear();
-                const lastDigit = y % 10;
-                let strategy = {};
+                // Strategy
+                const last = y%10; let st={};
+                if([6,7].includes(last)) st={t:"破壊と再生のワルツ",b:`あなたの本質である「火（${j}・${k}）」のエネルギーと、現在開いているライオンズゲートの宇宙線が共鳴し、通常ではあり得ない化学反応を起こしています。\n\n今はロジックよりも「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。破壊は恐怖ではなく、進化のための祝祭です。`};
+                else if([0,1,8,9].includes(last)) st={t:"試練の坩堝 (The Crucible)",b:`拡大しようとする木星のエネルギーと、固めようとするあなたの性質（${j}）が摩擦を起こしています。\n\nこれは故障ではなく「鍛造」のプロセスです。今は外に出るよりも、内部システムの刷新（学習・組織化・契約の見直し）にリソースを集中してください。この時期に蓄えた力は、半年後に爆発的な利益を生みます。`};
+                else st={t:"完全なる追い風",b:`全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）がそれを運ぶ、完璧な循環に入りました。\n\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今まで温めてきた計画を、今すぐ実行に移してください。失敗という概念が一時的に消失しています。`};
                 
-                if([6,7].includes(lastDigit)) { // FIRE
-                    strategy = {
-                        title: "破壊と再生のワルツ", type: "MUTATION (変異)", color: "#9D00FF",
-                        body: `あなたの本質である「火（${jukkan}・${kyusei}）」のエネルギーと、現在開いているライオンズゲートの宇宙線が共鳴し、通常ではあり得ない化学反応を起こしています。\n\n今はロジックよりも「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。破壊は恐怖ではなく、進化のための祝祭です。`
-                    };
-                } else if([0,1,8,9].includes(lastDigit)) { // METAL/EARTH
-                    strategy = {
-                        title: "試練の坩堝 (The Crucible)", type: "CONFLICT (葛藤)", color: "#ff3366",
-                        body: `拡大しようとする木星のエネルギーと、固めようとするあなたの性質（${jukkan}）が摩擦を起こしています。\n\nこれは故障ではなく「鍛造」のプロセスです。今は外に出るよりも、内部システムの刷新（学習・組織化・契約の見直し）にリソースを集中してください。この時期に蓄えた力は、半年後に爆発的な利益を生みます。`
-                    };
-                } else { // WOOD/WATER
-                    strategy = {
-                        title: "完全なる追い風", type: "SYNERGY (覚醒)", color: "#D4AF37",
-                        body: `全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）がそれを運ぶ、完璧な循環に入りました。\n\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今まで温めてきた計画を、今すぐ実行に移してください。失敗という概念が一時的に消失しています。`
-                    };
-                }
+                document.getElementById('st-title').innerText=st.t; document.getElementById('st-body').innerText=st.b;
 
-                document.getElementById('st-title').innerText = strategy.title;
-                document.getElementById('st-type').innerText = strategy.type;
-                document.getElementById('st-type').style.color = strategy.color;
-                document.getElementById('st-type').style.borderColor = strategy.color;
-                document.getElementById('st-body').innerText = strategy.body;
-                document.querySelector('.strategy-container').style.borderLeftColor = strategy.color;
+                // 13 Grid
+                const gr = document.getElementById('grid-container'); gr.innerHTML="";
+                const items=[{t:"九星気学",v:k,...kData},{t:"十干十二支",v:j,...jData},{t:"木星位置",v:"双子座",tag:"拡大",desc:"情報と移動の領域での発展。",advice:"マルチタスク推奨。"},{t:"土星位置",v:"魚座",tag:"試練",desc:"精神的基盤の再構築。",advice:"内省の時間を。"},{t:"火星",v:"Active",tag:"情熱",desc:"自己表現の欲求。",advice:"衝動を作品へ。"},{t:"金星",v:"8年周期",tag:"価値",desc:"金融・美意識の再評価。",advice:"過去のパターンの刷新。"},{t:"月相",v:"29.5日",tag:"感情",desc:"内面バイオリズム。",advice:"直感に従うこと。"},{t:"ライオンズゲート",v:"Open",tag:"宇宙線",desc:"高次エネルギー流入。",advice:"変化を恐れないで。"},{t:"歳差運動",v:"水瓶座",tag:"文明",desc:"自律分散型社会へ。",advice:"個の確立。"},{t:"座標",v:bd.toLocaleDateString(),tag:"原点",desc:"あなたの時間ID。",advice:"運命の起点。"},{t:"三元九運",v:"第九運",tag:"時代",desc:"火の時代。",advice:"可視化が鍵。"},{t:"八卦",v:"震",tag:"行動",desc:"雷のような瞬発力。",advice:"即断即決。"},{t:"Gコンジャンクション",v:"風",tag:"変革",desc:"物質から情報へ。",advice:"所有より共有。"}];
+                items.forEach(i=>{ gr.innerHTML+=`<div class="info-card"><div class="card-head"><span class="card-name">${i.t}</span><span class="card-tag" style="border-color:var(--c-accent);color:var(--c-accent)">${i.tag}</span></div><div class="card-val">${i.v}</div><div class="card-desc">${i.desc}</div><div class="card-adv">💡 ${i.advice}</div></div>`});
 
-                // 3. 13 GRID
-                const grid = document.getElementById('grid-container');
-                grid.innerHTML = "";
-                const items = [
-                    {t:"九星気学", v:kyusei, ...kData},
-                    {t:"十干十二支", v:jukkan, ...jData},
-                    {t:"木星位置", v:"双子座", tag:"拡大のテーマ", desc:"情報と移動の領域での発展。浅く広く種をまく時期。", advice:"マルチタスク推奨。一つの場所に留まらないこと。"},
-                    {t:"土星位置", v:"魚座", tag:"試練と課題", desc:"精神的基盤の再構築。見ないふりをしてきた問題の浮上。", advice:"内省の時間を確保し、過去の精算を行ってください。"},
-                    {t:"火星", v:"Active", tag:"情熱の所在", desc:"自己表現への欲求が高まっています。ドラマティックな展開を好む配置。", advice:"怒りや衝動を、作品や企画という形に昇華させてください。"},
-                    {t:"金星", v:"8年周期", tag:"価値観", desc:"金融・美意識の再評価。8年前の出来事が形を変えて再来します。", advice:"過去の成功パターンを現代版にアップデートして再利用を。"},
-                    {t:"月相", v:"29.5日", tag:"感情リズム", desc:"内面的なバイオリズム。潮の満ち引きのように今は引く時期。", advice:"直感に従い、無理なスケジュールを避けてください。"},
-                    {t:"ライオンズゲート", v:"Open", tag:"宇宙線", desc:"シリウスからの高次エネルギー流入。覚醒と混乱が同時に起きます。", advice:"体調不良は好転反応。変化を恐れず受け入れて。"},
-                    {t:"歳差運動", v:"水瓶座", tag:"文明の潮流", desc:"2000年単位の文明シフト。自律分散型社会への移行。", advice:"古い権威に頼らず、個としてのブランドを確立してください。"},
-                    {t:"座標", v:dateStr, tag:"原点", desc:"あなたのユニークな時間座標ID。", advice:"全ての運命はこの一点から始まります。"},
-                    {t:"三元九運", v:"第九運", tag:"時代の運気", desc:"火の時代。精神性とテクノロジーの融合。", advice:"「可視化」と「知の共有」が成功の鍵です。"},
-                    {t:"八卦", v:"震", tag:"行動指針", desc:"雷のような瞬発力。迷ったら動く。", advice:"即断即決。走りながら考えるスタイルで。"},
-                    {t:"Gコンジャンクション", v:"風", tag:"変革", desc:"物質から情報へ。所有から共有へ。", advice:"シェアするビジネスモデルを検討してください。"}
-                ];
-                
-                items.forEach(i => {
-                    grid.innerHTML += `
-                        <div class="info-card">
-                            <div class="card-head">
-                                <span class="card-name">${i.t}</span>
-                                <span class="card-tag" style="border-color:var(--c-accent); color:var(--c-accent)">${i.tag}</span>
-                            </div>
-                            <div class="card-val">${i.v}</div>
-                            <div class="card-desc">${i.desc}</div>
-                            <div class="card-adv">${i.advice}</div>
-                        </div>`;
-                });
-
-                // Transition
-                this.isTuning = false;
-                this.audio.reset();
-                document.getElementById('synchro-overlay').style.opacity = 0;
+                this.isTuning=false; app.audio.reset();
+                document.getElementById('synchro-overlay').style.opacity=0;
                 document.getElementById('result-overlay').classList.add('active');
             },
+            ui: {
+                showMVP: function() {
+                    const t = document.getElementById('sync-text'); const s = document.getElementById('sync-sub');
+                    t.innerText = "DEEP DIVING..."; s.innerText = "Accessing Soul Contracts & X-DAY Coordinates";
+                    t.style.color = "var(--c-gold)"; t.style.textShadow = "0 0 20px var(--c-gold)";
+                    
+                    document.getElementById('result-overlay').classList.remove('active'); // Hide L1
+                    document.getElementById('synchro-overlay').style.opacity = 1; // Show Tuning
+                    app.audio.ramp(); app.isTuning = true;
 
-            reset: function() {
-                document.getElementById('result-overlay').classList.remove('active');
-                document.getElementById('input-container').style.opacity = 1;
-                document.getElementById('input-container').style.pointerEvents = 'auto';
+                    setTimeout(() => {
+                        app.logic.getMVPResults(app.date); // Generate MVP data
+                        app.isTuning = false; app.audio.reset();
+                        document.getElementById('synchro-overlay').style.opacity = 0;
+                        document.getElementById('mvp-screen').classList.add('active');
+                    }, 2500);
+                },
+                hideMVP: function() {
+                    document.getElementById('mvp-screen').classList.remove('active');
+                    document.getElementById('result-overlay').classList.add('active');
+                },
+                reset: function() {
+                    document.getElementById('result-overlay').classList.remove('active');
+                    document.getElementById('mvp-screen').classList.remove('active');
+                    document.getElementById('input-container').style.opacity=1;
+                    document.getElementById('input-container').style.pointerEvents='auto';
+                }
             },
-            export: function() {
-                html2canvas(document.getElementById('capture-target'), {backgroundColor:'#020305'}).then(c => {
-                    const a = document.createElement('a'); a.href=c.toDataURL(); a.download='chart.png'; a.click();
-                });
-            }
+            logic: {
+                getMVPResults: function(bd) {
+                    const y = bd.getFullYear();
+                    // Mock Calculations for MVP
+                    const xDay = new Date(); xDay.setDate(xDay.getDate() + (y % 120) + 30);
+                    const partnerType = ["革命家 (Innovator)", "参謀 (Strategist)", "表現者 (Artist)"][y % 3];
+                    const voidYear = y + 10; 
+
+                    const grid = document.getElementById('mvp-grid');
+                    grid.innerHTML = `
+                        <div class="mvp-card">
+                            <div class="mvp-label">01. BUSINESS TIMING</div>
+                            <div class="mvp-val">X-DAY: ${xDay.toLocaleDateString()}</div>
+                            <div class="mvp-desc">あなたのバイオリズムと社会的成功運が交差する「絶対吉日」。法人登記、大型契約、リリースに最適な一点です。この日に行動することで、通常の3倍のレバレッジが期待できます。</div>
+                        </div>
+                        <div class="mvp-card">
+                            <div class="mvp-label">02. SOUL CONTRACT</div>
+                            <div class="mvp-val">Target: ${partnerType}</div>
+                            <div class="mvp-desc">あなたが今世で契約を結んでいる「魂のビジネスパートナー」の特性。単なる仲良しではなく、互いの欠落を埋め、事業を拡大させるための戦略的相性を持つ人物像です。</div>
+                        </div>
+                        <div class="mvp-card">
+                            <div class="mvp-label">03. RISK MANAGEMENT</div>
+                            <div class="mvp-val">VOID PERIOD: 2 Years</div>
+                            <div class="mvp-desc">いわゆる「天中殺（空亡）」の過ごし方戦略。この期間は「不運」ではなく「充電と研究開発」の期間です。守りを固め、内製化を進めることで、明けの年にロケットスタートが切れます。</div>
+                        </div>
+                    `;
+                }
+            },
+            export: function() { html2canvas(document.getElementById('capture-target'),{backgroundColor:'#020305'}).then(c=>{const a=document.createElement('a');a.href=c.toDataURL();a.download='chart.png';a.click()}) }
         };
     </script>
 </body>
