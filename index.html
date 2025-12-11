@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v7.2</title>
+    <title>周期律分析 | Cosmic Neural Network v7.3</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -144,7 +144,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; color:#fff;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.2</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.3</p>
         <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()">INITIALIZE SYSTEM</button>
     </div>
 
@@ -211,7 +211,7 @@
             <div class="mvp-grid" id="mvp-grid"></div>
             <div style="text-align:center; padding-bottom:40px;">
                 <p style="color:#666; margin-bottom:20px;">Analysis Complete. Full session required for further dimensions.</p>
-                <button class="nav-btn">RETURN TO SURFACE</button>
+                <button class="nav-btn" onclick="app.ui.hideMVP()">RETURN TO SURFACE</button>
             </div>
         </div>
     </div>
@@ -239,7 +239,7 @@
                 this.initScene(); this.animate();
             }
             initScene() {
-                // Dual Core
+                // Core
                 const g1 = new THREE.DodecahedronGeometry(2.2,0);
                 const m1 = new THREE.MeshBasicMaterial({color:0x00ffff, wireframe:true, transparent:true, opacity:0.8});
                 this.c1=new THREE.Mesh(g1,m1); this.scene.add(this.c1);
@@ -304,6 +304,24 @@
                     alert("Init Error: " + e);
                 }
             },
+            
+            // ✅ Fix 1: Added root reset method
+            reset: function() {
+                this.ui.reset();
+            },
+
+            // ✅ Fix 2: Added Export Error Handling
+            export: function() {
+                const target = document.getElementById('capture-target');
+                html2canvas(target, {backgroundColor:'#020305'})
+                .then(c => {
+                    const a = document.createElement('a'); a.href=c.toDataURL(); a.download='chart.png'; a.click();
+                })
+                .catch(err => {
+                    alert("Image Save Error: " + err);
+                });
+            },
+
             audio: {
                 ctx: null, mute: false, noise: null, filter: null, gain: null,
                 init: function() {
@@ -313,7 +331,7 @@
                     const bSize = 2 * this.ctx.sampleRate;
                     const nBuf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
                     const out = nBuf.getChannelData(0);
-                    let lastOut = 0; // FIX: Declaration Moved here
+                    let lastOut = 0; 
                     for (let i = 0; i < bSize; i++) {
                         const w = Math.random() * 2 - 1;
                         out[i] = (lastOut + (0.02 * w)) / 1.02;
