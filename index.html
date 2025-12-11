@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Neural Network v7.4 [Multilingual]</title>
+    <title>Cosmic Neural Network v7.5 [Global]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Sans+Devanagari:wght@300;400;500&display=swap" rel="stylesheet">
@@ -16,8 +16,6 @@
             --c-gold: #D4AF37;
             --c-card-bg: rgba(12, 18, 30, 0.95);
             --c-border: rgba(0, 240, 255, 0.3);
-            
-            /* Dynamic Font Variables */
             --font-main: 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans Devanagari', sans-serif;
             --font-serif: 'Shippori Mincho', 'Noto Serif SC', serif;
             --font-tech: 'Rajdhani', sans-serif;
@@ -41,14 +39,27 @@
         /* --- INPUT PANEL --- */
         #input-container {
             position: absolute; top: 50%; right: 5%; transform: translateY(-50%);
-            width: 340px; background: rgba(10, 15, 25, 0.9); backdrop-filter: blur(20px);
+            width: 360px; background: rgba(10, 15, 25, 0.9); backdrop-filter: blur(20px);
             border: 1px solid var(--c-accent-dim); border-left: 2px solid var(--c-accent);
             padding: 40px 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             transition: opacity 0.5s; pointer-events: auto; z-index: 20;
         }
         .form-label { display: block; font-family: var(--font-tech); font-size: 0.7rem; color: #889; margin-bottom: 5px; letter-spacing: 0.15em; }
+        
+        /* New Date Inputs */
+        .date-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .date-input { 
+            background: rgba(0,0,0,0.5); border: 1px solid #334; color: #fff; padding: 10px; 
+            font-family: var(--font-tech); font-size: 1.1rem; outline: none; transition: 0.3s; 
+            text-align: center;
+        }
+        .date-input:focus { border-color: var(--c-accent); background: rgba(0, 20, 30, 0.8); }
+        #inp-year { width: 40%; }
+        #inp-month, #inp-day { width: 30%; }
+
         .form-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #334; color: #fff; padding: 10px; font-family: var(--font-tech); font-size: 1.1rem; outline: none; margin-bottom: 20px; transition: 0.3s; }
         .form-input:focus { border-color: var(--c-accent); background: rgba(0, 20, 30, 0.8); }
+        
         .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, transparent, var(--c-accent-dim), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel', serif; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; text-transform: uppercase; }
         .submit-btn:hover { background: var(--c-accent); color: #000; box-shadow: 0 0 30px var(--c-accent); }
 
@@ -150,7 +161,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; color:#fff;" data-key="title_main">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.4</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.5</p>
         <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()" data-key="btn_init">INITIALIZE SYSTEM</button>
     </div>
 
@@ -169,8 +180,13 @@
         </header>
 
         <div id="input-container">
-            <label class="form-label" data-key="lbl_date">Birth Date</label>
-            <input type="date" id="inp-date" class="form-input" value="1995-08-08">
+            <label class="form-label" data-key="lbl_date">Birth Date (YYYY / MM / DD)</label>
+            <div class="date-row">
+                <input type="text" id="inp-year" class="date-input" placeholder="1995" maxlength="4">
+                <input type="text" id="inp-month" class="date-input" placeholder="08" maxlength="2">
+                <input type="text" id="inp-day" class="date-input" placeholder="08" maxlength="2">
+            </div>
+
             <label class="form-label" data-key="lbl_time">Birth Time</label>
             <input type="time" id="inp-time" class="form-input" value="12:00">
             <label class="form-label" data-key="lbl_loc">Location</label>
@@ -235,9 +251,9 @@
             ja: {
                 title_main: "周期律分析",
                 btn_init: "システム起動",
-                lbl_date: "生年月日",
+                lbl_date: "生年月日 (年 / 月 / 日)",
                 lbl_time: "出生時間",
-                lbl_loc: "出生地",
+                lbl_loc: "出生地 (都市)",
                 btn_start: "解析開始",
                 dash_title: "現在位置 (サイクル進行度)",
                 prem_title: "深層レイヤー (THE HIDDEN LAYER)",
@@ -254,11 +270,11 @@
                 st_mut: {t: "破壊と再生のワルツ", b: "あなたの本質である「火」とライオンズゲートが共鳴し、通常ではあり得ない化学反応が起きています。\n今はロジックより「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。"},
                 st_con: {t: "試練の坩堝 (The Crucible)", b: "拡大しようとする木星のエネルギーと、固めようとするあなたの性質が摩擦を起こしています。\nこれは故障ではなく「鍛造」です。今は外に出るより、内部システムの刷新（学習・組織化）にリソースを集中してください。"},
                 st_syn: {t: "完全なる追い風", b: "全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）が運ぶ循環に入りました。\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今すぐ実行に移してください。"},
-                grid_labels: ["九星気学","十干","木星位置","土星位置","火星","金星","月相","ライオンズゲート","歳差運動","座標","三元九運","八卦","Gコンジャンクション"],
+                grid_labels: ["九星気学","十干","木星位置","土星位置","火星","金星","月相","ライオンズゲート","歳差運動","座標","三元九運","八卦","G合相"],
                 mvp_labels: ["ビジネスの好機", "魂の契約", "リスク管理"],
                 mvp_vals: ["X-DAY", "ターゲット", "空亡期間"],
                 mvp_descs: [
-                    "あなたのバイオリズムと社会的成功運が交差する「絶対吉日」。法人登記、大型契約、リリースに最適な一点です。",
+                    "你的バイオリズムと社会的成功運が交差する「絶対吉日」。法人登記、大型契約、リリースに最適な一点です。",
                     "あなたが今世で契約を結んでいる「魂のビジネスパートナー」の特性。互いの欠落を埋め、事業を拡大させるための戦略的相性を持つ人物像です。",
                     "いわゆる「充電と研究開発」の期間です。守りを固め、内製化を進めることで、明けの年にロケットスタートが切れます。"
                 ],
@@ -287,23 +303,23 @@
                 ],
                 cycles: ["木星", "土星", "火星", "金星", "月相", "歳差"],
                 grid_fixed: [
-                    {v:"Gemini", t:"Expansion", d:"Dev in Info & Travel", a:"Multitask."},
-                    {v:"Pisces", t:"Ordeal", d:"Rebuild Spiritual Base", a:"Introspection."},
-                    {v:"Active", t:"Passion", d:"Desire for Expression", a:"Impulse to Art."},
-                    {v:"8y Cycle", t:"Value", d:"Re-eval Finance/Beauty", a:"Refresh Past."},
-                    {v:"29.5d", t:"Emotion", d:"Inner Biorhythm", a:"Follow Intuition."},
-                    {v:"Open", t:"Cosmic Ray", d:"High Dimension Energy", a:"Fear no Change."},
-                    {v:"Aquarius", t:"Civilization", d:"Decentralized Society", a:"Individualism."},
-                    {v:"TimeID", t:"Origin", d:"Temporal Coord", a:"Fate Start Point."},
-                    {v:"Period 9", t:"Era", d:"Age of Fire", a:"Visualization is Key."},
-                    {v:"Thunder", t:"Action", d:"Flash like Lightning", a:"Decide Instantly."},
-                    {v:"Air", t:"Reform", d:"Matter to Info", a:"Share, don't Own."}
+                    {v:"双子座", t:"拡大", d:"情報と移動領域での発展", a:"マルチタスク推奨。"},
+                    {v:"双魚座", t:"試練", d:"精神的基盤の再構築", a:"内省の時間を。"},
+                    {v:"Active", t:"情熱", d:"自己表現の欲求", a:"衝動を作品へ。"},
+                    {v:"8年周期", t:"価値", d:"金融、美意識の再評価", a:"過去の刷新。"},
+                    {v:"29.5日", t:"感情", d:"内面バイオリズム", a:"直感に従うこと。"},
+                    {v:"Open", t:"宇宙線", d:"高次エネルギー流入", a:"変化を恐れないで。"},
+                    {v:"水瓶座", t:"文明", d:"自律分散型社会", a:"個の確立。"},
+                    {v:"TimeID", t:"原点", d:"時間座標ID", a:"運命の起点。"},
+                    {v:"第九運", t:"時代", d:"火の時代", a:"可視化が鍵。"},
+                    {v:"震", t:"行動", d:"如雷般的爆发力", a:"即断即決。"},
+                    {v:"風", t:"変革", d:"物質から情報へ", a:"所有より共有。"}
                 ]
             },
             en: {
                 title_main: "Periodicity Analysis",
                 btn_init: "INITIALIZE SYSTEM",
-                lbl_date: "Birth Date",
+                lbl_date: "Birth Date (YYYY / MM / DD)",
                 lbl_time: "Birth Time",
                 lbl_loc: "Location",
                 btn_start: "START ANALYSIS",
@@ -371,7 +387,7 @@
             hi: {
                 title_main: "आवधिकता विश्लेषण",
                 btn_init: "सिस्टम आरंभ करें",
-                lbl_date: "जन्म तिथि",
+                lbl_date: "जन्म तिथि (वर्ष / महीना / दिन)",
                 lbl_time: "जन्म समय",
                 lbl_loc: "स्थान",
                 btn_start: "विश्लेषण प्रारंभ",
@@ -439,7 +455,7 @@
             zh: {
                 title_main: "周期律分析",
                 btn_init: "启动系统",
-                lbl_date: "出生日期",
+                lbl_date: "出生日期 (年 / 月 / 日)",
                 lbl_time: "出生时间",
                 lbl_loc: "出生地",
                 btn_start: "开始分析",
@@ -506,7 +522,49 @@
             }
         };
 
-        const CITIES=[{name:"Tokyo",tz:9},{name:"New York",tz:-5},{name:"London",tz:0},{name:"Paris",tz:1},{name:"Beijing",tz:8},{name:"Delhi",tz:5.5}];
+        const CITY_DATA = [
+            // Asia
+            {name: "Tokyo, Japan", tz: 9},
+            {name: "Osaka, Japan", tz: 9},
+            {name: "Seoul, Korea", tz: 9},
+            {name: "Beijing, China", tz: 8},
+            {name: "Shanghai, China", tz: 8},
+            {name: "Hong Kong", tz: 8},
+            {name: "Taipei, Taiwan", tz: 8},
+            {name: "Bangkok, Thailand", tz: 7},
+            {name: "Singapore", tz: 8},
+            {name: "Delhi, India", tz: 5.5},
+            {name: "Mumbai, India", tz: 5.5},
+            {name: "Dubai, UAE", tz: 4},
+            // Europe
+            {name: "London, UK", tz: 0},
+            {name: "Paris, France", tz: 1},
+            {name: "Berlin, Germany", tz: 1},
+            {name: "Rome, Italy", tz: 1},
+            {name: "Madrid, Spain", tz: 1},
+            {name: "Moscow, Russia", tz: 3},
+            {name: "Istanbul, Turkey", tz: 3},
+            // N. America
+            {name: "New York, USA", tz: -5},
+            {name: "Los Angeles, USA", tz: -8},
+            {name: "Chicago, USA", tz: -6},
+            {name: "Toronto, Canada", tz: -5},
+            {name: "Vancouver, Canada", tz: -8},
+            {name: "Mexico City, Mexico", tz: -6},
+            // S. America
+            {name: "Sao Paulo, Brazil", tz: -3},
+            {name: "Buenos Aires, Argentina", tz: -3},
+            {name: "Lima, Peru", tz: -5},
+            // Oceania
+            {name: "Sydney, Australia", tz: 11},
+            {name: "Melbourne, Australia", tz: 11},
+            {name: "Auckland, New Zealand", tz: 13},
+            // Africa
+            {name: "Cairo, Egypt", tz: 2},
+            {name: "Johannesburg, South Africa", tz: 2},
+            {name: "Lagos, Nigeria", tz: 1}
+        ];
+
         const CYCLES=[{days:4333,color:"#D4AF37"},{days:10759,color:"#A9A9A9"},{days:780,color:"#FF4500"},{days:584,color:"#FF69B4"},{days:29.53,color:"#F0F8FF"},{days:9414075,color:"#8A2BE2"}];
 
         /* --- VISUAL ENGINE --- */
@@ -573,9 +631,7 @@
 
         /* --- LOGIC --- */
         const Astro={
-            // Returns 0-8 (Index for 9 stars)
             getKyuseiIndex:y=>{let s=0;String(y).split('').forEach(n=>s+=parseInt(n));while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);let t=11-s;if(t>9)t-=9;if(t===0)t=9;return t-1;},
-            // Returns 0-9 (Index for 10 stems)
             getJukkanIndex:y=>[6,7,8,9,0,1,2,3,4,5][y%10], 
             getStats:(b,d)=>{const f=(new Date()-b)/(1000*60*60*24);return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1}}
         };
@@ -589,7 +645,7 @@
                     setTimeout(()=>document.getElementById('start-screen').style.display='none', 800);
                     this.visual = new VisualEngine(); app.audio.init();
                     const s = document.getElementById('inp-city');
-                    CITIES.forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);s.add(o)});
+                    CITY_DATA.forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);s.add(o)});
                     this.applyLanguage();
                 } catch(e) {
                     alert("Init Error: " + e);
@@ -607,8 +663,11 @@
                 const t = TRANSLATION[this.lang];
                 document.querySelectorAll('[data-key]').forEach(el => {
                     if(t[el.dataset.key]) {
-                        if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = t[el.dataset.key];
-                        else el.innerHTML = t[el.dataset.key];
+                        if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                            // Don't override date inputs placeholders with text if they are supposed to be numbers
+                        } else {
+                            el.innerHTML = t[el.dataset.key];
+                        }
                     }
                 });
             },
@@ -661,13 +720,25 @@
                 reset: function() { if(!this.ctx||this.mute)return; this.filter.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
             },
             startSequence: function() {
-                const d = document.getElementById('inp-date').value;
-                if(!d) { alert("Please input a valid date."); return; }
-                this.date = new Date(d);
+                // New Date Logic
+                const yStr = document.getElementById('inp-year').value;
+                const mStr = document.getElementById('inp-month').value;
+                const dStr = document.getElementById('inp-day').value;
+                
+                if(!yStr || !mStr || !dStr) { alert("Please input full date."); return; }
+                
+                const yy = parseInt(yStr);
+                const mm = parseInt(mStr) - 1; // JS month is 0-11
+                const dd = parseInt(dStr);
+
+                const dateObj = new Date(yy, mm, dd);
+                if(isNaN(dateObj.getTime())) { alert("Invalid date."); return; }
+
+                this.date = dateObj;
+
                 document.getElementById('input-container').style.opacity=0;
                 document.getElementById('input-container').style.pointerEvents='none';
                 
-                // Set sync text based on lang
                 const t = TRANSLATION[this.lang];
                 document.getElementById('sync-text').innerText = t.sync_t;
                 document.getElementById('sync-sub').innerText = t.sync_s;
@@ -707,24 +778,23 @@
                     // 13 Grid
                     const gr = document.getElementById('grid-container'); gr.innerHTML="";
                     
-                    // Dynamic + Static Mix
                     const GF = TR.grid_fixed;
                     const GL = TR.grid_labels;
                     
                     const items=[
                         {t:GL[0], v:kData.n, tag:kData.t, desc:kData.d, advice:kData.a},
                         {t:GL[1], v:jData.n, tag:jData.t, desc:jData.d, advice:jData.a},
-                        {t:GL[2], v:GF[0].v, tag:GF[0].t, desc:GF[0].d, advice:GF[0].a}, // Jup
-                        {t:GL[3], v:GF[1].v, tag:GF[1].t, desc:GF[1].d, advice:GF[1].a}, // Sat
-                        {t:GL[4], v:GF[2].v, tag:GF[2].t, desc:GF[2].d, advice:GF[2].a}, // Mar
-                        {t:GL[5], v:GF[3].v, tag:GF[3].t, desc:GF[3].d, advice:GF[3].a}, // Ven
-                        {t:GL[6], v:GF[4].v, tag:GF[4].t, desc:GF[4].d, advice:GF[4].a}, // Moon
-                        {t:GL[7], v:GF[5].v, tag:GF[5].t, desc:GF[5].d, advice:GF[5].a}, // LG
-                        {t:GL[8], v:GF[6].v, tag:GF[6].t, desc:GF[6].d, advice:GF[6].a}, // Pre
-                        {t:GL[9], v:bd.toLocaleDateString(), tag:GF[7].t, desc:GF[7].d, advice:GF[7].a}, // Coord
-                        {t:GL[10], v:GF[8].v, tag:GF[8].t, desc:GF[8].d, advice:GF[8].a}, // Era
-                        {t:GL[11], v:GF[9].v, tag:GF[9].t, desc:GF[9].d, advice:GF[9].a}, // Bagua
-                        {t:GL[12], v:GF[10].v, tag:GF[10].t, desc:GF[10].d, advice:GF[10].a} // GC
+                        {t:GL[2], v:GF[0].v, tag:GF[0].t, desc:GF[0].d, advice:GF[0].a}, 
+                        {t:GL[3], v:GF[1].v, tag:GF[1].t, desc:GF[1].d, advice:GF[1].a}, 
+                        {t:GL[4], v:GF[2].v, tag:GF[2].t, desc:GF[2].d, advice:GF[2].a}, 
+                        {t:GL[5], v:GF[3].v, tag:GF[3].t, desc:GF[3].d, advice:GF[3].a}, 
+                        {t:GL[6], v:GF[4].v, tag:GF[4].t, desc:GF[4].d, advice:GF[4].a}, 
+                        {t:GL[7], v:GF[5].v, tag:GF[5].t, desc:GF[5].d, advice:GF[5].a}, 
+                        {t:GL[8], v:GF[6].v, tag:GF[6].t, desc:GF[6].d, advice:GF[6].a}, 
+                        {t:GL[9], v:bd.toLocaleDateString(), tag:GF[7].t, desc:GF[7].d, advice:GF[7].a}, 
+                        {t:GL[10], v:GF[8].v, tag:GF[8].t, desc:GF[8].d, advice:GF[8].a}, 
+                        {t:GL[11], v:GF[9].v, tag:GF[9].t, desc:GF[9].d, advice:GF[9].a}, 
+                        {t:GL[12], v:GF[10].v, tag:GF[10].t, desc:GF[10].d, advice:GF[10].a} 
                     ]
                     items.forEach(i=>{ gr.innerHTML+=`<div class="info-card"><div class="card-head"><span class="card-name">${i.t}</span><span class="card-tag" style="border-color:var(--c-accent);color:var(--c-accent)">${i.tag}</span></div><div class="card-val">${i.v}</div><div class="card-desc">${i.desc}</div><div class="card-adv">💡 ${i.advice}</div></div>`});
 
@@ -765,7 +835,6 @@
                     const xDay = new Date(); xDay.setDate(xDay.getDate() + (y % 120) + 30);
                     const TR = TRANSLATION[app.lang];
                     
-                    // Simple partner logic for demo
                     const partnerTypes = ["Innovator", "Strategist", "Artist"];
                     const partner = partnerTypes[y % 3];
 
