@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v7.3</title>
+    <title>Cosmic Neural Network v7.4 [Multilingual]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Sans+Devanagari:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         /* --- TOKENS --- */
         :root {
@@ -15,8 +16,10 @@
             --c-gold: #D4AF37;
             --c-card-bg: rgba(12, 18, 30, 0.95);
             --c-border: rgba(0, 240, 255, 0.3);
-            --font-main: 'Noto Sans JP', sans-serif;
-            --font-serif: 'Shippori Mincho', serif;
+            
+            /* Dynamic Font Variables */
+            --font-main: 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans Devanagari', sans-serif;
+            --font-serif: 'Shippori Mincho', 'Noto Serif SC', serif;
             --font-tech: 'Rajdhani', sans-serif;
         }
 
@@ -28,10 +31,12 @@
         #app-layer { position: absolute; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
 
         /* --- HEADER --- */
-        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); pointer-events: auto; }
-        .brand h1 { font-family: var(--font-serif); font-size: 1.5rem; margin: 0; letter-spacing: 0.15em; background: linear-gradient(to right, #fff, #88ccee); -webkit-background-clip: text; color: transparent; }
-        .nav-btn { background: rgba(0,0,0,0.5); border: 1px solid #334; color: #889; padding: 5px 15px; font-family: var(--font-tech); cursor: pointer; transition: 0.3s; z-index: 50; }
-        .nav-btn:hover { border-color: var(--c-accent); color: var(--c-accent); }
+        header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); pointer-events: auto; }
+        .brand h1 { font-family: var(--font-serif); font-size: 1.4rem; margin: 0; letter-spacing: 0.1em; background: linear-gradient(to right, #fff, #88ccee); -webkit-background-clip: text; color: transparent; }
+        
+        .header-controls { display: flex; gap: 10px; }
+        .nav-btn { background: rgba(0,0,0,0.5); border: 1px solid #334; color: #889; padding: 5px 12px; font-family: var(--font-tech); cursor: pointer; transition: 0.3s; z-index: 50; font-size: 0.8rem; }
+        .nav-btn:hover, .nav-btn.active { border-color: var(--c-accent); color: var(--c-accent); background: var(--c-accent-dim); }
 
         /* --- INPUT PANEL --- */
         #input-container {
@@ -44,7 +49,7 @@
         .form-label { display: block; font-family: var(--font-tech); font-size: 0.7rem; color: #889; margin-bottom: 5px; letter-spacing: 0.15em; }
         .form-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #334; color: #fff; padding: 10px; font-family: var(--font-tech); font-size: 1.1rem; outline: none; margin-bottom: 20px; transition: 0.3s; }
         .form-input:focus { border-color: var(--c-accent); background: rgba(0, 20, 30, 0.8); }
-        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, transparent, var(--c-accent-dim), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel'; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; }
+        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, transparent, var(--c-accent-dim), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel', serif; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; text-transform: uppercase; }
         .submit-btn:hover { background: var(--c-accent); color: #000; box-shadow: 0 0 30px var(--c-accent); }
 
         /* --- SYNCHRO OVERLAY --- */
@@ -53,8 +58,8 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.5s; background: rgba(0,0,0,0.8);
         }
-        .synchro-text { font-family: var(--font-tech); font-size: 2rem; color: var(--c-accent); letter-spacing: 0.5em; text-shadow: 0 0 20px var(--c-accent); }
-        .synchro-sub { font-family: var(--font-serif); font-size: 0.9rem; color: #fff; margin-top: 10px; letter-spacing: 0.2em; opacity: 0.8; }
+        .synchro-text { font-family: var(--font-tech); font-size: 2rem; color: var(--c-accent); letter-spacing: 0.5em; text-shadow: 0 0 20px var(--c-accent); text-align: center;}
+        .synchro-sub { font-family: var(--font-serif); font-size: 0.9rem; color: #fff; margin-top: 10px; letter-spacing: 0.2em; opacity: 0.8; text-align: center; }
 
         /* --- RESULT PANEL --- */
         #result-overlay {
@@ -93,7 +98,7 @@
         .info-card:hover { border-color: #fff; transform: translateY(-3px); }
         .card-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
         .card-name { font-family: var(--font-serif); font-size: 1.1rem; color: #fff; font-weight: bold; }
-        .card-tag { font-size: 0.7rem; background: #112; color: var(--c-accent); border: 1px solid var(--c-accent); padding: 2px 8px; border-radius: 10px; }
+        .card-tag { font-size: 0.7rem; background: #112; color: var(--c-accent); border: 1px solid var(--c-accent); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
         .card-val { font-family: var(--font-tech); font-size: 1rem; color: #ccc; }
         .card-desc { font-size: 0.9rem; line-height: 1.7; color: #ddd; text-align: justify; }
         .card-adv { font-size: 0.85rem; color: #9ab; margin-top: auto; padding-top: 12px; border-top: 1px dashed #445; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px; }
@@ -109,8 +114,9 @@
         .premium-gate p { color: #ccc; margin-bottom: 30px; font-size: 0.95rem; line-height: 1.8; font-family: var(--font-main); }
         .premium-btn {
             background: #000; border: 1px solid var(--c-gold); color: var(--c-gold);
-            padding: 18px 40px; font-family: 'Cinzel'; font-size: 1rem; letter-spacing: 0.3em; cursor: pointer;
+            padding: 18px 40px; font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 0.3em; cursor: pointer;
             transition: 0.4s; position: relative; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+            text-transform: uppercase;
         }
         .premium-btn:hover { background: var(--c-gold); color: #000; box-shadow: 0 0 40px var(--c-gold); }
 
@@ -143,27 +149,33 @@
 <body>
 
     <div id="start-screen">
-        <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; color:#fff;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.3</p>
-        <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()">INITIALIZE SYSTEM</button>
+        <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; color:#fff;" data-key="title_main">周期律分析</h1>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.4</p>
+        <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()" data-key="btn_init">INITIALIZE SYSTEM</button>
     </div>
 
     <div id="canvas-wrapper"></div>
 
     <div id="app-layer">
         <header>
-            <div class="brand"><h1>周期律分析</h1></div>
-            <button class="nav-btn" onclick="app.audio.toggle()" id="btn-audio">AUDIO: ON</button>
+            <div class="brand"><h1 data-key="title_main">周期律分析</h1></div>
+            <div class="header-controls">
+                <button class="nav-btn active" onclick="app.setLang('ja')">JP</button>
+                <button class="nav-btn" onclick="app.setLang('en')">EN</button>
+                <button class="nav-btn" onclick="app.setLang('hi')">HI</button>
+                <button class="nav-btn" onclick="app.setLang('zh')">ZH</button>
+                <button class="nav-btn" onclick="app.audio.toggle()" id="btn-audio">AUDIO: ON</button>
+            </div>
         </header>
 
         <div id="input-container">
-            <label class="form-label">Birth Date</label>
+            <label class="form-label" data-key="lbl_date">Birth Date</label>
             <input type="date" id="inp-date" class="form-input" value="1995-08-08">
-            <label class="form-label">Birth Time</label>
+            <label class="form-label" data-key="lbl_time">Birth Time</label>
             <input type="time" id="inp-time" class="form-input" value="12:00">
-            <label class="form-label">Location</label>
+            <label class="form-label" data-key="lbl_loc">Location</label>
             <select id="inp-city" class="form-input"></select>
-            <button class="submit-btn" onclick="app.startSequence()">START ANALYSIS</button>
+            <button class="submit-btn" onclick="app.startSequence()" data-key="btn_start">START ANALYSIS</button>
         </div>
 
         <div id="synchro-overlay">
@@ -174,7 +186,7 @@
         <div id="result-overlay">
             <div class="result-scroll" id="capture-target">
                 <div class="dashboard-box">
-                    <div class="dash-title">あなたの現在位置 (サイクル進行度)</div>
+                    <div class="dash-title" data-key="dash_title">あなたの現在位置 (サイクル進行度)</div>
                     <div class="param-grid" id="param-grid"></div>
                 </div>
 
@@ -188,17 +200,15 @@
                 <div class="grid-container" id="grid-container"></div>
 
                 <div class="premium-gate">
-                    <h3>THE HIDDEN LAYER</h3>
-                    <p>この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。<br>
-                    なぜ、この時代を選んだのか？ 誰と出会う運命なのか？<br>
-                    13次元のさらに奥、魂の青写真（ブループリント）にアクセスしますか？</p>
-                    <button class="premium-btn" onclick="app.ui.showMVP()">UNLOCK DEEP CORE</button>
+                    <h3 data-key="prem_title">THE HIDDEN LAYER</h3>
+                    <p data-key="prem_desc">この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。<br>なぜ、この時代を選んだのか？ 誰と出会う運命なのか？<br>13次元のさらに奥、魂の青写真（ブループリント）にアクセスしますか？</p>
+                    <button class="premium-btn" onclick="app.ui.showMVP()" data-key="btn_unlock">UNLOCK DEEP CORE</button>
                 </div>
             </div>
 
             <div class="action-bar">
-                <button class="action-btn" onclick="app.export()">📷 SAVE</button>
-                <button class="action-btn" onclick="app.reset()">↺ RESET</button>
+                <button class="action-btn" onclick="app.export()" data-key="btn_save">📷 SAVE</button>
+                <button class="action-btn" onclick="app.reset()" data-key="btn_reset">↺ RESET</button>
             </div>
         </div>
 
@@ -210,8 +220,8 @@
             </div>
             <div class="mvp-grid" id="mvp-grid"></div>
             <div style="text-align:center; padding-bottom:40px;">
-                <p style="color:#666; margin-bottom:20px;">Analysis Complete. Full session required for further dimensions.</p>
-                <button class="nav-btn" onclick="app.ui.hideMVP()">RETURN TO SURFACE</button>
+                <p style="color:#666; margin-bottom:20px;" data-key="mvp_footer">Analysis Complete. Full session required for further dimensions.</p>
+                <button class="nav-btn" onclick="app.ui.hideMVP()" data-key="btn_return">RETURN TO SURFACE</button>
             </div>
         </div>
     </div>
@@ -220,10 +230,284 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <script>
-        /* --- CONSTANTS --- */
-        const DICT={kyusei:{"一白水星":{tag:"思考",desc:"柔軟で秘密主義的な知性派。",advice:"参謀としてのポジションが吉。"},"二黒土星":{tag:"基盤",desc:"包容力と着実な育成能力。",advice:"「継続」を武器にしてください。"},"三碧木星":{tag:"初動",desc:"瞬発力とパイオニア精神。",advice:"スタートダッシュは最強。"},"四緑木星":{tag:"調整",desc:"縁を運ぶコミュニケーター。",advice:"八方美人にならず絞り込むこと。"},"五黄土星":{tag:"帝王",desc:"破壊と再生のカリスマ。",advice:"独善的にならぬよう注意。"},"六白金星":{tag:"決断",desc:"高潔なリーダー。",advice:"正論は人を傷つけます。寛容さを。"},"七赤金星":{tag:"経済",desc:"喜びと収穫の星。",advice:"楽しさを収益化する仕組みを。"},"八白土星":{tag:"改革",desc:"継承と革新を行う山。",advice:"一度決めたら止まらない突破力。"},"九紫火星":{tag:"先見",desc:"全てを明らかにする情熱家。",advice:"熱しやすく冷めやすい点に注意。"}},jukkan:{"甲(木)":{tag:"本質",desc:"大樹。向上心が強いリーダー。",advice:"柔軟性を持つパートナーと組むこと。"},"乙(木)":{tag:"本質",desc:"草花。環境適応力が高い。",advice:"組織の力を使ってください。"},"丙(火)":{tag:"本質",desc:"太陽。中心になる存在。",advice:"気分のムラを出さないこと。"},"丁(火)":{tag:"本質",desc:"灯火。鋭い洞察力。",advice:"小出しにガス抜きを。"},"戊(土)":{tag:"本質",desc:"山岳。信頼と信用の塊。",advice:"フットワークを軽く。"},"己(土)":{tag:"本質",desc:"田畑。人を育てる。",advice:"専門性を持つこと。"},"庚(金)":{tag:"本質",desc:"鋼鉄。改革力に優れる。",advice:"試練を歓迎せよ。"},"辛(金)":{tag:"本質",desc:"宝石。繊細で美意識が高い。",advice:"苦労は研磨剤。"},"壬(水)":{tag:"本質",desc:"大海。スケールが大きい。",advice:"堤防（ルール）を設けること。"},"癸(水)":{tag:"本質",desc:"雨露。隅々まで行き渡る。",advice:"積もり積もって決壊せぬよう。"}}};
-        const CITIES=[{name:"Tokyo",tz:9},{name:"New York",tz:-5},{name:"London",tz:0},{name:"Paris",tz:1}];
-        const CYCLES=[{name:"木星 (12y)",days:4333,color:"#D4AF37"},{name:"土星 (29.5y)",days:10759,color:"#A9A9A9"},{name:"火星 (780d)",days:780,color:"#FF4500"},{name:"金星 (584d)",days:584,color:"#FF69B4"},{name:"月相 (29.5d)",days:29.53,color:"#F0F8FF"},{name:"歳差 (26ky)",days:9414075,color:"#8A2BE2"}];
+        /* --- TRANSLATION DATABASE --- */
+        const TRANSLATION = {
+            ja: {
+                title_main: "周期律分析",
+                btn_init: "システム起動",
+                lbl_date: "生年月日",
+                lbl_time: "出生時間",
+                lbl_loc: "出生地",
+                btn_start: "解析開始",
+                dash_title: "現在位置 (サイクル進行度)",
+                prem_title: "深層レイヤー (THE HIDDEN LAYER)",
+                prem_desc: "この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。<br>なぜ、この時代を選んだのか？ 誰と出会う運命なのか？<br>13次元のさらに奥、魂の青写真にアクセスしますか？",
+                btn_unlock: "コア・ロック解除",
+                btn_save: "📷 保存",
+                btn_reset: "↺ リセット",
+                btn_return: "表層へ戻る",
+                mvp_footer: "解析完了。更なる次元へはフルセッションが必要です。",
+                sync_t: "同調中...",
+                sync_s: "宇宙サイクルとベクトルを整合中",
+                deep_t: "深層ダイブ中...",
+                deep_s: "魂の契約とX-DAY座標へアクセス中",
+                st_mut: {t: "破壊と再生のワルツ", b: "あなたの本質である「火」とライオンズゲートが共鳴し、通常ではあり得ない化学反応が起きています。\n今はロジックより「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。"},
+                st_con: {t: "試練の坩堝 (The Crucible)", b: "拡大しようとする木星のエネルギーと、固めようとするあなたの性質が摩擦を起こしています。\nこれは故障ではなく「鍛造」です。今は外に出るより、内部システムの刷新（学習・組織化）にリソースを集中してください。"},
+                st_syn: {t: "完全なる追い風", b: "全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）が運ぶ循環に入りました。\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今すぐ実行に移してください。"},
+                grid_labels: ["九星気学","十干","木星位置","土星位置","火星","金星","月相","ライオンズゲート","歳差運動","座標","三元九運","八卦","Gコンジャンクション"],
+                mvp_labels: ["ビジネスの好機", "魂の契約", "リスク管理"],
+                mvp_vals: ["X-DAY", "ターゲット", "空亡期間"],
+                mvp_descs: [
+                    "あなたのバイオリズムと社会的成功運が交差する「絶対吉日」。法人登記、大型契約、リリースに最適な一点です。",
+                    "あなたが今世で契約を結んでいる「魂のビジネスパートナー」の特性。互いの欠落を埋め、事業を拡大させるための戦略的相性を持つ人物像です。",
+                    "いわゆる「充電と研究開発」の期間です。守りを固め、内製化を進めることで、明けの年にロケットスタートが切れます。"
+                ],
+                kyusei: [
+                    {n:"一白水星", t:"思考", d:"柔軟で秘密主義的な知性派。", a:"参謀としてのポジションが吉。"},
+                    {n:"二黒土星", t:"基盤", d:"包容力と着実な育成能力。", a:"「継続」を武器にしてください。"},
+                    {n:"三碧木星", t:"初動", d:"瞬発力とパイオニア精神。", a:"スタートダッシュは最強。"},
+                    {n:"四緑木星", t:"調整", d:"縁を運ぶコミュニケーター。", a:"八方美人にならず絞り込むこと。"},
+                    {n:"五黄土星", t:"帝王", d:"破壊と再生のカリスマ。", a:"独善的にならぬよう注意。"},
+                    {n:"六白金星", t:"決断", d:"高潔なリーダー。", a:"正論は人を傷つけます。寛容さを。"},
+                    {n:"七赤金星", t:"経済", d:"喜びと収穫の星。", a:"楽しさを収益化する仕組みを。"},
+                    {n:"八白土星", t:"改革", d:"継承と革新を行う山。", a:"一度決めたら止まらない突破力。"},
+                    {n:"九紫火星", t:"先見", d:"全てを明らかにする情熱家。", a:"熱しやすく冷めやすい点に注意。"}
+                ],
+                jukkan: [
+                    {n:"甲(木)", t:"本質", d:"大樹。向上心が強いリーダー。", a:"柔軟性を持つパートナーと組むこと。"},
+                    {n:"乙(木)", t:"本質", d:"草花。環境適応力が高い。", a:"組織の力を使ってください。"},
+                    {n:"丙(火)", t:"本質", d:"太陽。中心になる存在。", a:"気分のムラを出さないこと。"},
+                    {n:"丁(火)", t:"本質", d:"灯火。鋭い洞察力。", a:"小出しにガス抜きを。"},
+                    {n:"戊(土)", t:"本質", d:"山岳。信頼と信用の塊。", a:"フットワークを軽く。"},
+                    {n:"己(土)", t:"本質", d:"田畑。人を育てる。", a:"専門性を持つこと。"},
+                    {n:"庚(金)", t:"本質", d:"鋼鉄。改革力に優れる。", a:"試練を歓迎せよ。"},
+                    {n:"辛(金)", t:"本質", d:"宝石。繊細で美意識が高い。", a:"苦労は研磨剤。"},
+                    {n:"壬(水)", t:"本質", d:"大海。スケールが大きい。", a:"堤防（ルール）を設けること。"},
+                    {n:"癸(水)", t:"本質", d:"雨露。隅々まで行き渡る。", a:"積もり積もって決壊せぬよう。"}
+                ],
+                cycles: ["木星", "土星", "火星", "金星", "月相", "歳差"],
+                grid_fixed: [
+                    {v:"Gemini", t:"Expansion", d:"Dev in Info & Travel", a:"Multitask."},
+                    {v:"Pisces", t:"Ordeal", d:"Rebuild Spiritual Base", a:"Introspection."},
+                    {v:"Active", t:"Passion", d:"Desire for Expression", a:"Impulse to Art."},
+                    {v:"8y Cycle", t:"Value", d:"Re-eval Finance/Beauty", a:"Refresh Past."},
+                    {v:"29.5d", t:"Emotion", d:"Inner Biorhythm", a:"Follow Intuition."},
+                    {v:"Open", t:"Cosmic Ray", d:"High Dimension Energy", a:"Fear no Change."},
+                    {v:"Aquarius", t:"Civilization", d:"Decentralized Society", a:"Individualism."},
+                    {v:"TimeID", t:"Origin", d:"Temporal Coord", a:"Fate Start Point."},
+                    {v:"Period 9", t:"Era", d:"Age of Fire", a:"Visualization is Key."},
+                    {v:"Thunder", t:"Action", d:"Flash like Lightning", a:"Decide Instantly."},
+                    {v:"Air", t:"Reform", d:"Matter to Info", a:"Share, don't Own."}
+                ]
+            },
+            en: {
+                title_main: "Periodicity Analysis",
+                btn_init: "INITIALIZE SYSTEM",
+                lbl_date: "Birth Date",
+                lbl_time: "Birth Time",
+                lbl_loc: "Location",
+                btn_start: "START ANALYSIS",
+                dash_title: "Current Coordinates (Cycle Progress)",
+                prem_title: "THE HIDDEN LAYER",
+                prem_desc: "This reality may be the result of a 'contract' made before birth.<br>Why this era? Who are you destined to meet?<br>Access the Soul Blueprint beyond the 13th dimension?",
+                btn_unlock: "UNLOCK DEEP CORE",
+                btn_save: "📷 SAVE",
+                btn_reset: "↺ RESET",
+                btn_return: "RETURN TO SURFACE",
+                mvp_footer: "Analysis Complete. Full session required for further dimensions.",
+                sync_t: "TUNING...",
+                sync_s: "Aligning Vectors with Cosmic Cycles",
+                deep_t: "DEEP DIVING...",
+                deep_s: "Accessing Soul Contracts & X-DAY Coordinates",
+                st_mut: {t: "Waltz of Destruction & Rebirth", b: "Your essence 'Fire' resonates with the Lions Gate, causing an impossible chemical reaction.\nTrust 'discomfort' over logic now. Destroy existing rails and lay a new orbit."},
+                st_con: {t: "The Crucible", b: "Jupiter's expansion energy friction with your solidifying nature.\nThis is not a failure but 'forging'. Focus resources on internal system renovation (learning/organizing) rather than going out."},
+                st_syn: {t: "The Perfect Tailwind", b: "All parameters are meshing. Water (Intellect) feeds Wood (You), and Wind (Era) carries you.\nYour arrow will reach further than expected. Hesitation is a sin. Execute now."},
+                grid_labels: ["9 Star Ki","10 Stems","Jupiter","Saturn","Mars","Venus","Moon Phase","Lions Gate","Precession","Coordinate","Era 9","Bagua","G-Conjunction"],
+                mvp_labels: ["BUSINESS TIMING", "SOUL CONTRACT", "RISK MANAGEMENT"],
+                mvp_vals: ["X-DAY", "Target", "Void Period"],
+                mvp_descs: [
+                    "Absolute auspicious day where your biorhythm and social success luck intersect. Best for incorporation, large contracts, and releases.",
+                    "Characteristics of your 'Soul Business Partner' contracted in this life. Strategic compatibility to fill each other's voids and expand business.",
+                    "Period for 'Charging & R&D'. By fortifying defenses and internalizing, you can rocket start in the dawn year."
+                ],
+                kyusei: [
+                    {n:"1 Water", t:"Thinker", d:"Flexible & secretive intellect.", a:"Staff officer position is lucky."},
+                    {n:"2 Earth", t:"Base", d:"Tolerance & steady growth.", a:"Use 'continuity' as a weapon."},
+                    {n:"3 Wood", t:"Starter", d:"Instant power & pioneer spirit.", a:"Start dash is strongest."},
+                    {n:"4 Wood", t:"Adjuster", d:"Communicator bringing luck.", a:"Don't be everyone's friend; focus."},
+                    {n:"5 Earth", t:"Emperor", d:"Charisma of destruction/creation.", a:"Avoid self-righteousness."},
+                    {n:"6 Metal", t:"Leader", d:"Noble leader.", a:"Logic hurts others; have tolerance."},
+                    {n:"7 Metal", t:"Economy", d:"Star of joy & harvest.", a:"Monetize fun."},
+                    {n:"8 Earth", t:"Reform", d:"Mountain of succession/innovation.", a:"Unstoppable breakthrough force."},
+                    {n:"9 Fire", t:"Vision", d:"Passionate revealer.", a:"Beware of cooling down too fast."}
+                ],
+                jukkan: [
+                    {n:"Yang Wood", t:"Essence", d:"Big Tree. Ambitious leader.", a:"Partner with flexibility."},
+                    {n:"Yin Wood", t:"Essence", d:"Flower. High adaptation.", a:"Use organizational power."},
+                    {n:"Yang Fire", t:"Essence", d:"Sun. Central existence.", a:"Avoid mood swings."},
+                    {n:"Yin Fire", t:"Essence", d:"Candle. Sharp insight.", a:"Vent regularly."},
+                    {n:"Yang Earth", t:"Essence", d:"Mountain. Trustworthy mass.", a:"Keep footwork light."},
+                    {n:"Yin Earth", t:"Essence", d:"Field. Nurturing others.", a:"Have a specialty."},
+                    {n:"Yang Metal", t:"Essence", d:"Steel. Excellent reform.", a:"Welcome trials."},
+                    {n:"Yin Metal", t:"Essence", d:"Gem. Delicate aesthetic.", a:"Hardship is polish."},
+                    {n:"Yang Water", t:"Essence", d:"Ocean. Large scale.", a:"Set rules (dykes)."},
+                    {n:"Yin Water", t:"Essence", d:"Rain. Reaching everywhere.", a:"Don't let it accumulate to burst."}
+                ],
+                cycles: ["Jupiter", "Saturn", "Mars", "Venus", "Moon", "Precession"],
+                grid_fixed: [
+                    {v:"Gemini", t:"Expansion", d:"Dev in Info & Travel", a:"Multitask."},
+                    {v:"Pisces", t:"Ordeal", d:"Rebuild Spiritual Base", a:"Introspection."},
+                    {v:"Active", t:"Passion", d:"Desire for Expression", a:"Impulse to Art."},
+                    {v:"8y Cycle", t:"Value", d:"Re-eval Finance/Beauty", a:"Refresh Past."},
+                    {v:"29.5d", t:"Emotion", d:"Inner Biorhythm", a:"Follow Intuition."},
+                    {v:"Open", t:"Cosmic Ray", d:"High Dimension Energy", a:"Fear no Change."},
+                    {v:"Aquarius", t:"Civilization", d:"Decentralized Society", a:"Individualism."},
+                    {v:"TimeID", t:"Origin", d:"Temporal Coord", a:"Fate Start Point."},
+                    {v:"Period 9", t:"Era", d:"Age of Fire", a:"Visualization is Key."},
+                    {v:"Thunder", t:"Action", d:"Flash like Lightning", a:"Decide Instantly."},
+                    {v:"Air", t:"Reform", d:"Matter to Info", a:"Share, don't Own."}
+                ]
+            },
+            hi: {
+                title_main: "आवधिकता विश्लेषण",
+                btn_init: "सिस्टम आरंभ करें",
+                lbl_date: "जन्म तिथि",
+                lbl_time: "जन्म समय",
+                lbl_loc: "स्थान",
+                btn_start: "विश्लेषण प्रारंभ",
+                dash_title: "वर्तमान निर्देशांक (चक्र प्रगति)",
+                prem_title: "छिपी हुई परत (HIDDEN LAYER)",
+                prem_desc: "यह वास्तविकता जन्म से पहले किए गए 'अनुबंध' का परिणाम हो सकती है।<br>यह युग क्यों? आप किससे मिलने के लिए अभिशप्त हैं?<br>13वें आयाम से परे आत्मा के ब्लूप्रिंट तक पहुंचें?",
+                btn_unlock: "डीप कोर अनलॉक करें",
+                btn_save: "📷 सहेजें",
+                btn_reset: "↺ रीसेट",
+                btn_return: "सतह पर वापस आएं",
+                mvp_footer: "विश्लेषण पूर्ण। आगे के आयामों के लिए पूर्ण सत्र आवश्यक है।",
+                sync_t: "ट्यूनिंग...",
+                sync_s: "ब्रह्मांडीय चक्रों के साथ वैक्टर संरेखित करना",
+                deep_t: "गहरा गोता...",
+                deep_s: "आत्मा अनुबंध और एक्स-डे निर्देशांक तक पहुंचना",
+                st_mut: {t: "विनाश और पुनर्जन्म का वाल्ट्ज", b: "आपका सार 'अग्नि' लायंस गेट के साथ गूंजता है, जिससे एक असंभव रासायनिक प्रतिक्रिया होती है।\nतर्क से अधिक 'असहजता' पर भरोसा करें। मौजूदा रेल को नष्ट करें और नई कक्षा बिछाएं।"},
+                st_con: {t: "अग्नि परीक्षा (The Crucible)", b: "बृहस्पति की विस्तार ऊर्जा और आपकी ठोस प्रकृति के बीच घर्षण हो रहा है।\nयह विफलता नहीं बल्कि 'गढ़ाई' है। बाहर जाने के बजाय आंतरिक प्रणाली के नवीनीकरण (सीखने/व्यवस्थित करने) पर ध्यान केंद्रित करें।"},
+                st_syn: {t: "पूर्ण अनुकूल हवा", b: "सभी पैरामीटर मिल रहे हैं। जल (बुद्धि) लकड़ी (आप) को पोषण देता है, और हवा (युग) आपको ले जाती है।\nआपका तीर अपेक्षा से अधिक दूर तक पहुंचेगा। संकोच पाप है। अभी निष्पादित करें।"},
+                grid_labels: ["9 सितारे","10 तने","बृहस्पति","शनि","मंगल","शुक्र","चंद्र चरण","लायंस गेट","अयन","निर्देशांक","काल 9","बगुआ","जी-संयुग्मन"],
+                mvp_labels: ["व्यापार समय", "आत्मा अनुबंध", "जोखिम प्रबंधन"],
+                mvp_vals: ["एक्स-डे", "लक्ष्य", "शून्य अवधि"],
+                mvp_descs: [
+                    "पूर्ण शुभ दिन जहां आपका biorhythm और सामाजिक सफलता का भाग्य एक दूसरे को काटते हैं।",
+                    "इस जीवन में अनुबंधित आपके 'सोच व्यापार भागीदार' की विशेषताएं।",
+                    "'चार्जिंग और आर एंड डी' की अवधि। सुरक्षा को मजबूत करके, आप रॉकेट शुरुआत कर सकते हैं।"
+                ],
+                kyusei: [
+                    {n:"1 जल", t:"विचारक", d:"लचीली और गुप्त बुद्धि।", a:"स्टाफ अधिकारी की स्थिति भाग्यशाली है।"},
+                    {n:"2 पृथ्वी", t:"आधार", d:"सहनशीलता और स्थिर विकास।", a:"हथियार के रूप में 'निरंतरता' का प्रयोग करें।"},
+                    {n:"3 लकड़ी", t:"स्टार्टर", d:"तत्काल शक्ति और अग्रणी भावना।", a:"स्टार्ट डैश सबसे मजबूत है।"},
+                    {n:"4 लकड़ी", t:"समायोजक", d:"भाग्य लाने वाला संचारक।", a:"हर किसी के दोस्त न बनें; ध्यान केंद्रित करें।"},
+                    {n:"5 पृथ्वी", t:"सम्राट", d:"विनाश/सृजन का करिश्मा।", a:"आत्म-धार्मिकता से बचें।"},
+                    {n:"6 धातु", t:"नेता", d:"नेक नेता।", a:"तर्क दूसरों को चोट पहुँचाता है; सहनशीलता रखें।"},
+                    {n:"7 धातु", t:"अर्थव्यवस्था", d:"हर्ष और फसल का तारा।", a:"मजे का मुद्रीकरण करें।"},
+                    {n:"8 पृथ्वी", t:"सुधार", d:"उत्तराधिकार/नवाचार का पर्वत।", a:"अजेय सफलता बल।"},
+                    {n:"9 अग्नि", t:"दृष्टि", d:"भावुक प्रकटीकरण।", a:"बहुत जल्दी ठंडा होने से सावधान रहें।"}
+                ],
+                jukkan: [
+                    {n:"यांग लकड़ी", t:"सार", d:"बड़ा पेड़। महत्वाकांक्षी नेता।", a:"लचीलेपन के साथ भागीदार।"},
+                    {n:"यिन लकड़ी", t:"सार", d:"फूल। उच्च अनुकूलन।", a:"संगठनात्मक शक्ति का प्रयोग करें।"},
+                    {n:"यांग अग्नि", t:"सार", d:"सूर्य। केंद्रीय अस्तित्व।", a:"मूड स्विंग से बचें।"},
+                    {n:"यिन अग्नि", t:"सार", d:"मोमबत्ती। तेज अंतर्दृष्टि।", a:"नियमित रूप से बाहर निकालें।"},
+                    {n:"यांग पृथ्वी", t:"सार", d:"पर्वत। भरोसेमंद द्रव्यमान।", a:"पैरों का काम हल्का रखें।"},
+                    {n:"यिन पृथ्वी", t:"सार", d:"मैदान। दूसरों का पोषण।", a:"एक विशेषज्ञता रखें।"},
+                    {n:"यांग धातु", t:"सार", d:"इस्पात। उत्कृष्ट सुधार।", a:"परीक्षणों का स्वागत करें।"},
+                    {n:"यिन धातु", t:"सार", d:"रत्न। नाजुक सौंदर्य।", a:"कठिनाई पॉलिश है।"},
+                    {n:"यांग जल", t:"सार", d:"महासागर। बड़े पैमाने पर।", a:"नियम निर्धारित करें।"},
+                    {n:"यिन जल", t:"सार", d:"वर्षा। हर जगह पहुंचना।", a:"इसे फटने के लिए जमा न होने दें।"}
+                ],
+                cycles: ["बृहस्पति", "शनि", "मंगल", "शुक्र", "चंद्रमा", "अयन"],
+                grid_fixed: [
+                    {v:"मिथुन", t:"विस्तार", d:"जानकारी और यात्रा में देव", a:"मल्टीटास्क।"},
+                    {v:"मीन", t:"अग्नि परीक्षा", d:"आध्यात्मिक आधार का पुनर्निर्माण", a:"आत्मनिरीक्षण।"},
+                    {v:"सक्रिय", t:"जुनून", d:"अभिव्यक्ति की इच्छा", a:"कला की ओर आवेग।"},
+                    {v:"8 वर्ष", t:"मूल्य", d:"वित्त/सौंदर्य का पुनर्मूल्यांकन", a:"अतीत को ताज़ा करें।"},
+                    {v:"29.5 दिन", t:"भावना", d:"आंतरिक biorhythm", a:"अंतर्ज्ञान का पालन करें।"},
+                    {v:"खुला", t:"कॉस्मिक किरण", d:"उच्च आयाम ऊर्जा", a:"परिवर्तन से न डरें।"},
+                    {v:"कुंभ", t:"सभ्यता", d:"विकेंद्रीकृत समाज", a:"व्यवाद।"},
+                    {v:"TimeID", t:"मूल", d:"अस्थायी निर्देशांक", a:"भाग्य प्रारंभ बिंदु।"},
+                    {v:"अवधि 9", t:"युग", d:"अग्नि का युग", a:"दृश्यता कुंजी है।"},
+                    {v:"वज्र", t:"क्रिया", d:"बिजली की तरह चमक", a:"तुरंत निर्णय लें।"},
+                    {v:"वायु", t:"सुधार", d:"पदार्थ से जानकारी", a:"साझा करें, अपनाएं नहीं।"}
+                ]
+            },
+            zh: {
+                title_main: "周期律分析",
+                btn_init: "启动系统",
+                lbl_date: "出生日期",
+                lbl_time: "出生时间",
+                lbl_loc: "出生地",
+                btn_start: "开始分析",
+                dash_title: "当前坐标 (周期进度)",
+                prem_title: "隐藏层 (THE HIDDEN LAYER)",
+                prem_desc: "这个现实可能是你出生前签订的“契约”的结果。<br>为什么选择这个时代？注定要遇见谁？<br>是否访问13维之外的灵魂蓝图？",
+                btn_unlock: "解锁核心",
+                btn_save: "📷 保存",
+                btn_reset: "↺ 重置",
+                btn_return: "返回表层",
+                mvp_footer: "分析完成。更深维度需要完整会话。",
+                sync_t: "调谐中...",
+                sync_s: "正在与宇宙周期向量对齐",
+                deep_t: "深度潜入...",
+                deep_s: "正在访问灵魂契约与X-DAY坐标",
+                st_mut: {t: "破坏与再生的华尔兹", b: "你的本质“火”与狮子门共鸣，正在发生不可能的化学反应。\n现在与其相信逻辑，不如相信“违和感”。是破坏现有轨道，铺设新轨道的时候了。"},
+                st_con: {t: "试炼的熔炉 (The Crucible)", b: "试图扩大的木星能量与试图巩固的你的性质发生摩擦。\n这不是故障，而是“锻造”。现在不要向外，应集中资源革新内部系统（学习/组织化）。"},
+                st_syn: {t: "完美的顺风", b: "所有参数都啮合。水（知性）滋养木（你），风（时代）运送。\n你放出的箭将乘风到达预期之外的距离。客气是罪。立即执行。"},
+                grid_labels: ["九星气学","十干","木星位置","土星位置","火星","金星","月相","狮子门","岁差运动","坐标","三元九运","八卦","G合相"],
+                mvp_labels: ["商业时机", "灵魂契约", "风险管理"],
+                mvp_vals: ["X-DAY", "目标", "空亡期间"],
+                mvp_descs: [
+                    "你的生物节律与社会成功运交叉的“绝对吉日”。最适合法人登记、大型合同、发布。",
+                    "你今世签订契约的“灵魂商业伙伴”的特性。互补缺失，具有扩大事业的战略相性的人物像。",
+                    "所谓的“充电与研发”期间。通过巩固防守，推进内部化，可以在黎明之年实现火箭启动。"
+                ],
+                kyusei: [
+                    {n:"一白水星", t:"思考", d:"灵活且秘密主义的知性派。", a:"作为参谋的位置是大吉。"},
+                    {n:"二黑土星", t:"基盤", d:"包容力与扎实的培育能力。", a:"请以“持续”为武器。"},
+                    {n:"三碧木星", t:"初動", d:"爆发力与开拓精神。", a:"起跑冲刺最强。"},
+                    {n:"四绿木星", t:"調整", d:"运送缘分的沟通者。", a:"不要做八面玲珑，要聚焦。"},
+                    {n:"五黄土星", t:"帝王", d:"破坏与再生的领袖。", a:"注意不要独善其身。"},
+                    {n:"六白金星", t:"決断", d:"高洁的领导者。", a:"正论伤人。要有宽容。"},
+                    {n:"七赤金星", t:"経済", d:"喜悦与收获之星。", a:"建立将快乐货币化的机制。"},
+                    {n:"八白土星", t:"改革", d:"进行继承与革新的山。", a:"一旦决定就不会停止的突破力。"},
+                    {n:"九紫火星", t:"先見", d:"揭示一切的热情家。", a:"注意热得快冷得快。"}
+                ],
+                jukkan: [
+                    {n:"甲(木)", t:"本质", d:"大树。向上心强的领导者。", a:"与有灵活性的伙伴组队。"},
+                    {n:"乙(木)", t:"本质", d:"花草。环境适应力高。", a:"请利用组织的力量。"},
+                    {n:"丙(火)", t:"本质", d:"太阳。中心的存在。", a:"不要露出情绪的波动。"},
+                    {n:"丁(火)", t:"本质", d:"灯火。敏锐的洞察力。", a:"小幅释放压力。"},
+                    {n:"戊(土)", t:"本质", d:"山岳。信赖与信用的集合。", a:"保持身手敏捷。"},
+                    {n:"己(土)", t:"本质", d:"田畑。培育他人。", a:"拥有专业性。"},
+                    {n:"庚(金)", t:"本质", d:"钢铁。优越的改革力。", a:"欢迎试炼。"},
+                    {n:"辛(金)", t:"本质", d:"宝石。细腻且美意识高。", a:"辛苦是研磨剂。"},
+                    {n:"壬(水)", t:"本质", d:"大海。规模宏大。", a:"设置堤防（规则）。"},
+                    {n:"癸(水)", t:"本质", d:"雨露。渗透到各个角落。", a:"不要积攒到决堤。"}
+                ],
+                cycles: ["木星", "土星", "火星", "金星", "月相", "岁差"],
+                grid_fixed: [
+                    {v:"双子座", t:"扩大", d:"信息与移动领域的发展", a:"推荐多任务。"},
+                    {v:"双鱼座", t:"试炼", d:"精神基盘的再构筑", a:"内省的时间。"},
+                    {v:"Active", t:"热情", d:"自我表现的欲求", a:"将冲动转化为作品。"},
+                    {v:"8年周期", t:"价值", d:"金融、美意识的再评价", a:"刷新过去。"},
+                    {v:"29.5日", t:"感情", d:"内面生物节律", a:"跟随直觉。"},
+                    {v:"Open", t:"宇宙线", d:"高次能量流入", a:"不要害怕变化。"},
+                    {v:"水瓶座", t:"文明", d:"自律分散型社会", a:"个的确立。"},
+                    {v:"TimeID", t:"原点", d:"时间坐标ID", a:"命运的起点。"},
+                    {v:"第九运", t:"时代", d:"火的时代", a:"可视化是关键。"},
+                    {v:"震", t:"行动", d:"如雷般的爆发力", a:"即断即决。"},
+                    {v:"风", t:"变革", d:"从物质到信息", a:"共有而非所有。"}
+                ]
+            }
+        };
+
+        const CITIES=[{name:"Tokyo",tz:9},{name:"New York",tz:-5},{name:"London",tz:0},{name:"Paris",tz:1},{name:"Beijing",tz:8},{name:"Delhi",tz:5.5}];
+        const CYCLES=[{days:4333,color:"#D4AF37"},{days:10759,color:"#A9A9A9"},{days:780,color:"#FF4500"},{days:584,color:"#FF69B4"},{days:29.53,color:"#F0F8FF"},{days:9414075,color:"#8A2BE2"}];
 
         /* --- VISUAL ENGINE --- */
         class VisualEngine {
@@ -288,11 +572,17 @@
         }
 
         /* --- LOGIC --- */
-        const Astro={getKyusei:y=>{let s=0;String(y).split('').forEach(n=>s+=parseInt(n));while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);let t=11-s;if(t>9)t-=9;if(t===0)t=9;return ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"][t-1];},getJukkan:y=>["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y%10],getStats:(b,d)=>{const f=(new Date()-b)/(1000*60*60*24);return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1}}};
+        const Astro={
+            // Returns 0-8 (Index for 9 stars)
+            getKyuseiIndex:y=>{let s=0;String(y).split('').forEach(n=>s+=parseInt(n));while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);let t=11-s;if(t>9)t-=9;if(t===0)t=9;return t-1;},
+            // Returns 0-9 (Index for 10 stems)
+            getJukkanIndex:y=>[6,7,8,9,0,1,2,3,4,5][y%10], 
+            getStats:(b,d)=>{const f=(new Date()-b)/(1000*60*60*24);return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1}}
+        };
 
         /* --- APP CONTROLLER --- */
         const app = {
-            visual: null, isTuning: false, date: null,
+            visual: null, isTuning: false, date: null, lang: 'ja',
             init: function() {
                 try {
                     document.getElementById('start-screen').style.opacity = 0;
@@ -300,17 +590,33 @@
                     this.visual = new VisualEngine(); app.audio.init();
                     const s = document.getElementById('inp-city');
                     CITIES.forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);s.add(o)});
+                    this.applyLanguage();
                 } catch(e) {
                     alert("Init Error: " + e);
                 }
             },
             
-            // ✅ Fix 1: Added root reset method
+            setLang: function(l) {
+                this.lang = l;
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                event.target.classList.add('active');
+                this.applyLanguage();
+            },
+
+            applyLanguage: function() {
+                const t = TRANSLATION[this.lang];
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    if(t[el.dataset.key]) {
+                        if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = t[el.dataset.key];
+                        else el.innerHTML = t[el.dataset.key];
+                    }
+                });
+            },
+
             reset: function() {
                 this.ui.reset();
             },
 
-            // ✅ Fix 2: Added Export Error Handling
             export: function() {
                 const target = document.getElementById('capture-target');
                 html2canvas(target, {backgroundColor:'#020305'})
@@ -327,7 +633,6 @@
                 init: function() {
                     const AC = window.AudioContext || window.webkitAudioContext;
                     this.ctx = new AC();
-                    // Noise Gen (Pink/Brown)
                     const bSize = 2 * this.ctx.sampleRate;
                     const nBuf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
                     const out = nBuf.getChannelData(0);
@@ -361,6 +666,12 @@
                 this.date = new Date(d);
                 document.getElementById('input-container').style.opacity=0;
                 document.getElementById('input-container').style.pointerEvents='none';
+                
+                // Set sync text based on lang
+                const t = TRANSLATION[this.lang];
+                document.getElementById('sync-text').innerText = t.sync_t;
+                document.getElementById('sync-sub').innerText = t.sync_s;
+
                 this.isTuning=true; app.audio.ramp();
                 document.getElementById('synchro-overlay').style.opacity=1;
                 setTimeout(()=>{ this.analyze(); },3000);
@@ -368,18 +679,26 @@
             analyze: function() {
                 try {
                     const bd = this.date; const y = bd.getFullYear();
-                    const k = Astro.getKyusei(y); const j = Astro.getJukkan(y);
-                    const kData = DICT.kyusei[k]; const jData = DICT.jukkan[j];
+                    const kIdx = Astro.getKyuseiIndex(y); 
+                    const jIdx = Astro.getJukkanIndex(y);
+                    const TR = TRANSLATION[this.lang];
+
+                    const kData = TR.kyusei[kIdx];
+                    const jData = TR.jukkan[jIdx];
 
                     // Dashboard
                     const pG = document.getElementById('param-grid'); pG.innerHTML="";
-                    CYCLES.forEach(c=>{ const s=Astro.getStats(bd,c.days); pG.innerHTML+=`<div class="param-item"><div class="param-head"><span style="color:${c.color}">● ${c.name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div><div class="param-meta"><span>Cycle #${s.c}</span><span>${Math.floor(c.days)} days</span></div></div>`; });
+                    CYCLES.forEach((c, i)=>{ 
+                        const s=Astro.getStats(bd,c.days); 
+                        const name = TR.cycles[i] || "Cycle";
+                        pG.innerHTML+=`<div class="param-item"><div class="param-head"><span style="color:${c.color}">● ${name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div><div class="param-meta"><span>Cycle #${s.c}</span><span>${Math.floor(c.days)} days</span></div></div>`; 
+                    });
 
                     // Strategy Text
                     const last = y%10; let st={};
-                    if([6,7].includes(last)) st={t:"破壊と再生のワルツ",type:"MUTATION",col:"#9D00FF",b:`あなたの本質である「火（${j}）」とライオンズゲートが共鳴し、通常ではあり得ない化学反応が起きています。\n今はロジックより「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。`};
-                    else if([0,1,8,9].includes(last)) st={t:"試練の坩堝 (The Crucible)",type:"CONFLICT",col:"#ff3366",b:`拡大しようとする木星のエネルギーと、固めようとするあなたの性質（${j}）が摩擦を起こしています。\nこれは故障ではなく「鍛造」です。今は外に出るより、内部システムの刷新（学習・組織化）にリソースを集中してください。`};
-                    else st={t:"完全なる追い風",type:"SYNERGY",col:"#D4AF37",b:`全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）が運ぶ循環に入りました。\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今すぐ実行に移してください。`};
+                    if([6,7].includes(last)) st={...TR.st_mut, type:"MUTATION", col:"#9D00FF"};
+                    else if([0,1,8,9].includes(last)) st={...TR.st_con, type:"CONFLICT", col:"#ff3366"};
+                    else st={...TR.st_syn, type:"SYNERGY", col:"#D4AF37"};
                     
                     document.getElementById('st-title').innerText=st.t; document.getElementById('st-type').innerText=st.type; 
                     document.getElementById('st-type').style.borderColor=st.col; document.getElementById('st-type').style.color=st.col;
@@ -387,7 +706,26 @@
 
                     // 13 Grid
                     const gr = document.getElementById('grid-container'); gr.innerHTML="";
-                    const items=[{t:"九星気学",v:k,...kData},{t:"十干十二支",v:j,...jData},{t:"木星位置",v:"双子座",tag:"拡大",desc:"情報と移動の領域での発展。",advice:"マルチタスク推奨。"},{t:"土星位置",v:"魚座",tag:"試練",desc:"精神的基盤の再構築。",advice:"内省の時間を。"},{t:"火星",v:"Active",tag:"情熱",desc:"自己表現の欲求。",advice:"衝動を作品へ。"},{t:"金星",v:"8年周期",tag:"価値",desc:"金融・美意識の再評価。",advice:"過去の刷新。"},{t:"月相",v:"29.5日",tag:"感情",desc:"内面バイオリズム。",advice:"直感に従うこと。"},{t:"ライオンズゲート",v:"Open",tag:"宇宙線",desc:"高次エネルギー流入。",advice:"変化を恐れないで。"},{t:"歳差運動",v:"水瓶座",tag:"文明",desc:"自律分散型社会へ。",advice:"個の確立。"},{t:"座標",v:bd.toLocaleDateString(),tag:"原点",desc:"時間座標ID。",advice:"運命の起点。"},{t:"三元九運",v:"第九運",tag:"時代",desc:"火の時代。",advice:"可視化が鍵。"},{t:"八卦",v:"震",tag:"行動",desc:"雷のような瞬発力。",advice:"即断即決。"},{t:"Gコンジャンクション",v:"風",tag:"変革",desc:"物質から情報へ。",advice:"所有より共有。"}]
+                    
+                    // Dynamic + Static Mix
+                    const GF = TR.grid_fixed;
+                    const GL = TR.grid_labels;
+                    
+                    const items=[
+                        {t:GL[0], v:kData.n, tag:kData.t, desc:kData.d, advice:kData.a},
+                        {t:GL[1], v:jData.n, tag:jData.t, desc:jData.d, advice:jData.a},
+                        {t:GL[2], v:GF[0].v, tag:GF[0].t, desc:GF[0].d, advice:GF[0].a}, // Jup
+                        {t:GL[3], v:GF[1].v, tag:GF[1].t, desc:GF[1].d, advice:GF[1].a}, // Sat
+                        {t:GL[4], v:GF[2].v, tag:GF[2].t, desc:GF[2].d, advice:GF[2].a}, // Mar
+                        {t:GL[5], v:GF[3].v, tag:GF[3].t, desc:GF[3].d, advice:GF[3].a}, // Ven
+                        {t:GL[6], v:GF[4].v, tag:GF[4].t, desc:GF[4].d, advice:GF[4].a}, // Moon
+                        {t:GL[7], v:GF[5].v, tag:GF[5].t, desc:GF[5].d, advice:GF[5].a}, // LG
+                        {t:GL[8], v:GF[6].v, tag:GF[6].t, desc:GF[6].d, advice:GF[6].a}, // Pre
+                        {t:GL[9], v:bd.toLocaleDateString(), tag:GF[7].t, desc:GF[7].d, advice:GF[7].a}, // Coord
+                        {t:GL[10], v:GF[8].v, tag:GF[8].t, desc:GF[8].d, advice:GF[8].a}, // Era
+                        {t:GL[11], v:GF[9].v, tag:GF[9].t, desc:GF[9].d, advice:GF[9].a}, // Bagua
+                        {t:GL[12], v:GF[10].v, tag:GF[10].t, desc:GF[10].d, advice:GF[10].a} // GC
+                    ]
                     items.forEach(i=>{ gr.innerHTML+=`<div class="info-card"><div class="card-head"><span class="card-name">${i.t}</span><span class="card-tag" style="border-color:var(--c-accent);color:var(--c-accent)">${i.tag}</span></div><div class="card-val">${i.v}</div><div class="card-desc">${i.desc}</div><div class="card-adv">💡 ${i.advice}</div></div>`});
 
                     this.isTuning=false; app.audio.reset();
@@ -401,7 +739,8 @@
             ui: {
                 showMVP: function() {
                     const t = document.getElementById('sync-text'); const s = document.getElementById('sync-sub');
-                    t.innerText = "DEEP DIVING..."; s.innerText = "Accessing Soul Contracts & X-DAY Coordinates";
+                    const TR = TRANSLATION[app.lang];
+                    t.innerText = TR.deep_t; s.innerText = TR.deep_s;
                     t.style.color = "var(--c-gold)"; t.style.textShadow = "0 0 20px var(--c-gold)";
                     document.getElementById('result-overlay').classList.remove('active');
                     document.getElementById('synchro-overlay').style.opacity = 1; 
@@ -424,16 +763,20 @@
                 getMVPResults: function(bd) {
                     const y = bd.getFullYear();
                     const xDay = new Date(); xDay.setDate(xDay.getDate() + (y % 120) + 30);
-                    const partner = ["革命家 (Innovator)", "参謀 (Strategist)", "表現者 (Artist)"][y % 3];
+                    const TR = TRANSLATION[app.lang];
+                    
+                    // Simple partner logic for demo
+                    const partnerTypes = ["Innovator", "Strategist", "Artist"];
+                    const partner = partnerTypes[y % 3];
+
                     const grid = document.getElementById('mvp-grid');
                     grid.innerHTML = `
-                        <div class="mvp-card"><div class="mvp-label">01. BUSINESS TIMING</div><div class="mvp-val">X-DAY: ${xDay.toLocaleDateString()}</div><div class="mvp-desc">あなたのバイオリズムと社会的成功運が交差する「絶対吉日」。法人登記、大型契約、リリースに最適な一点です。この日に行動することで、通常の3倍のレバレッジが期待できます。</div></div>
-                        <div class="mvp-card"><div class="mvp-label">02. SOUL CONTRACT</div><div class="mvp-val">Target: ${partner}</div><div class="mvp-desc">あなたが今世で契約を結んでいる「魂のビジネスパートナー」の特性。単なる仲良しではなく、互いの欠落を埋め、事業を拡大させるための戦略的相性を持つ人物像です。</div></div>
-                        <div class="mvp-card"><div class="mvp-label">03. RISK MANAGEMENT</div><div class="mvp-val">VOID PERIOD: 2 Years</div><div class="mvp-desc">いわゆる「天中殺（空亡）」の過ごし方戦略。この期間は「不運」ではなく「充電と研究開発」の期間です。守りを固め、内製化を進めることで、明けの年にロケットスタートが切れます。</div></div>
+                        <div class="mvp-card"><div class="mvp-label">01. ${TR.mvp_labels[0]}</div><div class="mvp-val">${TR.mvp_vals[0]}: ${xDay.toLocaleDateString()}</div><div class="mvp-desc">${TR.mvp_descs[0]}</div></div>
+                        <div class="mvp-card"><div class="mvp-label">02. ${TR.mvp_labels[1]}</div><div class="mvp-val">${TR.mvp_vals[1]}: ${partner}</div><div class="mvp-desc">${TR.mvp_descs[1]}</div></div>
+                        <div class="mvp-card"><div class="mvp-label">03. ${TR.mvp_labels[2]}</div><div class="mvp-val">${TR.mvp_vals[2]}: 2 Years</div><div class="mvp-desc">${TR.mvp_descs[2]}</div></div>
                     `;
                 }
-            },
-            export: function() { html2canvas(document.getElementById('capture-target'),{backgroundColor:'#020305'}).then(c=>{const a=document.createElement('a');a.href=c.toDataURL();a.download='chart.png';a.click()}) }
+            }
         };
     </script>
 </body>
