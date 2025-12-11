@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v7.1</title>
+    <title>周期律分析 | Cosmic Neural Network v7.2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -13,8 +13,8 @@
             --c-accent: #00f0ff;
             --c-accent-dim: rgba(0, 240, 255, 0.1);
             --c-gold: #D4AF37;
-            --c-card-bg: rgba(12, 18, 30, 0.92);
-            --c-border: rgba(0, 240, 255, 0.25);
+            --c-card-bg: rgba(12, 18, 30, 0.95);
+            --c-border: rgba(0, 240, 255, 0.3);
             --font-main: 'Noto Sans JP', sans-serif;
             --font-serif: 'Shippori Mincho', serif;
             --font-tech: 'Rajdhani', sans-serif;
@@ -28,7 +28,7 @@
         #app-layer { position: absolute; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
 
         /* --- HEADER --- */
-        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); pointer-events: auto; }
+        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); pointer-events: auto; }
         .brand h1 { font-family: var(--font-serif); font-size: 1.5rem; margin: 0; letter-spacing: 0.15em; background: linear-gradient(to right, #fff, #88ccee); -webkit-background-clip: text; color: transparent; }
         .nav-btn { background: rgba(0,0,0,0.5); border: 1px solid #334; color: #889; padding: 5px 15px; font-family: var(--font-tech); cursor: pointer; transition: 0.3s; z-index: 50; }
         .nav-btn:hover { border-color: var(--c-accent); color: var(--c-accent); }
@@ -51,7 +51,7 @@
         #synchro-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.5s; background: rgba(0,0,0,0.7);
+            z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.5s; background: rgba(0,0,0,0.8);
         }
         .synchro-text { font-family: var(--font-tech); font-size: 2rem; color: var(--c-accent); letter-spacing: 0.5em; text-shadow: 0 0 20px var(--c-accent); }
         .synchro-sub { font-family: var(--font-serif); font-size: 0.9rem; color: #fff; margin-top: 10px; letter-spacing: 0.2em; opacity: 0.8; }
@@ -62,7 +62,7 @@
             background: rgba(2, 3, 5, 0.95); z-index: 30;
             display: flex; flex-direction: column; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.8s;
-            visibility: hidden; /* Important for click-through when hidden */
+            visibility: hidden;
         }
         #result-overlay.active { opacity: 1; pointer-events: auto; visibility: visible; }
 
@@ -80,6 +80,7 @@
         .param-bar-fill { height: 100%; background: var(--c-accent); width: 0%; transition: width 1.5s ease-out; box-shadow: 0 0 8px var(--c-accent); }
         .param-meta { font-family: var(--font-tech); font-size: 0.7rem; color: #667; margin-top: 3px; display: flex; justify-content: space-between; }
 
+        /* STRATEGY */
         .strategy-container { max-width: 900px; margin: 0 auto 50px auto; border-left: 4px solid var(--c-accent); background: linear-gradient(90deg, rgba(0,240,255,0.05), transparent); padding: 30px; }
         .strategy-title { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 15px; color: #fff; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
         .strategy-type { display: inline-block; font-family: var(--font-tech); color: var(--c-accent); border: 1px solid var(--c-accent); padding: 4px 12px; font-size: 0.8rem; letter-spacing: 0.1em; margin-bottom: 20px; }
@@ -97,14 +98,13 @@
         .card-desc { font-size: 0.9rem; line-height: 1.7; color: #ddd; text-align: justify; }
         .card-adv { font-size: 0.85rem; color: #9ab; margin-top: auto; padding-top: 12px; border-top: 1px dashed #445; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px; }
         
-        /* PREMIUM GATE (Updated Copy) */
+        /* PREMIUM GATE */
         .premium-gate {
             margin-top: 80px; padding: 50px 30px; text-align: center;
             background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(0,0,0,0) 70%);
             border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 2px;
             position: relative; overflow: hidden;
         }
-        .premium-gate::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:1px; height:30px; background:var(--c-gold); }
         .premium-gate h3 { font-family: var(--font-serif); color: var(--c-gold); font-size: 1.6rem; margin-bottom: 15px; letter-spacing: 0.1em; }
         .premium-gate p { color: #ccc; margin-bottom: 30px; font-size: 0.95rem; line-height: 1.8; font-family: var(--font-main); }
         .premium-btn {
@@ -122,7 +122,6 @@
             visibility: hidden;
         }
         #mvp-screen.active { opacity: 1; pointer-events: auto; visibility: visible; }
-        
         .mvp-header { text-align: center; padding: 40px; border-bottom: 1px solid var(--c-gold); }
         .mvp-title { font-family: var(--font-serif); color: var(--c-gold); font-size: 2rem; letter-spacing: 0.2em; }
         .mvp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; overflow-y: auto; }
@@ -145,7 +144,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; color:#fff;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.1</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.2</p>
         <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()">INITIALIZE SYSTEM</button>
     </div>
 
@@ -221,12 +220,12 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <script>
-        /* --- DICTIONARY & LOGIC (UNCHANGED) --- */
+        /* --- CONSTANTS --- */
         const DICT={kyusei:{"一白水星":{tag:"思考",desc:"柔軟で秘密主義的な知性派。",advice:"参謀としてのポジションが吉。"},"二黒土星":{tag:"基盤",desc:"包容力と着実な育成能力。",advice:"「継続」を武器にしてください。"},"三碧木星":{tag:"初動",desc:"瞬発力とパイオニア精神。",advice:"スタートダッシュは最強。"},"四緑木星":{tag:"調整",desc:"縁を運ぶコミュニケーター。",advice:"八方美人にならず絞り込むこと。"},"五黄土星":{tag:"帝王",desc:"破壊と再生のカリスマ。",advice:"独善的にならぬよう注意。"},"六白金星":{tag:"決断",desc:"高潔なリーダー。",advice:"正論は人を傷つけます。寛容さを。"},"七赤金星":{tag:"経済",desc:"喜びと収穫の星。",advice:"楽しさを収益化する仕組みを。"},"八白土星":{tag:"改革",desc:"継承と革新を行う山。",advice:"一度決めたら止まらない突破力。"},"九紫火星":{tag:"先見",desc:"全てを明らかにする情熱家。",advice:"熱しやすく冷めやすい点に注意。"}},jukkan:{"甲(木)":{tag:"本質",desc:"大樹。向上心が強いリーダー。",advice:"柔軟性を持つパートナーと組むこと。"},"乙(木)":{tag:"本質",desc:"草花。環境適応力が高い。",advice:"組織の力を使ってください。"},"丙(火)":{tag:"本質",desc:"太陽。中心になる存在。",advice:"気分のムラを出さないこと。"},"丁(火)":{tag:"本質",desc:"灯火。鋭い洞察力。",advice:"小出しにガス抜きを。"},"戊(土)":{tag:"本質",desc:"山岳。信頼と信用の塊。",advice:"フットワークを軽く。"},"己(土)":{tag:"本質",desc:"田畑。人を育てる。",advice:"専門性を持つこと。"},"庚(金)":{tag:"本質",desc:"鋼鉄。改革力に優れる。",advice:"試練を歓迎せよ。"},"辛(金)":{tag:"本質",desc:"宝石。繊細で美意識が高い。",advice:"苦労は研磨剤。"},"壬(水)":{tag:"本質",desc:"大海。スケールが大きい。",advice:"堤防（ルール）を設けること。"},"癸(水)":{tag:"本質",desc:"雨露。隅々まで行き渡る。",advice:"積もり積もって決壊せぬよう。"}}};
         const CITIES=[{name:"Tokyo",tz:9},{name:"New York",tz:-5},{name:"London",tz:0},{name:"Paris",tz:1}];
         const CYCLES=[{name:"木星 (12y)",days:4333,color:"#D4AF37"},{name:"土星 (29.5y)",days:10759,color:"#A9A9A9"},{name:"火星 (780d)",days:780,color:"#FF4500"},{name:"金星 (584d)",days:584,color:"#FF69B4"},{name:"月相 (29.5d)",days:29.53,color:"#F0F8FF"},{name:"歳差 (26ky)",days:9414075,color:"#8A2BE2"}];
 
-        /* --- VISUAL ENGINE (DEEP STARS & BUCKYBALL) --- */
+        /* --- VISUAL ENGINE --- */
         class VisualEngine {
             constructor() {
                 this.scene = new THREE.Scene();
@@ -240,7 +239,7 @@
                 this.initScene(); this.animate();
             }
             initScene() {
-                // Core
+                // Dual Core
                 const g1 = new THREE.DodecahedronGeometry(2.2,0);
                 const m1 = new THREE.MeshBasicMaterial({color:0x00ffff, wireframe:true, transparent:true, opacity:0.8});
                 this.c1=new THREE.Mesh(g1,m1); this.scene.add(this.c1);
@@ -248,18 +247,18 @@
                 const m2 = new THREE.MeshBasicMaterial({color:0x0088ff, wireframe:true, transparent:true, opacity:0.4});
                 this.c2=new THREE.Mesh(g2,m2); this.scene.add(this.c2);
                 
-                // Layer 1: Deep Stars (Small, Many)
+                // Layer 1: Stars (Many, small)
                 const sG = new THREE.BufferGeometry(); const sP = new Float32Array(15000*3);
                 for(let i=0;i<15000*3;i++) sP[i]=(Math.random()-0.5)*2000;
                 sG.setAttribute('position',new THREE.BufferAttribute(sP,3));
-                this.stars1=new THREE.Points(sG,new THREE.PointsMaterial({color:0x8899aa,size:0.5,transparent:true,opacity:0.6}));
+                this.stars1=new THREE.Points(sG,new THREE.PointsMaterial({color:0x8899aa,size:0.6,transparent:true,opacity:0.7}));
                 this.scene.add(this.stars1);
 
-                // Layer 2: Bright Stars (Large, Few)
+                // Layer 2: Bright Stars (Few, Large)
                 const bG = new THREE.BufferGeometry(); const bP = new Float32Array(500*3);
                 for(let i=0;i<500*3;i++) bP[i]=(Math.random()-0.5)*1800;
                 bG.setAttribute('position',new THREE.BufferAttribute(bP,3));
-                this.stars2=new THREE.Points(bG,new THREE.PointsMaterial({color:0xffffff,size:1.5,transparent:true,opacity:0.9}));
+                this.stars2=new THREE.Points(bG,new THREE.PointsMaterial({color:0xffffff,size:1.8,transparent:true,opacity:0.9}));
                 this.scene.add(this.stars2);
 
                 // Planets (Classic 5)
@@ -295,38 +294,38 @@
         const app = {
             visual: null, isTuning: false, date: null,
             init: function() {
-                document.getElementById('start-screen').style.opacity = 0;
-                setTimeout(()=>document.getElementById('start-screen').style.display='none', 800);
-                this.visual = new VisualEngine(); app.audio.init();
-                const s = document.getElementById('inp-city');
-                CITIES.forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);s.add(o)});
+                try {
+                    document.getElementById('start-screen').style.opacity = 0;
+                    setTimeout(()=>document.getElementById('start-screen').style.display='none', 800);
+                    this.visual = new VisualEngine(); app.audio.init();
+                    const s = document.getElementById('inp-city');
+                    CITIES.forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);s.add(o)});
+                } catch(e) {
+                    alert("Init Error: " + e);
+                }
             },
             audio: {
-                ctx: null, mute: false, noise: null, filter: null,
+                ctx: null, mute: false, noise: null, filter: null, gain: null,
                 init: function() {
                     const AC = window.AudioContext || window.webkitAudioContext;
                     this.ctx = new AC();
-                    // Pink/Brown Noise Generation
+                    // Noise Gen (Pink/Brown)
                     const bSize = 2 * this.ctx.sampleRate;
-                    const noiseBuffer = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
-                    const output = noiseBuffer.getChannelData(0);
+                    const nBuf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
+                    const out = nBuf.getChannelData(0);
+                    let lastOut = 0; // FIX: Declaration Moved here
                     for (let i = 0; i < bSize; i++) {
-                        const white = Math.random() * 2 - 1;
-                        output[i] = (lastOut + (0.02 * white)) / 1.02;
-                        lastOut = output[i];
-                        output[i] *= 3.5; 
+                        const w = Math.random() * 2 - 1;
+                        out[i] = (lastOut + (0.02 * w)) / 1.02;
+                        lastOut = out[i];
+                        out[i] *= 3.5; 
                     }
-                    let lastOut = 0;
                     this.noise = this.ctx.createBufferSource();
-                    this.noise.buffer = noiseBuffer;
-                    this.noise.loop = true;
+                    this.noise.buffer = nBuf; this.noise.loop = true;
                     this.filter = this.ctx.createBiquadFilter();
-                    this.filter.type = 'lowpass';
-                    this.filter.frequency.value = 100; // Deep Space Hum
-                    this.gain = this.ctx.createGain();
-                    this.gain.gain.value = 0.15;
-                    this.noise.connect(this.filter);
-                    this.filter.connect(this.gain);
+                    this.filter.type = 'lowpass'; this.filter.frequency.value = 100;
+                    this.gain = this.ctx.createGain(); this.gain.gain.value = 0.15;
+                    this.noise.connect(this.filter); this.filter.connect(this.gain);
                     this.gain.connect(this.ctx.destination);
                     this.noise.start();
                 },
@@ -340,7 +339,7 @@
             },
             startSequence: function() {
                 const d = document.getElementById('inp-date').value;
-                if(!d) { alert("Please select a valid date."); return; }
+                if(!d) { alert("Please input a valid date."); return; }
                 this.date = new Date(d);
                 document.getElementById('input-container').style.opacity=0;
                 document.getElementById('input-container').style.pointerEvents='none';
@@ -349,32 +348,37 @@
                 setTimeout(()=>{ this.analyze(); },3000);
             },
             analyze: function() {
-                const bd = this.date; const y = bd.getFullYear();
-                const k = Astro.getKyusei(y); const j = Astro.getJukkan(y);
-                const kData = DICT.kyusei[k]; const jData = DICT.jukkan[j];
+                try {
+                    const bd = this.date; const y = bd.getFullYear();
+                    const k = Astro.getKyusei(y); const j = Astro.getJukkan(y);
+                    const kData = DICT.kyusei[k]; const jData = DICT.jukkan[j];
 
-                // Dashboard
-                const pG = document.getElementById('param-grid'); pG.innerHTML="";
-                CYCLES.forEach(c=>{ const s=Astro.getStats(bd,c.days); pG.innerHTML+=`<div class="param-item"><div class="param-head"><span style="color:${c.color}">● ${c.name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div><div class="param-meta"><span>Cycle #${s.c}</span><span>${Math.floor(c.days)} days</span></div></div>`; });
+                    // Dashboard
+                    const pG = document.getElementById('param-grid'); pG.innerHTML="";
+                    CYCLES.forEach(c=>{ const s=Astro.getStats(bd,c.days); pG.innerHTML+=`<div class="param-item"><div class="param-head"><span style="color:${c.color}">● ${c.name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div><div class="param-meta"><span>Cycle #${s.c}</span><span>${Math.floor(c.days)} days</span></div></div>`; });
 
-                // Strategy Text
-                const last = y%10; let st={};
-                if([6,7].includes(last)) st={t:"破壊と再生のワルツ",type:"MUTATION",col:"#9D00FF",b:`あなたの本質である「火（${j}）」とライオンズゲートが共鳴し、通常ではあり得ない化学反応が起きています。\n今はロジックより「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。`};
-                else if([0,1,8,9].includes(last)) st={t:"試練の坩堝 (The Crucible)",type:"CONFLICT",col:"#ff3366",b:`拡大しようとする木星のエネルギーと、固めようとするあなたの性質（${j}）が摩擦を起こしています。\nこれは故障ではなく「鍛造」です。今は外に出るより、内部システムの刷新（学習・組織化）にリソースを集中してください。`};
-                else st={t:"完全なる追い風",type:"SYNERGY",col:"#D4AF37",b:`全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）が運ぶ循環に入りました。\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今すぐ実行に移してください。`};
-                
-                document.getElementById('st-title').innerText=st.t; document.getElementById('st-type').innerText=st.type; 
-                document.getElementById('st-type').style.borderColor=st.col; document.getElementById('st-type').style.color=st.col;
-                document.getElementById('st-body').innerText=st.b; document.querySelector('.strategy-container').style.borderLeftColor=st.col;
+                    // Strategy Text
+                    const last = y%10; let st={};
+                    if([6,7].includes(last)) st={t:"破壊と再生のワルツ",type:"MUTATION",col:"#9D00FF",b:`あなたの本質である「火（${j}）」とライオンズゲートが共鳴し、通常ではあり得ない化学反応が起きています。\n今はロジックより「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。`};
+                    else if([0,1,8,9].includes(last)) st={t:"試練の坩堝 (The Crucible)",type:"CONFLICT",col:"#ff3366",b:`拡大しようとする木星のエネルギーと、固めようとするあなたの性質（${j}）が摩擦を起こしています。\nこれは故障ではなく「鍛造」です。今は外に出るより、内部システムの刷新（学習・組織化）にリソースを集中してください。`};
+                    else st={t:"完全なる追い風",type:"SYNERGY",col:"#D4AF37",b:`全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）が運ぶ循環に入りました。\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今すぐ実行に移してください。`};
+                    
+                    document.getElementById('st-title').innerText=st.t; document.getElementById('st-type').innerText=st.type; 
+                    document.getElementById('st-type').style.borderColor=st.col; document.getElementById('st-type').style.color=st.col;
+                    document.getElementById('st-body').innerText=st.b; document.querySelector('.strategy-container').style.borderLeftColor=st.col;
 
-                // 13 Grid
-                const gr = document.getElementById('grid-container'); gr.innerHTML="";
-                const items=[{t:"九星気学",v:k,...kData},{t:"十干十二支",v:j,...jData},{t:"木星位置",v:"双子座",tag:"拡大",desc:"情報と移動の領域での発展。",advice:"マルチタスク推奨。"},{t:"土星位置",v:"魚座",tag:"試練",desc:"精神的基盤の再構築。",advice:"内省の時間を。"},{t:"火星",v:"Active",tag:"情熱",desc:"自己表現の欲求。",advice:"衝動を作品へ。"},{t:"金星",v:"8年周期",tag:"価値",desc:"金融・美意識の再評価。",advice:"過去の刷新。"},{t:"月相",v:"29.5日",tag:"感情",desc:"内面バイオリズム。",advice:"直感に従うこと。"},{t:"ライオンズゲート",v:"Open",tag:"宇宙線",desc:"高次エネルギー流入。",advice:"変化を恐れないで。"},{t:"歳差運動",v:"水瓶座",tag:"文明",desc:"自律分散型社会へ。",advice:"個の確立。"},{t:"座標",v:bd.toLocaleDateString(),tag:"原点",desc:"時間座標ID。",advice:"運命の起点。"},{t:"三元九運",v:"第九運",tag:"時代",desc:"火の時代。",advice:"可視化が鍵。"},{t:"八卦",v:"震",tag:"行動",desc:"雷のような瞬発力。",advice:"即断即決。"},{t:"Gコンジャンクション",v:"風",tag:"変革",desc:"物質から情報へ。",advice:"所有より共有。"}]
-                items.forEach(i=>{ gr.innerHTML+=`<div class="info-card"><div class="card-head"><span class="card-name">${i.t}</span><span class="card-tag" style="border-color:var(--c-accent);color:var(--c-accent)">${i.tag}</span></div><div class="card-val">${i.v}</div><div class="card-desc">${i.desc}</div><div class="card-adv">💡 ${i.advice}</div></div>`});
+                    // 13 Grid
+                    const gr = document.getElementById('grid-container'); gr.innerHTML="";
+                    const items=[{t:"九星気学",v:k,...kData},{t:"十干十二支",v:j,...jData},{t:"木星位置",v:"双子座",tag:"拡大",desc:"情報と移動の領域での発展。",advice:"マルチタスク推奨。"},{t:"土星位置",v:"魚座",tag:"試練",desc:"精神的基盤の再構築。",advice:"内省の時間を。"},{t:"火星",v:"Active",tag:"情熱",desc:"自己表現の欲求。",advice:"衝動を作品へ。"},{t:"金星",v:"8年周期",tag:"価値",desc:"金融・美意識の再評価。",advice:"過去の刷新。"},{t:"月相",v:"29.5日",tag:"感情",desc:"内面バイオリズム。",advice:"直感に従うこと。"},{t:"ライオンズゲート",v:"Open",tag:"宇宙線",desc:"高次エネルギー流入。",advice:"変化を恐れないで。"},{t:"歳差運動",v:"水瓶座",tag:"文明",desc:"自律分散型社会へ。",advice:"個の確立。"},{t:"座標",v:bd.toLocaleDateString(),tag:"原点",desc:"時間座標ID。",advice:"運命の起点。"},{t:"三元九運",v:"第九運",tag:"時代",desc:"火の時代。",advice:"可視化が鍵。"},{t:"八卦",v:"震",tag:"行動",desc:"雷のような瞬発力。",advice:"即断即決。"},{t:"Gコンジャンクション",v:"風",tag:"変革",desc:"物質から情報へ。",advice:"所有より共有。"}]
+                    items.forEach(i=>{ gr.innerHTML+=`<div class="info-card"><div class="card-head"><span class="card-name">${i.t}</span><span class="card-tag" style="border-color:var(--c-accent);color:var(--c-accent)">${i.tag}</span></div><div class="card-val">${i.v}</div><div class="card-desc">${i.desc}</div><div class="card-adv">💡 ${i.advice}</div></div>`});
 
-                this.isTuning=false; app.audio.reset();
-                document.getElementById('synchro-overlay').style.opacity=0;
-                document.getElementById('result-overlay').classList.add('active');
+                    this.isTuning=false; app.audio.reset();
+                    document.getElementById('synchro-overlay').style.opacity=0;
+                    document.getElementById('result-overlay').classList.add('active');
+                } catch(e) {
+                    alert("Analysis Error: " + e);
+                    app.ui.reset();
+                }
             },
             ui: {
                 showMVP: function() {
