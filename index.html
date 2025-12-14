@@ -3,40 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Neural Network v7.5 [Global]</title>
+    <title>Cosmic Neural Network v9.4</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Sans+Devanagari:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
         /* --- TOKENS --- */
         :root {
-            --c-bg: #020205;
-            --c-accent: #00f0ff;
-            --c-accent-dim: rgba(0, 240, 255, 0.1);
-            --c-gold: #D4AF37;
-            --c-card-bg: rgba(12, 18, 30, 0.95);
-            --c-border: rgba(0, 240, 255, 0.3);
-            --font-main: 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans Devanagari', sans-serif;
-            --font-serif: 'Shippori Mincho', 'Noto Serif SC', serif;
-            --font-tech: 'Rajdhani', sans-serif;
+            --c-bg: #020205; --c-accent: #00f0ff; --c-accent-dim: rgba(0, 240, 255, 0.1);
+            --c-gold: #D4AF37; --c-card-bg: rgba(12, 18, 30, 0.95); --c-border: rgba(0, 240, 255, 0.3);
+            --f-en: 'Rajdhani', sans-serif; --f-jp: 'Noto Sans JP', sans-serif;
+            --f-zh: 'Noto Sans SC', sans-serif; --f-hi: 'Noto Sans Devanagari', sans-serif;
+            --f-serif: 'Shippori Mincho', serif;
         }
-
         * { box-sizing: border-box; }
-        body { margin: 0; overflow: hidden; background-color: var(--c-bg); font-family: var(--font-main); color: #fff; }
-
-        /* --- LAYOUT --- */
+        body { margin: 0; overflow: hidden; background-color: var(--c-bg); font-family: var(--f-jp); color: #fff; }
+        
+        /* LAYOUT */
         #canvas-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
         #app-layer { position: absolute; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* --- HEADER --- */
-        header { padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); pointer-events: auto; }
-        .brand h1 { font-family: var(--font-serif); font-size: 1.4rem; margin: 0; letter-spacing: 0.1em; background: linear-gradient(to right, #fff, #88ccee); -webkit-background-clip: text; color: transparent; }
-        
-        .header-controls { display: flex; gap: 10px; }
-        .nav-btn { background: rgba(0,0,0,0.5); border: 1px solid #334; color: #889; padding: 5px 12px; font-family: var(--font-tech); cursor: pointer; transition: 0.3s; z-index: 50; font-size: 0.8rem; }
-        .nav-btn:hover, .nav-btn.active { border-color: var(--c-accent); color: var(--c-accent); background: var(--c-accent-dim); }
+        /* HEADER */
+        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); pointer-events: auto; }
+        .brand h1 { 
+            font-family: var(--f-serif); font-weight: 600; font-size: 1.8rem; margin: 0; letter-spacing: 0.2em;
+            background: linear-gradient(to bottom, #ffffff, #aaccff); -webkit-background-clip: text; color: transparent;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+        .nav-menu { display: flex; gap: 10px; }
+        .nav-btn { background: rgba(0,0,0,0.5); border: 1px solid #334; color: #889; padding: 5px 12px; font-family: var(--f-en); cursor: pointer; transition: 0.3s; font-size: 0.8rem; }
+        .nav-btn:hover, .nav-btn.active { border-color: var(--c-accent); color: var(--c-accent); background: rgba(0,240,255,0.1); }
 
-        /* --- INPUT PANEL --- */
+        /* INPUT */
         #input-container {
             position: absolute; top: 50%; right: 5%; transform: translateY(-50%);
             width: 360px; background: rgba(10, 15, 25, 0.9); backdrop-filter: blur(20px);
@@ -44,114 +41,85 @@
             padding: 40px 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             transition: opacity 0.5s; pointer-events: auto; z-index: 20;
         }
-        .form-label { display: block; font-family: var(--font-tech); font-size: 0.7rem; color: #889; margin-bottom: 5px; letter-spacing: 0.15em; }
-        
-        /* New Date Inputs */
-        .date-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        .date-input { 
-            background: rgba(0,0,0,0.5); border: 1px solid #334; color: #fff; padding: 10px; 
-            font-family: var(--font-tech); font-size: 1.1rem; outline: none; transition: 0.3s; 
-            text-align: center;
-        }
-        .date-input:focus { border-color: var(--c-accent); background: rgba(0, 20, 30, 0.8); }
-        #inp-year { width: 40%; }
-        #inp-month, #inp-day { width: 30%; }
-
-        .form-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #334; color: #fff; padding: 10px; font-family: var(--font-tech); font-size: 1.1rem; outline: none; margin-bottom: 20px; transition: 0.3s; }
-        .form-input:focus { border-color: var(--c-accent); background: rgba(0, 20, 30, 0.8); }
-        
-        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, transparent, var(--c-accent-dim), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel', serif; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; text-transform: uppercase; }
+        .form-label { display: block; font-family: var(--f-en); font-size: 0.7rem; color: #889; margin-bottom: 5px; letter-spacing: 0.1em; text-transform: uppercase; }
+        .form-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #334; color: #fff; padding: 10px; font-family: var(--f-en); font-size: 1.1rem; outline: none; margin-bottom: 20px; }
+        .form-input:focus { border-color: var(--c-accent); }
+        select.form-input option { background: #000; color: #fff; }
+        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, transparent, var(--c-accent-dim), transparent); border: 1px solid var(--c-accent); color: var(--c-accent); font-family: 'Cinzel', serif; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 0.2em; }
         .submit-btn:hover { background: var(--c-accent); color: #000; box-shadow: 0 0 30px var(--c-accent); }
 
-        /* --- SYNCHRO OVERLAY --- */
+        /* SYNCHRO */
         #synchro-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.5s; background: rgba(0,0,0,0.8);
         }
-        .synchro-text { font-family: var(--font-tech); font-size: 2rem; color: var(--c-accent); letter-spacing: 0.5em; text-shadow: 0 0 20px var(--c-accent); text-align: center;}
-        .synchro-sub { font-family: var(--font-serif); font-size: 0.9rem; color: #fff; margin-top: 10px; letter-spacing: 0.2em; opacity: 0.8; text-align: center; }
+        .synchro-text { font-family: var(--f-en); font-size: 2rem; color: var(--c-accent); letter-spacing: 0.5em; text-shadow: 0 0 20px var(--c-accent); }
 
-        /* --- RESULT PANEL --- */
+        /* RESULT */
         #result-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 3, 5, 0.95); z-index: 30;
             display: flex; flex-direction: column; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.8s;
-            visibility: hidden;
+            opacity: 0; pointer-events: none; transition: opacity 0.8s; visibility: hidden;
         }
         #result-overlay.active { opacity: 1; pointer-events: auto; visibility: visible; }
-
         .result-scroll { width: 100%; max-width: 1200px; height: 100%; overflow-y: auto; padding: 40px 20px 120px 20px; }
         .result-scroll::-webkit-scrollbar { width: 6px; }
         .result-scroll::-webkit-scrollbar-thumb { background: #334; border-radius: 3px; }
 
+        /* BIRTH DATE DISPLAY */
+        .birth-display { text-align: center; margin-bottom: 30px; border-bottom: 1px solid #334; padding-bottom: 20px; }
+        .birth-label { font-family: var(--f-en); font-size: 0.8rem; color: var(--c-accent); letter-spacing: 0.2em; margin-bottom: 5px; }
+        .birth-value { font-family: var(--f-en); font-size: 2.5rem; color: #fff; letter-spacing: 0.1em; text-shadow: 0 0 10px rgba(0,240,255,0.3); font-weight: 300; }
+
         /* DASHBOARD */
         .dashboard-box { border: 1px solid #334455; background: rgba(5, 10, 20, 0.6); border-radius: 8px; padding: 30px; margin-bottom: 40px; }
-        .dash-title { font-size: 0.9rem; color: #8899aa; border-bottom: 1px solid #334; padding-bottom: 10px; margin-bottom: 20px; }
+        .dash-title { font-size: 0.9rem; color: #889; border-bottom: 1px solid #334; padding-bottom: 10px; margin-bottom: 20px; }
         .param-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
         .param-item { margin-bottom: 5px; }
         .param-head { display: flex; justify-content: space-between; font-size: 0.85rem; color: #fff; margin-bottom: 5px; }
         .param-bar-bg { width: 100%; height: 4px; background: #223; border-radius: 2px; overflow: hidden; }
         .param-bar-fill { height: 100%; background: var(--c-accent); width: 0%; transition: width 1.5s ease-out; box-shadow: 0 0 8px var(--c-accent); }
-        .param-meta { font-family: var(--font-tech); font-size: 0.7rem; color: #667; margin-top: 3px; display: flex; justify-content: space-between; }
 
         /* STRATEGY */
         .strategy-container { max-width: 900px; margin: 0 auto 50px auto; border-left: 4px solid var(--c-accent); background: linear-gradient(90deg, rgba(0,240,255,0.05), transparent); padding: 30px; }
-        .strategy-title { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 15px; color: #fff; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
-        .strategy-type { display: inline-block; font-family: var(--font-tech); color: var(--c-accent); border: 1px solid var(--c-accent); padding: 4px 12px; font-size: 0.8rem; letter-spacing: 0.1em; margin-bottom: 20px; }
+        .strategy-title { font-family: var(--f-serif); font-size: 1.8rem; margin-bottom: 15px; color: #fff; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
         .strategy-body { font-size: 1.05rem; line-height: 1.9; color: #ddd; text-align: justify; white-space: pre-wrap; }
 
         /* GRID */
-        .grid-header { font-family: 'Cinzel'; text-align: center; color: #667; letter-spacing: 0.3em; margin: 40px 0 20px 0; border-top: 1px dashed #334; padding-top: 20px; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
-        .info-card { background: var(--c-card-bg); border: 1px solid var(--c-border); border-radius: 4px; padding: 25px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.3s; }
-        .info-card:hover { border-color: #fff; transform: translateY(-3px); }
+        .grid-header { font-family: 'Cinzel', serif; text-align: center; color: #667; letter-spacing: 0.3em; margin: 40px 0 20px 0; border-top: 1px dashed #334; padding-top: 20px; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .info-card { background: var(--c-card-bg); border: 1px solid var(--c-border); border-radius: 4px; padding: 25px; display: flex; flex-direction: column; gap: 12px; }
         .card-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
-        .card-name { font-family: var(--font-serif); font-size: 1.1rem; color: #fff; font-weight: bold; }
-        .card-tag { font-size: 0.7rem; background: #112; color: var(--c-accent); border: 1px solid var(--c-accent); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
-        .card-val { font-family: var(--font-tech); font-size: 1rem; color: #ccc; }
-        .card-desc { font-size: 0.9rem; line-height: 1.7; color: #ddd; text-align: justify; }
-        .card-adv { font-size: 0.85rem; color: #9ab; margin-top: auto; padding-top: 12px; border-top: 1px dashed #445; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px; }
-        
-        /* PREMIUM GATE */
-        .premium-gate {
-            margin-top: 80px; padding: 50px 30px; text-align: center;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(0,0,0,0) 70%);
-            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 2px;
-            position: relative; overflow: hidden;
-        }
-        .premium-gate h3 { font-family: var(--font-serif); color: var(--c-gold); font-size: 1.6rem; margin-bottom: 15px; letter-spacing: 0.1em; }
-        .premium-gate p { color: #ccc; margin-bottom: 30px; font-size: 0.95rem; line-height: 1.8; font-family: var(--font-main); }
-        .premium-btn {
-            background: #000; border: 1px solid var(--c-gold); color: var(--c-gold);
-            padding: 18px 40px; font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 0.3em; cursor: pointer;
-            transition: 0.4s; position: relative; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-            text-transform: uppercase;
-        }
-        .premium-btn:hover { background: var(--c-gold); color: #000; box-shadow: 0 0 40px var(--c-gold); }
+        .card-name { font-size: 1.1rem; color: #fff; font-weight: bold; }
+        .card-val { font-family: var(--f-en); font-size: 1rem; color: #ccc; }
+        .card-desc { font-size: 0.9rem; line-height: 1.7; color: #ddd; }
+        .card-adv { font-size: 0.85rem; color: #9ab; margin-top: auto; padding-top: 12px; border-top: 1px dashed #445; }
 
-        /* MVP SCREEN */
-        #mvp-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 8, 0.98); z-index: 100;
-            display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: 1s;
-            visibility: hidden;
+        /* PREMIUM GATE (COMING SOON) */
+        .premium-gate { margin-top: 80px; padding: 50px 30px; text-align: center; background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(0,0,0,0) 70%); border: 1px solid rgba(212, 175, 55, 0.3); }
+        .premium-gate h3 { color: var(--c-gold); font-size: 1.6rem; margin-bottom: 15px; }
+        /* Disabled Button Style */
+        .premium-btn { 
+            background: #111; border: 1px solid #555; color: #777; 
+            padding: 15px 40px; font-family: 'Cinzel', serif; 
+            cursor: not-allowed; transition: 0.4s; opacity: 0.7;
         }
+        .premium-btn:hover { box-shadow: none; border-color: #555; color: #777; }
+
+        #mvp-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 8, 0.98); z-index: 100; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: 1s; visibility: hidden; }
         #mvp-screen.active { opacity: 1; pointer-events: auto; visibility: visible; }
-        .mvp-header { text-align: center; padding: 40px; border-bottom: 1px solid var(--c-gold); }
-        .mvp-title { font-family: var(--font-serif); color: var(--c-gold); font-size: 2rem; letter-spacing: 0.2em; }
         .mvp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; overflow-y: auto; }
-        .mvp-card { background: rgba(20, 15, 5, 0.8); border: 1px solid var(--c-gold); padding: 30px; border-radius: 4px; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.5); position: relative; }
-        .mvp-label { font-family: 'Cinzel'; color: var(--c-gold); font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 15px; }
-        .mvp-val { font-family: var(--font-serif); font-size: 1.5rem; color: #fff; margin-bottom: 20px; line-height: 1.4; }
+        .mvp-card { background: rgba(20, 15, 5, 0.8); border: 1px solid var(--c-gold); padding: 30px; display: flex; flex-direction: column; }
+        .mvp-label { font-family: 'Cinzel', serif; color: var(--c-gold); font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 15px; }
+        .mvp-val { font-family: var(--f-serif); font-size: 1.5rem; color: #fff; margin-bottom: 20px; line-height: 1.4; border-bottom:1px solid #334; padding-bottom:10px; }
         .mvp-desc { font-size: 0.9rem; color: #ccc; line-height: 1.8; text-align: justify; }
-        .back-btn { position: absolute; top: 20px; right: 20px; color: #666; cursor: pointer; font-size: 2rem; transition: 0.3s; }
-        .back-btn:hover { color: #fff; }
+        .back-btn { position: absolute; top: 20px; right: 20px; color: #666; cursor: pointer; font-size: 2rem; }
 
         /* FOOTER */
-        .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #05080c; border-top: 1px solid #334; padding: 15px; display: flex; justify-content: center; gap: 15px; z-index: 30; pointer-events: auto; }
-        .action-btn { background: transparent; border: 1px solid #556; color: #889; padding: 10px 30px; font-family: var(--font-tech); cursor: pointer; transition: 0.2s; }
+        .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #05080c; border-top: 1px solid #334; padding: 15px; display: flex; justify-content: center; gap: 15px; z-index: 30; }
+        .action-btn { background: transparent; border: 1px solid #556; color: #889; padding: 10px 30px; cursor: pointer; transition: 0.2s; }
         .action-btn:hover { border-color: var(--c-accent); color: var(--c-accent); }
 
         #start-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; background: rgba(2,2,5,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s; }
@@ -160,84 +128,76 @@
 <body>
 
     <div id="start-screen">
-        <h1 style="font-family:'Shippori Mincho'; font-size:2.5rem; color:#fff;" data-key="title_main">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v7.5</p>
-        <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()" data-key="btn_init">INITIALIZE SYSTEM</button>
+        <h1 style="font-family:'Shippori Mincho', serif; font-size:2.5rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent;" id="t-start-title">周期律分析</h1>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v9.4</p>
+        <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()" id="t-start-btn">INITIALIZE SYSTEM</button>
     </div>
 
     <div id="canvas-wrapper"></div>
 
     <div id="app-layer">
         <header>
-            <div class="brand"><h1 data-key="title_main">周期律分析</h1></div>
-            <div class="header-controls">
+            <div class="brand"><h1 id="t-header">周期律分析</h1></div>
+            <div class="nav-menu">
                 <button class="nav-btn active" onclick="app.setLang('ja')">JP</button>
                 <button class="nav-btn" onclick="app.setLang('en')">EN</button>
-                <button class="nav-btn" onclick="app.setLang('hi')">HI</button>
                 <button class="nav-btn" onclick="app.setLang('zh')">ZH</button>
-                <button class="nav-btn" onclick="app.audio.toggle()" id="btn-audio">AUDIO: ON</button>
+                <button class="nav-btn" onclick="app.setLang('hi')">HI</button>
+                <button class="nav-btn" onclick="app.audio.toggle()" id="btn-audio">AUDIO</button>
             </div>
         </header>
 
         <div id="input-container">
-            <label class="form-label" data-key="lbl_date">Birth Date (YYYY / MM / DD)</label>
-            <div class="date-row">
-                <input type="text" id="inp-year" class="date-input" placeholder="1995" maxlength="4">
-                <input type="text" id="inp-month" class="date-input" placeholder="08" maxlength="2">
-                <input type="text" id="inp-day" class="date-input" placeholder="08" maxlength="2">
-            </div>
-
-            <label class="form-label" data-key="lbl_time">Birth Time</label>
+            <label class="form-label" id="l-date">Birth Date</label>
+            <input type="date" id="inp-date" class="form-input" value="1995-08-08">
+            <label class="form-label" id="l-time">Birth Time</label>
             <input type="time" id="inp-time" class="form-input" value="12:00">
-            <label class="form-label" data-key="lbl_loc">Location</label>
+            <label class="form-label" id="l-loc">Location</label>
             <select id="inp-city" class="form-input"></select>
-            <button class="submit-btn" onclick="app.startSequence()" data-key="btn_start">START ANALYSIS</button>
+            <button class="submit-btn" onclick="app.startSequence()" id="b-analyze">START ANALYSIS</button>
         </div>
 
         <div id="synchro-overlay">
-            <div class="synchro-text" id="sync-text">TUNING...</div>
-            <div class="synchro-sub" id="sync-sub">Aligning Vectors with Cosmic Cycles</div>
+            <div class="synchro-text" id="t-sync">TUNING...</div>
+            <div class="synchro-sub" id="t-sync-sub">Aligning Vectors</div>
         </div>
 
         <div id="result-overlay">
             <div class="result-scroll" id="capture-target">
+                <div class="birth-display">
+                    <div class="birth-label" id="l-coord">COSMIC COORDINATE ID</div>
+                    <div class="birth-value" id="res-birthdate">----.--.--</div>
+                </div>
+
                 <div class="dashboard-box">
-                    <div class="dash-title" data-key="dash_title">あなたの現在位置 (サイクル進行度)</div>
+                    <div class="dash-title" id="t-dash">Cycle Dashboard</div>
                     <div class="param-grid" id="param-grid"></div>
                 </div>
-
                 <div class="strategy-container">
                     <div class="strategy-title" id="st-title">ANALYZING...</div>
-                    <div class="strategy-type" id="st-type">CALCULATING VECTOR</div>
                     <div class="strategy-body" id="st-body"></div>
                 </div>
-
-                <div class="grid-header">SOURCE CODE: 13 DIMENSIONS</div>
+                <div class="grid-header" id="t-grid">13 DIMENSIONS</div>
                 <div class="grid-container" id="grid-container"></div>
-
+                
                 <div class="premium-gate">
-                    <h3 data-key="prem_title">THE HIDDEN LAYER</h3>
-                    <p data-key="prem_desc">この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。<br>なぜ、この時代を選んだのか？ 誰と出会う運命なのか？<br>13次元のさらに奥、魂の青写真（ブループリント）にアクセスしますか？</p>
-                    <button class="premium-btn" onclick="app.ui.showMVP()" data-key="btn_unlock">UNLOCK DEEP CORE</button>
+                    <h3 id="t-prem-title">THE HIDDEN LAYER</h3>
+                    <p id="t-prem-desc">Unlock the deep core analysis.</p>
+                    <button class="premium-btn" id="b-prem">COMING SOON</button>
                 </div>
             </div>
-
             <div class="action-bar">
-                <button class="action-btn" onclick="app.export()" data-key="btn_save">📷 SAVE</button>
-                <button class="action-btn" onclick="app.reset()" data-key="btn_reset">↺ RESET</button>
+                <button class="action-btn" onclick="app.export()" id="b-save">SAVE</button>
+                <button class="action-btn" onclick="app.reset()" id="b-reset">RESET</button>
             </div>
         </div>
 
         <div id="mvp-screen">
             <span class="back-btn" onclick="app.ui.hideMVP()">×</span>
-            <div class="mvp-header">
-                <div class="mvp-title">MVP CORE ANALYSIS</div>
-                <p style="color:#aaa; letter-spacing:0.2em; margin-top:10px;">AKASHIC RECORD ACCESS</p>
-            </div>
+            <div class="mvp-header"><div class="mvp-title">MVP CORE ANALYSIS</div></div>
             <div class="mvp-grid" id="mvp-grid"></div>
             <div style="text-align:center; padding-bottom:40px;">
-                <p style="color:#666; margin-bottom:20px;" data-key="mvp_footer">Analysis Complete. Full session required for further dimensions.</p>
-                <button class="nav-btn" onclick="app.ui.hideMVP()" data-key="btn_return">RETURN TO SURFACE</button>
+                <button class="nav-btn" style="font-size:1rem; padding:15px 40px;" onclick="app.ui.hideMVP()" id="b-back">RETURN</button>
             </div>
         </div>
     </div>
@@ -246,326 +206,71 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <script>
-        /* --- TRANSLATION DATABASE --- */
-        const TRANSLATION = {
+        /* --- RICH DATA --- */
+        const DICT_JA_DETAIL = {
+            kyusei:{"一白水星":"柔軟で秘密主義的な知性派。","二黒土星":"包容力と着実な育成能力。","三碧木星":"瞬発力とパイオニア精神。","四緑木星":"縁を運ぶコミュニケーター。","五黄土星":"破壊と再生のカリスマ。","六白金星":"高潔なリーダー。","七赤金星":"喜びと収穫の星。","八白土星":"継承と革新を行う山。","九紫火星":"全てを明らかにする情熱家。"},
+            jukkan:{"甲(木)":"大樹。向上心が強い。","乙(木)":"草花。環境適応力が高い。","丙(火)":"太陽。中心になる存在。","丁(火)":"灯火。鋭い洞察力。","戊(土)":"山岳。信頼と信用の塊。","己(土)":"田畑。人を育てる。","庚(金)":"鋼鉄。改革力に優れる。","辛(金)":"宝石。繊細で美意識が高い。","壬(水)":"大海。スケールが大きい。","癸(水)":"雨露。隅々まで行き渡る。"}
+        };
+
+        const LANG = {
             ja: {
-                title_main: "周期律分析",
-                btn_init: "システム起動",
-                lbl_date: "生年月日 (年 / 月 / 日)",
-                lbl_time: "出生時間",
-                lbl_loc: "出生地 (都市)",
-                btn_start: "解析開始",
-                dash_title: "現在位置 (サイクル進行度)",
-                prem_title: "深層レイヤー (THE HIDDEN LAYER)",
-                prem_desc: "この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。<br>なぜ、この時代を選んだのか？ 誰と出会う運命なのか？<br>13次元のさらに奥、魂の青写真にアクセスしますか？",
-                btn_unlock: "コア・ロック解除",
-                btn_save: "📷 保存",
-                btn_reset: "↺ リセット",
-                btn_return: "表層へ戻る",
-                mvp_footer: "解析完了。更なる次元へはフルセッションが必要です。",
-                sync_t: "同調中...",
-                sync_s: "宇宙サイクルとベクトルを整合中",
-                deep_t: "深層ダイブ中...",
-                deep_s: "魂の契約とX-DAY座標へアクセス中",
-                st_mut: {t: "破壊と再生のワルツ", b: "あなたの本質である「火」とライオンズゲートが共鳴し、通常ではあり得ない化学反応が起きています。\n今はロジックより「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。"},
-                st_con: {t: "試練の坩堝 (The Crucible)", b: "拡大しようとする木星のエネルギーと、固めようとするあなたの性質が摩擦を起こしています。\nこれは故障ではなく「鍛造」です。今は外に出るより、内部システムの刷新（学習・組織化）にリソースを集中してください。"},
-                st_syn: {t: "完全なる追い風", b: "全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）が運ぶ循環に入りました。\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今すぐ実行に移してください。"},
-                grid_labels: ["九星気学","十干","木星位置","土星位置","火星","金星","月相","ライオンズゲート","歳差運動","座標","三元九運","八卦","G合相"],
-                mvp_labels: ["ビジネスの好機", "魂の契約", "リスク管理"],
-                mvp_vals: ["X-DAY", "ターゲット", "空亡期間"],
-                mvp_descs: [
-                    "你的バイオリズムと社会的成功運が交差する「絶対吉日」。法人登記、大型契約、リリースに最適な一点です。",
-                    "あなたが今世で契約を結んでいる「魂のビジネスパートナー」の特性。互いの欠落を埋め、事業を拡大させるための戦略的相性を持つ人物像です。",
-                    "いわゆる「充電と研究開発」の期間です。守りを固め、内製化を進めることで、明けの年にロケットスタートが切れます。"
-                ],
-                kyusei: [
-                    {n:"一白水星", t:"思考", d:"柔軟で秘密主義的な知性派。", a:"参謀としてのポジションが吉。"},
-                    {n:"二黒土星", t:"基盤", d:"包容力と着実な育成能力。", a:"「継続」を武器にしてください。"},
-                    {n:"三碧木星", t:"初動", d:"瞬発力とパイオニア精神。", a:"スタートダッシュは最強。"},
-                    {n:"四緑木星", t:"調整", d:"縁を運ぶコミュニケーター。", a:"八方美人にならず絞り込むこと。"},
-                    {n:"五黄土星", t:"帝王", d:"破壊と再生のカリスマ。", a:"独善的にならぬよう注意。"},
-                    {n:"六白金星", t:"決断", d:"高潔なリーダー。", a:"正論は人を傷つけます。寛容さを。"},
-                    {n:"七赤金星", t:"経済", d:"喜びと収穫の星。", a:"楽しさを収益化する仕組みを。"},
-                    {n:"八白土星", t:"改革", d:"継承と革新を行う山。", a:"一度決めたら止まらない突破力。"},
-                    {n:"九紫火星", t:"先見", d:"全てを明らかにする情熱家。", a:"熱しやすく冷めやすい点に注意。"}
-                ],
-                jukkan: [
-                    {n:"甲(木)", t:"本質", d:"大樹。向上心が強いリーダー。", a:"柔軟性を持つパートナーと組むこと。"},
-                    {n:"乙(木)", t:"本質", d:"草花。環境適応力が高い。", a:"組織の力を使ってください。"},
-                    {n:"丙(火)", t:"本質", d:"太陽。中心になる存在。", a:"気分のムラを出さないこと。"},
-                    {n:"丁(火)", t:"本質", d:"灯火。鋭い洞察力。", a:"小出しにガス抜きを。"},
-                    {n:"戊(土)", t:"本質", d:"山岳。信頼と信用の塊。", a:"フットワークを軽く。"},
-                    {n:"己(土)", t:"本質", d:"田畑。人を育てる。", a:"専門性を持つこと。"},
-                    {n:"庚(金)", t:"本質", d:"鋼鉄。改革力に優れる。", a:"試練を歓迎せよ。"},
-                    {n:"辛(金)", t:"本質", d:"宝石。繊細で美意識が高い。", a:"苦労は研磨剤。"},
-                    {n:"壬(水)", t:"本質", d:"大海。スケールが大きい。", a:"堤防（ルール）を設けること。"},
-                    {n:"癸(水)", t:"本質", d:"雨露。隅々まで行き渡る。", a:"積もり積もって決壊せぬよう。"}
-                ],
-                cycles: ["木星", "土星", "火星", "金星", "月相", "歳差"],
-                grid_fixed: [
-                    {v:"双子座", t:"拡大", d:"情報と移動領域での発展", a:"マルチタスク推奨。"},
-                    {v:"双魚座", t:"試練", d:"精神的基盤の再構築", a:"内省の時間を。"},
-                    {v:"Active", t:"情熱", d:"自己表現の欲求", a:"衝動を作品へ。"},
-                    {v:"8年周期", t:"価値", d:"金融、美意識の再評価", a:"過去の刷新。"},
-                    {v:"29.5日", t:"感情", d:"内面バイオリズム", a:"直感に従うこと。"},
-                    {v:"Open", t:"宇宙線", d:"高次エネルギー流入", a:"変化を恐れないで。"},
-                    {v:"水瓶座", t:"文明", d:"自律分散型社会", a:"個の確立。"},
-                    {v:"TimeID", t:"原点", d:"時間座標ID", a:"運命の起点。"},
-                    {v:"第九運", t:"時代", d:"火の時代", a:"可視化が鍵。"},
-                    {v:"震", t:"行動", d:"如雷般的爆发力", a:"即断即決。"},
-                    {v:"風", t:"変革", d:"物質から情報へ", a:"所有より共有。"}
-                ]
+                title: "周期律分析", start: "システム起動", analyze: "解析開始",
+                date: "生年月日", time: "出生時間", loc: "出生地", coord: "宇宙座標ID",
+                dash: "あなたの現在位置 (サイクル進行度)", grid: "13次元ソースコード",
+                save: "画像保存", reset: "リセット", audio: "音声: ON/OFF",
+                premT: "深層レイヤー", premD: "この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。\nなぜ、この時代を選んだのか？ 誰と出会う運命なのか？\n13次元のさらに奥、魂の青写真（ブループリント）にアクセスしますか？", premB: "準備中 (Coming Soon)",
+                sync: "意識同調中...", syncS: "宇宙サイクルとベクトルを調整しています",
+                mvp: ["ビジネス好機 (X-DAY)", "魂の契約 (Partner)", "リスク管理 (Void)"],
+                stT: ["破壊と再生のワルツ", "試練の坩堝 (The Crucible)", "完全なる追い風"],
+                stB: ["あなたの本質である「火」のエネルギーと、現在開いているライオンズゲートの宇宙線が共鳴し、通常ではあり得ない化学反応を起こしています。\n\n今はロジックよりも「違和感」を信じてください。既存のレールを破壊し、新しい軌道を敷くべきタイミングです。破壊は恐怖ではなく、進化のための祝祭です。", "拡大しようとする木星のエネルギーと、固めようとするあなたの性質が摩擦を起こしています。\n\nこれは故障ではなく「鍛造」のプロセスです。今は外に出るよりも、内部システムの刷新（学習・組織化・契約の見直し）にリソースを集中してください。この時期に蓄えた力は、半年後に爆発的な利益を生みます。", "全パラメータが噛み合っています。水（知性）が木（あなた）を育て、風（時代）がそれを運ぶ、完璧な循環に入りました。\n\nあなたが放つ矢は、風に乗って想定以上の距離へ届きます。遠慮は罪です。今まで温めてきた計画を、今すぐ実行に移してください。失敗という概念が一時的に消失しています。"],
+                items: { k:"九星気学",j:"十干十二支",jup:"木星位置",sat:"土星位置",mars:"火星",ven:"金星",moon:"月相",gate:"ライオンズゲート",pre:"歳差運動",co:"座標",era:"三元九運",bag:"八卦",gc:"Gコンジャンクション" }
             },
             en: {
-                title_main: "Periodicity Analysis",
-                btn_init: "INITIALIZE SYSTEM",
-                lbl_date: "Birth Date (YYYY / MM / DD)",
-                lbl_time: "Birth Time",
-                lbl_loc: "Location",
-                btn_start: "START ANALYSIS",
-                dash_title: "Current Coordinates (Cycle Progress)",
-                prem_title: "THE HIDDEN LAYER",
-                prem_desc: "This reality may be the result of a 'contract' made before birth.<br>Why this era? Who are you destined to meet?<br>Access the Soul Blueprint beyond the 13th dimension?",
-                btn_unlock: "UNLOCK DEEP CORE",
-                btn_save: "📷 SAVE",
-                btn_reset: "↺ RESET",
-                btn_return: "RETURN TO SURFACE",
-                mvp_footer: "Analysis Complete. Full session required for further dimensions.",
-                sync_t: "TUNING...",
-                sync_s: "Aligning Vectors with Cosmic Cycles",
-                deep_t: "DEEP DIVING...",
-                deep_s: "Accessing Soul Contracts & X-DAY Coordinates",
-                st_mut: {t: "Waltz of Destruction & Rebirth", b: "Your essence 'Fire' resonates with the Lions Gate, causing an impossible chemical reaction.\nTrust 'discomfort' over logic now. Destroy existing rails and lay a new orbit."},
-                st_con: {t: "The Crucible", b: "Jupiter's expansion energy friction with your solidifying nature.\nThis is not a failure but 'forging'. Focus resources on internal system renovation (learning/organizing) rather than going out."},
-                st_syn: {t: "The Perfect Tailwind", b: "All parameters are meshing. Water (Intellect) feeds Wood (You), and Wind (Era) carries you.\nYour arrow will reach further than expected. Hesitation is a sin. Execute now."},
-                grid_labels: ["9 Star Ki","10 Stems","Jupiter","Saturn","Mars","Venus","Moon Phase","Lions Gate","Precession","Coordinate","Era 9","Bagua","G-Conjunction"],
-                mvp_labels: ["BUSINESS TIMING", "SOUL CONTRACT", "RISK MANAGEMENT"],
-                mvp_vals: ["X-DAY", "Target", "Void Period"],
-                mvp_descs: [
-                    "Absolute auspicious day where your biorhythm and social success luck intersect. Best for incorporation, large contracts, and releases.",
-                    "Characteristics of your 'Soul Business Partner' contracted in this life. Strategic compatibility to fill each other's voids and expand business.",
-                    "Period for 'Charging & R&D'. By fortifying defenses and internalizing, you can rocket start in the dawn year."
-                ],
-                kyusei: [
-                    {n:"1 Water", t:"Thinker", d:"Flexible & secretive intellect.", a:"Staff officer position is lucky."},
-                    {n:"2 Earth", t:"Base", d:"Tolerance & steady growth.", a:"Use 'continuity' as a weapon."},
-                    {n:"3 Wood", t:"Starter", d:"Instant power & pioneer spirit.", a:"Start dash is strongest."},
-                    {n:"4 Wood", t:"Adjuster", d:"Communicator bringing luck.", a:"Don't be everyone's friend; focus."},
-                    {n:"5 Earth", t:"Emperor", d:"Charisma of destruction/creation.", a:"Avoid self-righteousness."},
-                    {n:"6 Metal", t:"Leader", d:"Noble leader.", a:"Logic hurts others; have tolerance."},
-                    {n:"7 Metal", t:"Economy", d:"Star of joy & harvest.", a:"Monetize fun."},
-                    {n:"8 Earth", t:"Reform", d:"Mountain of succession/innovation.", a:"Unstoppable breakthrough force."},
-                    {n:"9 Fire", t:"Vision", d:"Passionate revealer.", a:"Beware of cooling down too fast."}
-                ],
-                jukkan: [
-                    {n:"Yang Wood", t:"Essence", d:"Big Tree. Ambitious leader.", a:"Partner with flexibility."},
-                    {n:"Yin Wood", t:"Essence", d:"Flower. High adaptation.", a:"Use organizational power."},
-                    {n:"Yang Fire", t:"Essence", d:"Sun. Central existence.", a:"Avoid mood swings."},
-                    {n:"Yin Fire", t:"Essence", d:"Candle. Sharp insight.", a:"Vent regularly."},
-                    {n:"Yang Earth", t:"Essence", d:"Mountain. Trustworthy mass.", a:"Keep footwork light."},
-                    {n:"Yin Earth", t:"Essence", d:"Field. Nurturing others.", a:"Have a specialty."},
-                    {n:"Yang Metal", t:"Essence", d:"Steel. Excellent reform.", a:"Welcome trials."},
-                    {n:"Yin Metal", t:"Essence", d:"Gem. Delicate aesthetic.", a:"Hardship is polish."},
-                    {n:"Yang Water", t:"Essence", d:"Ocean. Large scale.", a:"Set rules (dykes)."},
-                    {n:"Yin Water", t:"Essence", d:"Rain. Reaching everywhere.", a:"Don't let it accumulate to burst."}
-                ],
-                cycles: ["Jupiter", "Saturn", "Mars", "Venus", "Moon", "Precession"],
-                grid_fixed: [
-                    {v:"Gemini", t:"Expansion", d:"Dev in Info & Travel", a:"Multitask."},
-                    {v:"Pisces", t:"Ordeal", d:"Rebuild Spiritual Base", a:"Introspection."},
-                    {v:"Active", t:"Passion", d:"Desire for Expression", a:"Impulse to Art."},
-                    {v:"8y Cycle", t:"Value", d:"Re-eval Finance/Beauty", a:"Refresh Past."},
-                    {v:"29.5d", t:"Emotion", d:"Inner Biorhythm", a:"Follow Intuition."},
-                    {v:"Open", t:"Cosmic Ray", d:"High Dimension Energy", a:"Fear no Change."},
-                    {v:"Aquarius", t:"Civilization", d:"Decentralized Society", a:"Individualism."},
-                    {v:"TimeID", t:"Origin", d:"Temporal Coord", a:"Fate Start Point."},
-                    {v:"Period 9", t:"Era", d:"Age of Fire", a:"Visualization is Key."},
-                    {v:"Thunder", t:"Action", d:"Flash like Lightning", a:"Decide Instantly."},
-                    {v:"Air", t:"Reform", d:"Matter to Info", a:"Share, don't Own."}
-                ]
-            },
-            hi: {
-                title_main: "आवधिकता विश्लेषण",
-                btn_init: "सिस्टम आरंभ करें",
-                lbl_date: "जन्म तिथि (वर्ष / महीना / दिन)",
-                lbl_time: "जन्म समय",
-                lbl_loc: "स्थान",
-                btn_start: "विश्लेषण प्रारंभ",
-                dash_title: "वर्तमान निर्देशांक (चक्र प्रगति)",
-                prem_title: "छिपी हुई परत (HIDDEN LAYER)",
-                prem_desc: "यह वास्तविकता जन्म से पहले किए गए 'अनुबंध' का परिणाम हो सकती है।<br>यह युग क्यों? आप किससे मिलने के लिए अभिशप्त हैं?<br>13वें आयाम से परे आत्मा के ब्लूप्रिंट तक पहुंचें?",
-                btn_unlock: "डीप कोर अनलॉक करें",
-                btn_save: "📷 सहेजें",
-                btn_reset: "↺ रीसेट",
-                btn_return: "सतह पर वापस आएं",
-                mvp_footer: "विश्लेषण पूर्ण। आगे के आयामों के लिए पूर्ण सत्र आवश्यक है।",
-                sync_t: "ट्यूनिंग...",
-                sync_s: "ब्रह्मांडीय चक्रों के साथ वैक्टर संरेखित करना",
-                deep_t: "गहरा गोता...",
-                deep_s: "आत्मा अनुबंध और एक्स-डे निर्देशांक तक पहुंचना",
-                st_mut: {t: "विनाश और पुनर्जन्म का वाल्ट्ज", b: "आपका सार 'अग्नि' लायंस गेट के साथ गूंजता है, जिससे एक असंभव रासायनिक प्रतिक्रिया होती है।\nतर्क से अधिक 'असहजता' पर भरोसा करें। मौजूदा रेल को नष्ट करें और नई कक्षा बिछाएं।"},
-                st_con: {t: "अग्नि परीक्षा (The Crucible)", b: "बृहस्पति की विस्तार ऊर्जा और आपकी ठोस प्रकृति के बीच घर्षण हो रहा है।\nयह विफलता नहीं बल्कि 'गढ़ाई' है। बाहर जाने के बजाय आंतरिक प्रणाली के नवीनीकरण (सीखने/व्यवस्थित करने) पर ध्यान केंद्रित करें।"},
-                st_syn: {t: "पूर्ण अनुकूल हवा", b: "सभी पैरामीटर मिल रहे हैं। जल (बुद्धि) लकड़ी (आप) को पोषण देता है, और हवा (युग) आपको ले जाती है।\nआपका तीर अपेक्षा से अधिक दूर तक पहुंचेगा। संकोच पाप है। अभी निष्पादित करें।"},
-                grid_labels: ["9 सितारे","10 तने","बृहस्पति","शनि","मंगल","शुक्र","चंद्र चरण","लायंस गेट","अयन","निर्देशांक","काल 9","बगुआ","जी-संयुग्मन"],
-                mvp_labels: ["व्यापार समय", "आत्मा अनुबंध", "जोखिम प्रबंधन"],
-                mvp_vals: ["एक्स-डे", "लक्ष्य", "शून्य अवधि"],
-                mvp_descs: [
-                    "पूर्ण शुभ दिन जहां आपका biorhythm और सामाजिक सफलता का भाग्य एक दूसरे को काटते हैं।",
-                    "इस जीवन में अनुबंधित आपके 'सोच व्यापार भागीदार' की विशेषताएं।",
-                    "'चार्जिंग और आर एंड डी' की अवधि। सुरक्षा को मजबूत करके, आप रॉकेट शुरुआत कर सकते हैं।"
-                ],
-                kyusei: [
-                    {n:"1 जल", t:"विचारक", d:"लचीली और गुप्त बुद्धि।", a:"स्टाफ अधिकारी की स्थिति भाग्यशाली है।"},
-                    {n:"2 पृथ्वी", t:"आधार", d:"सहनशीलता और स्थिर विकास।", a:"हथियार के रूप में 'निरंतरता' का प्रयोग करें।"},
-                    {n:"3 लकड़ी", t:"स्टार्टर", d:"तत्काल शक्ति और अग्रणी भावना।", a:"स्टार्ट डैश सबसे मजबूत है।"},
-                    {n:"4 लकड़ी", t:"समायोजक", d:"भाग्य लाने वाला संचारक।", a:"हर किसी के दोस्त न बनें; ध्यान केंद्रित करें।"},
-                    {n:"5 पृथ्वी", t:"सम्राट", d:"विनाश/सृजन का करिश्मा।", a:"आत्म-धार्मिकता से बचें।"},
-                    {n:"6 धातु", t:"नेता", d:"नेक नेता।", a:"तर्क दूसरों को चोट पहुँचाता है; सहनशीलता रखें।"},
-                    {n:"7 धातु", t:"अर्थव्यवस्था", d:"हर्ष और फसल का तारा।", a:"मजे का मुद्रीकरण करें।"},
-                    {n:"8 पृथ्वी", t:"सुधार", d:"उत्तराधिकार/नवाचार का पर्वत।", a:"अजेय सफलता बल।"},
-                    {n:"9 अग्नि", t:"दृष्टि", d:"भावुक प्रकटीकरण।", a:"बहुत जल्दी ठंडा होने से सावधान रहें।"}
-                ],
-                jukkan: [
-                    {n:"यांग लकड़ी", t:"सार", d:"बड़ा पेड़। महत्वाकांक्षी नेता।", a:"लचीलेपन के साथ भागीदार।"},
-                    {n:"यिन लकड़ी", t:"सार", d:"फूल। उच्च अनुकूलन।", a:"संगठनात्मक शक्ति का प्रयोग करें।"},
-                    {n:"यांग अग्नि", t:"सार", d:"सूर्य। केंद्रीय अस्तित्व।", a:"मूड स्विंग से बचें।"},
-                    {n:"यिन अग्नि", t:"सार", d:"मोमबत्ती। तेज अंतर्दृष्टि।", a:"नियमित रूप से बाहर निकालें।"},
-                    {n:"यांग पृथ्वी", t:"सार", d:"पर्वत। भरोसेमंद द्रव्यमान।", a:"पैरों का काम हल्का रखें।"},
-                    {n:"यिन पृथ्वी", t:"सार", d:"मैदान। दूसरों का पोषण।", a:"एक विशेषज्ञता रखें।"},
-                    {n:"यांग धातु", t:"सार", d:"इस्पात। उत्कृष्ट सुधार।", a:"परीक्षणों का स्वागत करें।"},
-                    {n:"यिन धातु", t:"सार", d:"रत्न। नाजुक सौंदर्य।", a:"कठिनाई पॉलिश है।"},
-                    {n:"यांग जल", t:"सार", d:"महासागर। बड़े पैमाने पर।", a:"नियम निर्धारित करें।"},
-                    {n:"यिन जल", t:"सार", d:"वर्षा। हर जगह पहुंचना।", a:"इसे फटने के लिए जमा न होने दें।"}
-                ],
-                cycles: ["बृहस्पति", "शनि", "मंगल", "शुक्र", "चंद्रमा", "अयन"],
-                grid_fixed: [
-                    {v:"मिथुन", t:"विस्तार", d:"जानकारी और यात्रा में देव", a:"मल्टीटास्क।"},
-                    {v:"मीन", t:"अग्नि परीक्षा", d:"आध्यात्मिक आधार का पुनर्निर्माण", a:"आत्मनिरीक्षण।"},
-                    {v:"सक्रिय", t:"जुनून", d:"अभिव्यक्ति की इच्छा", a:"कला की ओर आवेग।"},
-                    {v:"8 वर्ष", t:"मूल्य", d:"वित्त/सौंदर्य का पुनर्मूल्यांकन", a:"अतीत को ताज़ा करें।"},
-                    {v:"29.5 दिन", t:"भावना", d:"आंतरिक biorhythm", a:"अंतर्ज्ञान का पालन करें।"},
-                    {v:"खुला", t:"कॉस्मिक किरण", d:"उच्च आयाम ऊर्जा", a:"परिवर्तन से न डरें।"},
-                    {v:"कुंभ", t:"सभ्यता", d:"विकेंद्रीकृत समाज", a:"व्यवाद।"},
-                    {v:"TimeID", t:"मूल", d:"अस्थायी निर्देशांक", a:"भाग्य प्रारंभ बिंदु।"},
-                    {v:"अवधि 9", t:"युग", d:"अग्नि का युग", a:"दृश्यता कुंजी है।"},
-                    {v:"वज्र", t:"क्रिया", d:"बिजली की तरह चमक", a:"तुरंत निर्णय लें।"},
-                    {v:"वायु", t:"सुधार", d:"पदार्थ से जानकारी", a:"साझा करें, अपनाएं नहीं।"}
-                ]
+                title: "Cosmic Analysis", start: "INITIALIZE SYSTEM", analyze: "START ANALYSIS",
+                date: "Birth Date", time: "Birth Time", loc: "Location", coord: "COSMIC COORDINATE ID",
+                dash: "Cycle Dashboard", grid: "13 DIMENSION SOURCE",
+                save: "SAVE IMAGE", reset: "RESET", audio: "AUDIO",
+                premT: "THE HIDDEN LAYER", premD: "This reality might be a result of a contract.\nAccess your soul blueprint?", premB: "Coming Soon",
+                sync: "TUNING...", syncS: "Aligning Vectors with Cosmic Cycles",
+                mvp: ["Business Timing (X-DAY)", "Soul Contract", "Risk Management (Void)"],
+                stT: ["Mutation Waltz", "The Crucible", "Full Awakening"],
+                stB: ["Your inner fire resonates with the Lions Gate. Trust intuition over logic.", "Jupiter's expansion clashes with Saturn. Focus on internal systems.", "All parameters aligned. Execute your plan now."],
+                items: { k:"Nine Star Ki",j:"Zodiac/Stem",jup:"Jupiter",sat:"Saturn",mars:"Mars",ven:"Venus",moon:"Moon Phase",gate:"Lions Gate",pre:"Precession",co:"Coordinate",era:"Era 9",bag:"Bagua",gc:"G.Conjunction" }
             },
             zh: {
-                title_main: "周期律分析",
-                btn_init: "启动系统",
-                lbl_date: "出生日期 (年 / 月 / 日)",
-                lbl_time: "出生时间",
-                lbl_loc: "出生地",
-                btn_start: "开始分析",
-                dash_title: "当前坐标 (周期进度)",
-                prem_title: "隐藏层 (THE HIDDEN LAYER)",
-                prem_desc: "这个现实可能是你出生前签订的“契约”的结果。<br>为什么选择这个时代？注定要遇见谁？<br>是否访问13维之外的灵魂蓝图？",
-                btn_unlock: "解锁核心",
-                btn_save: "📷 保存",
-                btn_reset: "↺ 重置",
-                btn_return: "返回表层",
-                mvp_footer: "分析完成。更深维度需要完整会话。",
-                sync_t: "调谐中...",
-                sync_s: "正在与宇宙周期向量对齐",
-                deep_t: "深度潜入...",
-                deep_s: "正在访问灵魂契约与X-DAY坐标",
-                st_mut: {t: "破坏与再生的华尔兹", b: "你的本质“火”与狮子门共鸣，正在发生不可能的化学反应。\n现在与其相信逻辑，不如相信“违和感”。是破坏现有轨道，铺设新轨道的时候了。"},
-                st_con: {t: "试炼的熔炉 (The Crucible)", b: "试图扩大的木星能量与试图巩固的你的性质发生摩擦。\n这不是故障，而是“锻造”。现在不要向外，应集中资源革新内部系统（学习/组织化）。"},
-                st_syn: {t: "完美的顺风", b: "所有参数都啮合。水（知性）滋养木（你），风（时代）运送。\n你放出的箭将乘风到达预期之外的距离。客气是罪。立即执行。"},
-                grid_labels: ["九星气学","十干","木星位置","土星位置","火星","金星","月相","狮子门","岁差运动","坐标","三元九运","八卦","G合相"],
-                mvp_labels: ["商业时机", "灵魂契约", "风险管理"],
-                mvp_vals: ["X-DAY", "目标", "空亡期间"],
-                mvp_descs: [
-                    "你的生物节律与社会成功运交叉的“绝对吉日”。最适合法人登记、大型合同、发布。",
-                    "你今世签订契约的“灵魂商业伙伴”的特性。互补缺失，具有扩大事业的战略相性的人物像。",
-                    "所谓的“充电与研发”期间。通过巩固防守，推进内部化，可以在黎明之年实现火箭启动。"
-                ],
-                kyusei: [
-                    {n:"一白水星", t:"思考", d:"灵活且秘密主义的知性派。", a:"作为参谋的位置是大吉。"},
-                    {n:"二黑土星", t:"基盤", d:"包容力与扎实的培育能力。", a:"请以“持续”为武器。"},
-                    {n:"三碧木星", t:"初動", d:"爆发力与开拓精神。", a:"起跑冲刺最强。"},
-                    {n:"四绿木星", t:"調整", d:"运送缘分的沟通者。", a:"不要做八面玲珑，要聚焦。"},
-                    {n:"五黄土星", t:"帝王", d:"破坏与再生的领袖。", a:"注意不要独善其身。"},
-                    {n:"六白金星", t:"決断", d:"高洁的领导者。", a:"正论伤人。要有宽容。"},
-                    {n:"七赤金星", t:"経済", d:"喜悦与收获之星。", a:"建立将快乐货币化的机制。"},
-                    {n:"八白土星", t:"改革", d:"进行继承与革新的山。", a:"一旦决定就不会停止的突破力。"},
-                    {n:"九紫火星", t:"先見", d:"揭示一切的热情家。", a:"注意热得快冷得快。"}
-                ],
-                jukkan: [
-                    {n:"甲(木)", t:"本质", d:"大树。向上心强的领导者。", a:"与有灵活性的伙伴组队。"},
-                    {n:"乙(木)", t:"本质", d:"花草。环境适应力高。", a:"请利用组织的力量。"},
-                    {n:"丙(火)", t:"本质", d:"太阳。中心的存在。", a:"不要露出情绪的波动。"},
-                    {n:"丁(火)", t:"本质", d:"灯火。敏锐的洞察力。", a:"小幅释放压力。"},
-                    {n:"戊(土)", t:"本质", d:"山岳。信赖与信用的集合。", a:"保持身手敏捷。"},
-                    {n:"己(土)", t:"本质", d:"田畑。培育他人。", a:"拥有专业性。"},
-                    {n:"庚(金)", t:"本质", d:"钢铁。优越的改革力。", a:"欢迎试炼。"},
-                    {n:"辛(金)", t:"本质", d:"宝石。细腻且美意识高。", a:"辛苦是研磨剂。"},
-                    {n:"壬(水)", t:"本质", d:"大海。规模宏大。", a:"设置堤防（规则）。"},
-                    {n:"癸(水)", t:"本质", d:"雨露。渗透到各个角落。", a:"不要积攒到决堤。"}
-                ],
-                cycles: ["木星", "土星", "火星", "金星", "月相", "岁差"],
-                grid_fixed: [
-                    {v:"双子座", t:"扩大", d:"信息与移动领域的发展", a:"推荐多任务。"},
-                    {v:"双鱼座", t:"试炼", d:"精神基盘的再构筑", a:"内省的时间。"},
-                    {v:"Active", t:"热情", d:"自我表现的欲求", a:"将冲动转化为作品。"},
-                    {v:"8年周期", t:"价值", d:"金融、美意识的再评价", a:"刷新过去。"},
-                    {v:"29.5日", t:"感情", d:"内面生物节律", a:"跟随直觉。"},
-                    {v:"Open", t:"宇宙线", d:"高次能量流入", a:"不要害怕变化。"},
-                    {v:"水瓶座", t:"文明", d:"自律分散型社会", a:"个的确立。"},
-                    {v:"TimeID", t:"原点", d:"时间坐标ID", a:"命运的起点。"},
-                    {v:"第九运", t:"时代", d:"火的时代", a:"可视化是关键。"},
-                    {v:"震", t:"行动", d:"如雷般的爆发力", a:"即断即决。"},
-                    {v:"风", t:"变革", d:"从物质到信息", a:"共有而非所有。"}
-                ]
+                title: "周期律分析", start: "系统初始化", analyze: "开始分析",
+                date: "出生日期", time: "出生时间", loc: "出生地点", coord: "宇宙坐标ID",
+                dash: "当前周期位置", grid: "13维源代码",
+                save: "保存图片", reset: "重置", audio: "音频",
+                premT: "深层领域", premD: "现实可能是契约的结果。是否访问灵魂蓝图？", premB: "即将推出",
+                sync: "同调中...", syncS: "正在校准宇宙周期向量",
+                mvp: ["商业时机", "灵魂契约", "风险管理"],
+                stT: ["破坏与再生", "试炼的熔炉", "完全觉醒"],
+                stB: ["本质（火）与狮子门共鸣。相信直觉。", "木星扩张与土星摩擦。这是锻造。", "参数对齐。立即执行。"],
+                items: { k:"九星",j:"干支",jup:"木星",sat:"土星",mars:"火星",ven:"金星",moon:"月相",gate:"狮子门",pre:"岁差",co:"坐标",era:"三元九运",bag:"八卦",gc:"大合相" }
+            },
+            hi: {
+                title: "ब्रह्मांडीय विश्लेषण", start: "प्रणाली प्रारंभ", analyze: "विश्लेषण शुरू करें",
+                date: "जन्म तिथि", time: "जन्म समय", loc: "स्थान", coord: "ब्रह्मांडीय समन्वय आईडी",
+                dash: "चक्र डैशबोर्ड", grid: "१३ आयामी स्रोत",
+                save: "छवि सहेजें", reset: "रीसेट", audio: "ऑडियो",
+                premT: "छिपी हुई परत", premD: "आत्मा के ब्लूप्रिंट तक पहुंचें।", premB: "जल्द आ रहा है",
+                sync: "ट्यूनिंग...", syncS: "ब्रह्मांडीय चक्रों के साथ संरेखण",
+                mvp: ["व्यापार समय", "आत्मा अनुबंध", "जोखिम प्रबंधन"],
+                stT: ["परिवर्तन का नृत्य", "अग्नि परीक्षा", "पूर्ण जागृति"],
+                stB: ["आंतरिक अग्नि लायंस गेट के साथ गूंज रही है।", "बृहस्पति और शनि का टकराव।", "सभी पैरामीटर संरेखित हैं।"],
+                items: { k:"नौ सितारा",j:"राशि",jup:"बृहस्पति",sat:"शनि",mars:"मंगल",ven:"शुक्र",moon:"चंद्रमा",gate:"लायंस गेट",pre:"अयन",co:"समन्वय",era:"युग 9",bag:"बगुआ",gc:"महासंयोग" }
             }
         };
 
-        const CITY_DATA = [
-            // Asia
-            {name: "Tokyo, Japan", tz: 9},
-            {name: "Osaka, Japan", tz: 9},
-            {name: "Seoul, Korea", tz: 9},
-            {name: "Beijing, China", tz: 8},
-            {name: "Shanghai, China", tz: 8},
-            {name: "Hong Kong", tz: 8},
-            {name: "Taipei, Taiwan", tz: 8},
-            {name: "Bangkok, Thailand", tz: 7},
-            {name: "Singapore", tz: 8},
-            {name: "Delhi, India", tz: 5.5},
-            {name: "Mumbai, India", tz: 5.5},
-            {name: "Dubai, UAE", tz: 4},
-            // Europe
-            {name: "London, UK", tz: 0},
-            {name: "Paris, France", tz: 1},
-            {name: "Berlin, Germany", tz: 1},
-            {name: "Rome, Italy", tz: 1},
-            {name: "Madrid, Spain", tz: 1},
-            {name: "Moscow, Russia", tz: 3},
-            {name: "Istanbul, Turkey", tz: 3},
-            // N. America
-            {name: "New York, USA", tz: -5},
-            {name: "Los Angeles, USA", tz: -8},
-            {name: "Chicago, USA", tz: -6},
-            {name: "Toronto, Canada", tz: -5},
-            {name: "Vancouver, Canada", tz: -8},
-            {name: "Mexico City, Mexico", tz: -6},
-            // S. America
-            {name: "Sao Paulo, Brazil", tz: -3},
-            {name: "Buenos Aires, Argentina", tz: -3},
-            {name: "Lima, Peru", tz: -5},
-            // Oceania
-            {name: "Sydney, Australia", tz: 11},
-            {name: "Melbourne, Australia", tz: 11},
-            {name: "Auckland, New Zealand", tz: 13},
-            // Africa
-            {name: "Cairo, Egypt", tz: 2},
-            {name: "Johannesburg, South Africa", tz: 2},
-            {name: "Lagos, Nigeria", tz: 1}
-        ];
+        const CITY_DB = {
+            "asia": [{id:"tokyo",name:"Tokyo (東京)",tz:9},{id:"osaka",name:"Osaka (大阪)",tz:9},{id:"seoul",name:"Seoul (서울)",tz:9},{id:"beijing",name:"Beijing (北京)",tz:8},{id:"delhi",name:"New Delhi (नई दिल्ली)",tz:5.5}],
+            "europe": [{id:"london",name:"London (UK)",tz:0},{id:"paris",name:"Paris (FR)",tz:1},{id:"moscow",name:"Moscow (RU)",tz:3}],
+            "americas": [{id:"ny",name:"New York (USA)",tz:-5},{id:"la",name:"Los Angeles (USA)",tz:-8},{id:"saopaulo",name:"Sao Paulo (BR)",tz:-3}],
+            "others": [{id:"sydney",name:"Sydney (AU)",tz:10},{id:"cairo",name:"Cairo (EG)",tz:2}]
+        };
 
-        const CYCLES=[{days:4333,color:"#D4AF37"},{days:10759,color:"#A9A9A9"},{days:780,color:"#FF4500"},{days:584,color:"#FF69B4"},{days:29.53,color:"#F0F8FF"},{days:9414075,color:"#8A2BE2"}];
+        const CYCLES=[{name:"木星 (12y)",days:4333,color:"#D4AF37"},{name:"土星 (29.5y)",days:10759,color:"#A9A9A9"},{name:"火星 (780d)",days:780,color:"#FF4500"},{name:"金星 (584d)",days:584,color:"#FF69B4"},{name:"月相 (29.5d)",days:29.53,color:"#F0F8FF"},{name:"歳差 (26ky)",days:9414075,color:"#8A2BE2"}];
 
         /* --- VISUAL ENGINE --- */
         class VisualEngine {
@@ -581,7 +286,6 @@
                 this.initScene(); this.animate();
             }
             initScene() {
-                // Core
                 const g1 = new THREE.DodecahedronGeometry(2.2,0);
                 const m1 = new THREE.MeshBasicMaterial({color:0x00ffff, wireframe:true, transparent:true, opacity:0.8});
                 this.c1=new THREE.Mesh(g1,m1); this.scene.add(this.c1);
@@ -589,21 +293,18 @@
                 const m2 = new THREE.MeshBasicMaterial({color:0x0088ff, wireframe:true, transparent:true, opacity:0.4});
                 this.c2=new THREE.Mesh(g2,m2); this.scene.add(this.c2);
                 
-                // Layer 1: Stars (Many, small)
                 const sG = new THREE.BufferGeometry(); const sP = new Float32Array(15000*3);
                 for(let i=0;i<15000*3;i++) sP[i]=(Math.random()-0.5)*2000;
                 sG.setAttribute('position',new THREE.BufferAttribute(sP,3));
                 this.stars1=new THREE.Points(sG,new THREE.PointsMaterial({color:0x8899aa,size:0.6,transparent:true,opacity:0.7}));
                 this.scene.add(this.stars1);
 
-                // Layer 2: Bright Stars (Few, Large)
                 const bG = new THREE.BufferGeometry(); const bP = new Float32Array(500*3);
                 for(let i=0;i<500*3;i++) bP[i]=(Math.random()-0.5)*1800;
                 bG.setAttribute('position',new THREE.BufferAttribute(bP,3));
                 this.stars2=new THREE.Points(bG,new THREE.PointsMaterial({color:0xffffff,size:1.8,transparent:true,opacity:0.9}));
                 this.scene.add(this.stars2);
 
-                // Planets (Classic 5)
                 this.planets=[];
                 const d=[{r:8,s:0.5,sp:0.008},{r:12,s:0.6,sp:0.006},{r:16,s:0.4,sp:0.005},{r:24,s:0.8,sp:0.002},{r:32,s:0.7,sp:0.0015}];
                 d.forEach(p=>{
@@ -630,222 +331,161 @@
         }
 
         /* --- LOGIC --- */
-        const Astro={
-            getKyuseiIndex:y=>{let s=0;String(y).split('').forEach(n=>s+=parseInt(n));while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);let t=11-s;if(t>9)t-=9;if(t===0)t=9;return t-1;},
-            getJukkanIndex:y=>[6,7,8,9,0,1,2,3,4,5][y%10], 
-            getStats:(b,d)=>{const f=(new Date()-b)/(1000*60*60*24);return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1}}
+        const Astro = {
+            getXDay: y => { let d=new Date(); d.setDate(d.getDate()+(y%30)+5); return d.toLocaleDateString(); },
+            getPartner: y => ["Strategist","Innovator","Guardian"][y%3],
+            getVoid: y => 2024 + (y%2)*2,
+            getKyusei: y => { let s=0; String(y).split('').forEach(n=>s+=parseInt(n)); while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0); let t=11-s; if(t>9) t-=9; if(t===0) t=9; return ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"][t-1]; },
+            getJukkan: y => ["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y%10],
+            getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1} }
         };
 
         /* --- APP CONTROLLER --- */
         const app = {
-            visual: null, isTuning: false, date: null, lang: 'ja',
+            lang: 'ja', visual: null, isTuning: false, date: null,
             init: function() {
                 try {
-                    document.getElementById('start-screen').style.opacity = 0;
-                    setTimeout(()=>document.getElementById('start-screen').style.display='none', 800);
-                    this.visual = new VisualEngine(); app.audio.init();
-                    const s = document.getElementById('inp-city');
-                    CITY_DATA.forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);s.add(o)});
-                    this.applyLanguage();
-                } catch(e) {
-                    alert("Init Error: " + e);
-                }
+                    document.getElementById('start-screen').style.opacity=0;
+                    setTimeout(()=>document.getElementById('start-screen').style.display='none',800);
+                    this.visual=new VisualEngine(); app.audio.init();
+                    const s=document.getElementById('inp-city');
+                    Object.keys(CITY_DB).forEach(r=>{
+                        const g=document.createElement('optgroup'); g.label=r.toUpperCase();
+                        CITY_DB[r].forEach(c=>{let o=document.createElement('option');o.text=c.name;o.value=JSON.stringify(c);g.appendChild(o)});
+                        s.appendChild(g);
+                    });
+                    this.updateText();
+                } catch(e) { alert("Init Error: "+e); }
             },
-            
             setLang: function(l) {
                 this.lang = l;
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
                 event.target.classList.add('active');
-                this.applyLanguage();
+                this.updateText();
+                document.body.style.fontFamily = (l==='zh')?'var(--f-zh)':(l==='hi')?'var(--f-hi)':(l==='ja')?'var(--f-jp)':'var(--f-en)';
             },
-
-            applyLanguage: function() {
-                const t = TRANSLATION[this.lang];
-                document.querySelectorAll('[data-key]').forEach(el => {
-                    if(t[el.dataset.key]) {
-                        if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                            // Don't override date inputs placeholders with text if they are supposed to be numbers
-                        } else {
-                            el.innerHTML = t[el.dataset.key];
-                        }
-                    }
-                });
-            },
-
-            reset: function() {
-                this.ui.reset();
-            },
-
-            export: function() {
-                const target = document.getElementById('capture-target');
-                html2canvas(target, {backgroundColor:'#020305'})
-                .then(c => {
-                    const a = document.createElement('a'); a.href=c.toDataURL(); a.download='chart.png'; a.click();
-                })
-                .catch(err => {
-                    alert("Image Save Error: " + err);
-                });
-            },
-
-            audio: {
-                ctx: null, mute: false, noise: null, filter: null, gain: null,
-                init: function() {
-                    const AC = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AC();
-                    const bSize = 2 * this.ctx.sampleRate;
-                    const nBuf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
-                    const out = nBuf.getChannelData(0);
-                    let lastOut = 0; 
-                    for (let i = 0; i < bSize; i++) {
-                        const w = Math.random() * 2 - 1;
-                        out[i] = (lastOut + (0.02 * w)) / 1.02;
-                        lastOut = out[i];
-                        out[i] *= 3.5; 
-                    }
-                    this.noise = this.ctx.createBufferSource();
-                    this.noise.buffer = nBuf; this.noise.loop = true;
-                    this.filter = this.ctx.createBiquadFilter();
-                    this.filter.type = 'lowpass'; this.filter.frequency.value = 100;
-                    this.gain = this.ctx.createGain(); this.gain.gain.value = 0.15;
-                    this.noise.connect(this.filter); this.filter.connect(this.gain);
-                    this.gain.connect(this.ctx.destination);
-                    this.noise.start();
-                },
-                toggle: function() {
-                    this.mute = !this.mute;
-                    if(this.ctx) this.gain.gain.setTargetAtTime(this.mute?0:0.15, this.ctx.currentTime, 0.1);
-                    document.getElementById('btn-audio').innerText=this.mute?"AUDIO: OFF":"AUDIO: ON";
-                },
-                ramp: function() { if(!this.ctx||this.mute)return; this.filter.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
-                reset: function() { if(!this.ctx||this.mute)return; this.filter.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
+            updateText: function() {
+                const t = LANG[this.lang];
+                document.getElementById('t-header').innerText = t.title;
+                document.getElementById('t-start-title').innerText = t.title;
+                document.getElementById('t-start-btn').innerText = t.start;
+                document.getElementById('b-analyze').innerText = t.analyze;
+                document.getElementById('l-date').innerText = t.date;
+                document.getElementById('l-time').innerText = t.time;
+                document.getElementById('l-loc').innerText = t.loc;
+                document.getElementById('t-dash').innerText = t.dash;
+                document.getElementById('t-grid').innerText = t.grid;
+                document.getElementById('t-prem-title').innerText = t.premT;
+                document.getElementById('t-prem-desc').innerText = t.premD;
+                document.getElementById('b-prem').innerText = t.premB;
+                document.getElementById('b-save').innerText = t.save;
+                document.getElementById('b-reset').innerText = t.reset;
+                document.getElementById('t-sync').innerText = t.sync;
+                document.getElementById('t-sync-sub').innerText = t.syncS;
+                document.getElementById('l-coord').innerText = t.coord;
             },
             startSequence: function() {
-                // New Date Logic
-                const yStr = document.getElementById('inp-year').value;
-                const mStr = document.getElementById('inp-month').value;
-                const dStr = document.getElementById('inp-day').value;
-                
-                if(!yStr || !mStr || !dStr) { alert("Please input full date."); return; }
-                
-                const yy = parseInt(yStr);
-                const mm = parseInt(mStr) - 1; // JS month is 0-11
-                const dd = parseInt(dStr);
-
-                const dateObj = new Date(yy, mm, dd);
-                if(isNaN(dateObj.getTime())) { alert("Invalid date."); return; }
-
-                this.date = dateObj;
-
+                const d=document.getElementById('inp-date').value; if(!d){alert("Date required");return;}
+                this.date=new Date(d);
                 document.getElementById('input-container').style.opacity=0;
                 document.getElementById('input-container').style.pointerEvents='none';
-                
-                const t = TRANSLATION[this.lang];
-                document.getElementById('sync-text').innerText = t.sync_t;
-                document.getElementById('sync-sub').innerText = t.sync_s;
-
+                app.audio.resume();
                 this.isTuning=true; app.audio.ramp();
                 document.getElementById('synchro-overlay').style.opacity=1;
-                setTimeout(()=>{ this.analyze(); },3000);
+                setTimeout(()=>this.analyze(),3000);
             },
             analyze: function() {
-                try {
-                    const bd = this.date; const y = bd.getFullYear();
-                    const kIdx = Astro.getKyuseiIndex(y); 
-                    const jIdx = Astro.getJukkanIndex(y);
-                    const TR = TRANSLATION[this.lang];
+                const y = this.date.getFullYear();
+                const k = Astro.getKyusei(y);
+                const j = Astro.getJukkan(y);
+                const t = LANG[this.lang];
+                
+                document.getElementById('res-birthdate').innerText = this.date.toLocaleDateString().replace(/\//g,'.');
 
-                    const kData = TR.kyusei[kIdx];
-                    const jData = TR.jukkan[jIdx];
+                const typeIdx = y%3;
+                document.getElementById('st-title').innerText = t.stT[typeIdx];
+                document.getElementById('st-body').innerText = t.stB[typeIdx];
+                document.querySelector('.strategy-container').style.borderLeftColor = ["#9D00FF","#ff3366","#D4AF37"][typeIdx];
 
-                    // Dashboard
-                    const pG = document.getElementById('param-grid'); pG.innerHTML="";
-                    CYCLES.forEach((c, i)=>{ 
-                        const s=Astro.getStats(bd,c.days); 
-                        const name = TR.cycles[i] || "Cycle";
-                        pG.innerHTML+=`<div class="param-item"><div class="param-head"><span style="color:${c.color}">● ${name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div><div class="param-meta"><span>Cycle #${s.c}</span><span>${Math.floor(c.days)} days</span></div></div>`; 
-                    });
+                const dash = document.getElementById('param-grid'); dash.innerHTML="";
+                CYCLES.forEach(c=>{ const s=Astro.getStats(this.date,c.days); dash.innerHTML+=`<div class="param-item"><div class="param-head"><span>${c.name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div></div>`; });
 
-                    // Strategy Text
-                    const last = y%10; let st={};
-                    if([6,7].includes(last)) st={...TR.st_mut, type:"MUTATION", col:"#9D00FF"};
-                    else if([0,1,8,9].includes(last)) st={...TR.st_con, type:"CONFLICT", col:"#ff3366"};
-                    else st={...TR.st_syn, type:"SYNERGY", col:"#D4AF37"};
-                    
-                    document.getElementById('st-title').innerText=st.t; document.getElementById('st-type').innerText=st.type; 
-                    document.getElementById('st-type').style.borderColor=st.col; document.getElementById('st-type').style.color=st.col;
-                    document.getElementById('st-body').innerText=st.b; document.querySelector('.strategy-container').style.borderLeftColor=st.col;
-
-                    // 13 Grid
-                    const gr = document.getElementById('grid-container'); gr.innerHTML="";
-                    
-                    const GF = TR.grid_fixed;
-                    const GL = TR.grid_labels;
-                    
-                    const items=[
-                        {t:GL[0], v:kData.n, tag:kData.t, desc:kData.d, advice:kData.a},
-                        {t:GL[1], v:jData.n, tag:jData.t, desc:jData.d, advice:jData.a},
-                        {t:GL[2], v:GF[0].v, tag:GF[0].t, desc:GF[0].d, advice:GF[0].a}, 
-                        {t:GL[3], v:GF[1].v, tag:GF[1].t, desc:GF[1].d, advice:GF[1].a}, 
-                        {t:GL[4], v:GF[2].v, tag:GF[2].t, desc:GF[2].d, advice:GF[2].a}, 
-                        {t:GL[5], v:GF[3].v, tag:GF[3].t, desc:GF[3].d, advice:GF[3].a}, 
-                        {t:GL[6], v:GF[4].v, tag:GF[4].t, desc:GF[4].d, advice:GF[4].a}, 
-                        {t:GL[7], v:GF[5].v, tag:GF[5].t, desc:GF[5].d, advice:GF[5].a}, 
-                        {t:GL[8], v:GF[6].v, tag:GF[6].t, desc:GF[6].d, advice:GF[6].a}, 
-                        {t:GL[9], v:bd.toLocaleDateString(), tag:GF[7].t, desc:GF[7].d, advice:GF[7].a}, 
-                        {t:GL[10], v:GF[8].v, tag:GF[8].t, desc:GF[8].d, advice:GF[8].a}, 
-                        {t:GL[11], v:GF[9].v, tag:GF[9].t, desc:GF[9].d, advice:GF[9].a}, 
-                        {t:GL[12], v:GF[10].v, tag:GF[10].t, desc:GF[10].d, advice:GF[10].a} 
-                    ]
-                    items.forEach(i=>{ gr.innerHTML+=`<div class="info-card"><div class="card-head"><span class="card-name">${i.t}</span><span class="card-tag" style="border-color:var(--c-accent);color:var(--c-accent)">${i.tag}</span></div><div class="card-val">${i.v}</div><div class="card-desc">${i.desc}</div><div class="card-adv">💡 ${i.advice}</div></div>`});
-
-                    this.isTuning=false; app.audio.reset();
-                    document.getElementById('synchro-overlay').style.opacity=0;
-                    document.getElementById('result-overlay').classList.add('active');
-                } catch(e) {
-                    alert("Analysis Error: " + e);
-                    app.ui.reset();
+                const grid = document.getElementById('grid-container'); grid.innerHTML="";
+                let items = [];
+                
+                if(this.lang === 'ja') {
+                    const kDesc = DICT_JA_DETAIL.kyusei[k] || "分析中...";
+                    const jDesc = DICT_JA_DETAIL.jukkan[j] || "分析中...";
+                    items = [
+                        {t:"九星気学",v:k,d:kDesc,a:"詳細は深層分析へ"},
+                        {t:"十干十二支",v:j,d:jDesc,a:"バイオリズムを確認"},
+                        {t:"木星位置",v:"双子座",d:"情報・移動の拡大",a:"マルチタスク推奨"},
+                        {t:"土星位置",v:"魚座",d:"精神的基盤の再構築",a:"内省の時間を"},
+                        {t:"火星",v:"Active",d:"情熱の所在",a:"衝動を作品へ"},
+                        {t:"金星",v:"8年周期",d:"価値観の刷新",a:"過去の成功の再利用"},
+                        {t:"月相",v:"29.5日",d:"感情リズム",a:"直感に従う"},
+                        {t:"ライオンズゲート",v:"Open",d:"宇宙線の流入",a:"変化を恐れない"},
+                        {t:"歳差運動",v:"水瓶座",d:"文明のシフト",a:"個の確立"},
+                        {t:"座標",v:"Solar",d:"時間ID",a:"運命の起点"},
+                        {t:"三元九運",v:"第九運",d:"火の時代",a:"可視化が鍵"},
+                        {t:"八卦",v:"震",d:"雷の瞬発力",a:"即断即決"},
+                        {t:"Gコンジャンクション",v:"風",d:"情報社会",a:"所有より共有"}
+                    ];
+                } else {
+                    const it = t.items;
+                    items = [
+                        {t:it.k,v:k,d:"Character Analysis",a:"Check details"},
+                        {t:it.j,v:j,d:"Bio-rhythm",a:"Check flow"},
+                        {t:it.jup,v:"Gemini",d:"Expansion",a:"Multi-task"},
+                        {t:it.sat,v:"Pisces",d:"Foundation",a:"Reflection"},
+                        {t:it.mars,v:"Active",d:"Passion",a:"Action"},
+                        {t:it.ven,v:"8y Cycle",d:"Value",a:"Review"},
+                        {t:it.moon,v:"29.5d",d:"Emotion",a:"Intuition"},
+                        {t:it.gate,v:"Open",d:"Cosmic Ray",a:"Change"},
+                        {t:it.pre,v:"Aquarius",d:"Civilization",a:"Identity"},
+                        {t:it.co,v:"Solar",d:"Origin",a:"Start"},
+                        {t:it.era,v:"Fire",d:"Visibility",a:"Show"},
+                        {t:it.bag,v:"Thunder",d:"Speed",a:"Decision"},
+                        {t:it.gc,v:"Wind",d:"Information",a:"Share"}
+                    ];
                 }
+
+                items.forEach(i => {
+                    grid.innerHTML += `<div class="info-card"><div class="card-head"><span class="card-name">${i.t}</span><span class="card-val">${i.v}</span></div><div class="card-desc">${i.d}</div><div class="card-adv">💡 ${i.a}</div></div>`;
+                });
+
+                this.isTuning=false; app.audio.reset();
+                document.getElementById('synchro-overlay').style.opacity=0;
+                document.getElementById('result-overlay').classList.add('active');
+            },
+            reset: function() {
+                document.getElementById('result-overlay').classList.remove('active'); document.getElementById('mvp-screen').classList.remove('active');
+                document.getElementById('input-container').style.opacity=1; document.getElementById('input-container').style.pointerEvents='auto';
             },
             ui: {
                 showMVP: function() {
-                    const t = document.getElementById('sync-text'); const s = document.getElementById('sync-sub');
-                    const TR = TRANSLATION[app.lang];
-                    t.innerText = TR.deep_t; s.innerText = TR.deep_s;
-                    t.style.color = "var(--c-gold)"; t.style.textShadow = "0 0 20px var(--c-gold)";
-                    document.getElementById('result-overlay').classList.remove('active');
-                    document.getElementById('synchro-overlay').style.opacity = 1; 
-                    app.audio.ramp(); app.isTuning = true;
-                    setTimeout(() => {
-                        app.logic.getMVPResults(app.date);
-                        app.isTuning = false; app.audio.reset();
-                        document.getElementById('synchro-overlay').style.opacity = 0;
-                        document.getElementById('mvp-screen').classList.add('active');
-                    }, 2500);
+                    // DISABLED
                 },
-                hideMVP: function() { document.getElementById('mvp-screen').classList.remove('active'); document.getElementById('result-overlay').classList.add('active'); },
-                reset: function() {
-                    document.getElementById('result-overlay').classList.remove('active'); document.getElementById('mvp-screen').classList.remove('active');
-                    const inp = document.getElementById('input-container'); inp.style.opacity=1; inp.style.pointerEvents='auto'; inp.style.display='block';
-                    app.isTuning=false; app.audio.reset();
-                }
+                hideMVP: function() { document.getElementById('mvp-screen').classList.remove('active'); document.getElementById('result-overlay').classList.add('active'); }
             },
-            logic: {
-                getMVPResults: function(bd) {
-                    const y = bd.getFullYear();
-                    const xDay = new Date(); xDay.setDate(xDay.getDate() + (y % 120) + 30);
-                    const TR = TRANSLATION[app.lang];
-                    
-                    const partnerTypes = ["Innovator", "Strategist", "Artist"];
-                    const partner = partnerTypes[y % 3];
-
-                    const grid = document.getElementById('mvp-grid');
-                    grid.innerHTML = `
-                        <div class="mvp-card"><div class="mvp-label">01. ${TR.mvp_labels[0]}</div><div class="mvp-val">${TR.mvp_vals[0]}: ${xDay.toLocaleDateString()}</div><div class="mvp-desc">${TR.mvp_descs[0]}</div></div>
-                        <div class="mvp-card"><div class="mvp-label">02. ${TR.mvp_labels[1]}</div><div class="mvp-val">${TR.mvp_vals[1]}: ${partner}</div><div class="mvp-desc">${TR.mvp_descs[1]}</div></div>
-                        <div class="mvp-card"><div class="mvp-label">03. ${TR.mvp_labels[2]}</div><div class="mvp-val">${TR.mvp_vals[2]}: 2 Years</div><div class="mvp-desc">${TR.mvp_descs[2]}</div></div>
-                    `;
-                }
-            }
+            audio: {
+                ctx: null, mute: false, filter: null,
+                init: function() {
+                    const AC = window.AudioContext||window.webkitAudioContext; this.ctx=new AC();
+                    const b=this.ctx.createBuffer(1,this.ctx.sampleRate*2,this.ctx.sampleRate);
+                    const d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*0.5;
+                    const n=this.ctx.createBufferSource(); n.buffer=b; n.loop=true;
+                    this.filter=this.ctx.createBiquadFilter(); this.filter.type='lowpass'; this.filter.frequency.value=100;
+                    this.g=this.ctx.createGain(); this.g.gain.value=0.1;
+                    n.connect(this.filter); this.filter.connect(this.g); this.g.connect(this.ctx.destination);
+                    n.start();
+                },
+                resume: function() { if(this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+                toggle: function() { this.mute=!this.mute; if(this.ctx)this.g.gain.setTargetAtTime(this.mute?0:0.1,this.ctx.currentTime,0.1); },
+                ramp: function() { if(this.ctx&&!this.mute)this.filter.frequency.exponentialRampToValueAtTime(800,this.ctx.currentTime+3); },
+                reset: function() { if(this.ctx&&!this.mute)this.filter.frequency.exponentialRampToValueAtTime(100,this.ctx.currentTime+1); }
+            },
+            export: function() { html2canvas(document.getElementById('capture-target'),{backgroundColor:'#020305'}).then(c=>{const a=document.createElement('a');a.href=c.toDataURL();a.download='chart.png';a.click()}).catch(e=>alert("Save Error")) }
         };
     </script>
 </body>
