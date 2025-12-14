@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Neural Network v9.4</title>
+    <title>Cosmic Neural Network v9.5</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -100,7 +100,6 @@
         /* PREMIUM GATE (COMING SOON) */
         .premium-gate { margin-top: 80px; padding: 50px 30px; text-align: center; background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(0,0,0,0) 70%); border: 1px solid rgba(212, 175, 55, 0.3); }
         .premium-gate h3 { color: var(--c-gold); font-size: 1.6rem; margin-bottom: 15px; }
-        /* Disabled Button Style */
         .premium-btn { 
             background: #111; border: 1px solid #555; color: #777; 
             padding: 15px 40px; font-family: 'Cinzel', serif; 
@@ -129,7 +128,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:2.5rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent;" id="t-start-title">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v9.4</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v9.5</p>
         <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()" id="t-start-btn">INITIALIZE SYSTEM</button>
     </div>
 
@@ -139,10 +138,10 @@
         <header>
             <div class="brand"><h1 id="t-header">周期律分析</h1></div>
             <div class="nav-menu">
-                <button class="nav-btn active" onclick="app.setLang('ja')">JP</button>
-                <button class="nav-btn" onclick="app.setLang('en')">EN</button>
-                <button class="nav-btn" onclick="app.setLang('zh')">ZH</button>
-                <button class="nav-btn" onclick="app.setLang('hi')">HI</button>
+                <button class="nav-btn active" onclick="app.setLang('ja', event)">JP</button>
+                <button class="nav-btn" onclick="app.setLang('en', event)">EN</button>
+                <button class="nav-btn" onclick="app.setLang('zh', event)">ZH</button>
+                <button class="nav-btn" onclick="app.setLang('hi', event)">HI</button>
                 <button class="nav-btn" onclick="app.audio.toggle()" id="btn-audio">AUDIO</button>
             </div>
         </header>
@@ -357,10 +356,10 @@
                     this.updateText();
                 } catch(e) { alert("Init Error: "+e); }
             },
-            setLang: function(l) {
+            setLang: function(l, evt) {
                 this.lang = l;
                 document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-                event.target.classList.add('active');
+                if(evt && evt.target) evt.target.classList.add('active');
                 this.updateText();
                 document.body.style.fontFamily = (l==='zh')?'var(--f-zh)':(l==='hi')?'var(--f-hi)':(l==='ja')?'var(--f-jp)':'var(--f-en)';
             },
@@ -469,7 +468,7 @@
                 hideMVP: function() { document.getElementById('mvp-screen').classList.remove('active'); document.getElementById('result-overlay').classList.add('active'); }
             },
             audio: {
-                ctx: null, mute: false, filter: null,
+                ctx: null, mute: false, filter: null, g: null,
                 init: function() {
                     const AC = window.AudioContext||window.webkitAudioContext; this.ctx=new AC();
                     const b=this.ctx.createBuffer(1,this.ctx.sampleRate*2,this.ctx.sampleRate);
