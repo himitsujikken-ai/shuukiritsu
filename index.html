@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Neural Network v9.5</title>
+    <title>Cosmic Neural Network v10.0 - Real Calculation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -109,6 +109,8 @@
 
         #mvp-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 8, 0.98); z-index: 100; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: 1s; visibility: hidden; }
         #mvp-screen.active { opacity: 1; pointer-events: auto; visibility: visible; }
+        .mvp-header { text-align: center; padding: 40px 20px 20px 20px; }
+        .mvp-title { font-family: 'Cinzel', serif; font-size: 2rem; color: var(--c-gold); letter-spacing: 0.3em; }
         .mvp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; overflow-y: auto; }
         .mvp-card { background: rgba(20, 15, 5, 0.8); border: 1px solid var(--c-gold); padding: 30px; display: flex; flex-direction: column; }
         .mvp-label { font-family: 'Cinzel', serif; color: var(--c-gold); font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 15px; }
@@ -128,7 +130,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:2.5rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent;" id="t-start-title">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v9.5</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.3em; color:var(--c-accent); margin-bottom:40px;">COSMIC NEURAL NETWORK v10.0 REAL</p>
         <button class="submit-btn" style="width:auto; padding:15px 50px;" onclick="app.init()" id="t-start-btn">INITIALIZE SYSTEM</button>
     </div>
 
@@ -203,12 +205,24 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.js"></script>
 
     <script>
         /* --- RICH DATA --- */
         const DICT_JA_DETAIL = {
             kyusei:{"一白水星":"柔軟で秘密主義的な知性派。","二黒土星":"包容力と着実な育成能力。","三碧木星":"瞬発力とパイオニア精神。","四緑木星":"縁を運ぶコミュニケーター。","五黄土星":"破壊と再生のカリスマ。","六白金星":"高潔なリーダー。","七赤金星":"喜びと収穫の星。","八白土星":"継承と革新を行う山。","九紫火星":"全てを明らかにする情熱家。"},
-            jukkan:{"甲(木)":"大樹。向上心が強い。","乙(木)":"草花。環境適応力が高い。","丙(火)":"太陽。中心になる存在。","丁(火)":"灯火。鋭い洞察力。","戊(土)":"山岳。信頼と信用の塊。","己(土)":"田畑。人を育てる。","庚(金)":"鋼鉄。改革力に優れる。","辛(金)":"宝石。繊細で美意識が高い。","壬(水)":"大海。スケールが大きい。","癸(水)":"雨露。隅々まで行き渡る。"}
+            jukkan:{
+                "甲(木)":"大樹。向上心が強い。",
+                "乙(木)":"草花。環境適応力が高い。",
+                "丙(火)":"太陽。中心になる存在。",
+                "丁(火)":"灯火。鋭い洞察力。",
+                "戊(土)":"山岳。信頼と信用の塊。",
+                "己(土)":"田畑。人を育てる。",
+                "庚(金)":"鋼鉄。改革力に優れる。",
+                "辛(金)":"宝石。繊細で美意識が高い。",
+                "壬(水)":"大海。スケールが大きい。",
+                "癸(水)":"雨露。隅々まで行き渡る。"
+            }
         };
 
         const LANG = {
@@ -263,10 +277,27 @@
         };
 
         const CITY_DB = {
-            "asia": [{id:"tokyo",name:"Tokyo (東京)",tz:9},{id:"osaka",name:"Osaka (大阪)",tz:9},{id:"seoul",name:"Seoul (서울)",tz:9},{id:"beijing",name:"Beijing (北京)",tz:8},{id:"delhi",name:"New Delhi (नई दिल्ली)",tz:5.5}],
-            "europe": [{id:"london",name:"London (UK)",tz:0},{id:"paris",name:"Paris (FR)",tz:1},{id:"moscow",name:"Moscow (RU)",tz:3}],
-            "americas": [{id:"ny",name:"New York (USA)",tz:-5},{id:"la",name:"Los Angeles (USA)",tz:-8},{id:"saopaulo",name:"Sao Paulo (BR)",tz:-3}],
-            "others": [{id:"sydney",name:"Sydney (AU)",tz:10},{id:"cairo",name:"Cairo (EG)",tz:2}]
+            "asia": [
+                {id:"tokyo",name:"Tokyo (東京)",lat:35.6762,lon:139.6503,tz:9},
+                {id:"osaka",name:"Osaka (大阪)",lat:34.6937,lon:135.5023,tz:9},
+                {id:"seoul",name:"Seoul (서울)",lat:37.5665,lon:126.9780,tz:9},
+                {id:"beijing",name:"Beijing (北京)",lat:39.9042,lon:116.4074,tz:8},
+                {id:"delhi",name:"New Delhi (नई दिल्ली)",lat:28.6139,lon:77.2090,tz:5.5}
+            ],
+            "europe": [
+                {id:"london",name:"London (UK)",lat:51.5074,lon:-0.1278,tz:0},
+                {id:"paris",name:"Paris (FR)",lat:48.8566,lon:2.3522,tz:1},
+                {id:"moscow",name:"Moscow (RU)",lat:55.7558,lon:37.6173,tz:3}
+            ],
+            "americas": [
+                {id:"ny",name:"New York (USA)",lat:40.7128,lon:-74.0060,tz:-5},
+                {id:"la",name:"Los Angeles (USA)",lat:34.0522,lon:-118.2437,tz:-8},
+                {id:"saopaulo",name:"Sao Paulo (BR)",lat:-23.5505,lon:-46.6333,tz:-3}
+            ],
+            "others": [
+                {id:"sydney",name:"Sydney (AU)",lat:-33.8688,lon:151.2093,tz:10},
+                {id:"cairo",name:"Cairo (EG)",lat:30.0444,lon:31.2357,tz:2}
+            ]
         };
 
         const CYCLES=[{name:"木星 (12y)",days:4333,color:"#D4AF37"},{name:"土星 (29.5y)",days:10759,color:"#A9A9A9"},{name:"火星 (780d)",days:780,color:"#FF4500"},{name:"金星 (584d)",days:584,color:"#FF69B4"},{name:"月相 (29.5d)",days:29.53,color:"#F0F8FF"},{name:"歳差 (26ky)",days:9414075,color:"#8A2BE2"}];
@@ -331,11 +362,145 @@
 
         /* --- LOGIC --- */
         const Astro = {
+            getRisshun: function(year) {
+                const y = year - 1900;
+                const day = Math.floor(3.0 + 0.242194 * y - Math.floor(y / 4));
+                return new Date(year, 1, day);
+            },
+
+            getKyusei: function(birthDate) {
+                const year = birthDate.getFullYear();
+                const risshun = this.getRisshun(year);
+                const targetYear = birthDate < risshun ? year - 1 : year;
+                
+                let sum = 0;
+                String(targetYear).split('').forEach(n => sum += parseInt(n));
+                while(sum > 9) {
+                    sum = String(sum).split('').reduce((a,b) => parseInt(a) + parseInt(b), 0);
+                }
+                let kyusei = 11 - sum;
+                if(kyusei > 9) kyusei -= 9;
+                if(kyusei <= 0) kyusei += 9;
+                
+                const names = ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"];
+                return names[kyusei - 1];
+            },
+
+            getKanshi: function(birthDate) {
+                const year = birthDate.getFullYear();
+                const risshun = this.getRisshun(year);
+                const targetYear = birthDate < risshun ? year - 1 : year;
+                
+                const kan = ["庚","辛","壬","癸","甲","乙","丙","丁","戊","己"];
+                const shi = ["申","酉","戌","亥","子","丑","寅","卯","辰","巳","午","未"];
+                const kanIdx = targetYear % 10;
+                const shiIdx = targetYear % 12;
+                
+                const gogyoMap = {"庚":"金","辛":"金","壬":"水","癸":"水","甲":"木","乙":"木","丙":"火","丁":"火","戊":"土","己":"土"};
+                
+                return {
+                    full: kan[kanIdx] + shi[shiIdx],
+                    kan: kan[kanIdx],
+                    shi: shi[shiIdx],
+                    gogyo: gogyoMap[kan[kanIdx]]
+                };
+            },
+
+            getPlanetPosition: function(birthDate, planet) {
+                try {
+                    const observer = new Astronomy.Observer(35.6762, 139.6503, 0);
+                    let body;
+                    
+                    switch(planet) {
+                        case 'jupiter': body = Astronomy.Body.Jupiter; break;
+                        case 'saturn': body = Astronomy.Body.Saturn; break;
+                        case 'mars': body = Astronomy.Body.Mars; break;
+                        case 'venus': body = Astronomy.Body.Venus; break;
+                        case 'moon': body = Astronomy.Body.Moon; break;
+                        default: return null;
+                    }
+                    
+                    const equator = Astronomy.Equator(body, birthDate, observer, true, true);
+                    const ecliptic = Astronomy.Ecliptic(equator);
+                    
+                    return this.getZodiacSign(ecliptic.elon);
+                } catch(e) {
+                    console.error('Planet calculation error:', e);
+                    return null;
+                }
+            },
+
+            getZodiacSign: function(longitude) {
+                const signs = [
+                    {name:"牡羊座",en:"Aries"}, {name:"牡牛座",en:"Taurus"}, 
+                    {name:"双子座",en:"Gemini"}, {name:"蟹座",en:"Cancer"},
+                    {name:"獅子座",en:"Leo"}, {name:"乙女座",en:"Virgo"},
+                    {name:"天秤座",en:"Libra"}, {name:"蠍座",en:"Scorpio"},
+                    {name:"射手座",en:"Sagittarius"}, {name:"山羊座",en:"Capricorn"},
+                    {name:"水瓶座",en:"Aquarius"}, {name:"魚座",en:"Pisces"}
+                ];
+                
+                let lon = longitude;
+                while(lon < 0) lon += 360;
+                while(lon >= 360) lon -= 360;
+                
+                const index = Math.floor(lon / 30);
+                return signs[index];
+            },
+
+            getMoonPhase: function(birthDate) {
+                try {
+                    const phase = Astronomy.MoonPhase(birthDate);
+                    if(phase < 45) return {name:"新月", phase: phase};
+                    if(phase < 135) return {name:"上弦", phase: phase};
+                    if(phase < 225) return {name:"満月", phase: phase};
+                    if(phase < 315) return {name:"下弦", phase: phase};
+                    return {name:"新月", phase: phase};
+                } catch(e) {
+                    return {name:"計算中", phase: 0};
+                }
+            },
+
+            getLionsGate: function(birthDate) {
+                const month = birthDate.getMonth() + 1;
+                const day = birthDate.getDate();
+                
+                if(month === 7 && day >= 26) return "Open";
+                if(month === 8 && day <= 12) return "Peak";
+                return "Closed";
+            },
+
+            getSangenKyuun: function(birthDate) {
+                const year = birthDate.getFullYear();
+                const baseYear = 1864;
+                const cycle = Math.floor((year - baseYear) / 20) % 9 + 1;
+                const eras = ["第一運","第二運","第三運","第四運","第五運","第六運","第七運","第八運","第九運"];
+                const elements = ["水","土","木","木","土","金","金","土","火"];
+                
+                return {
+                    era: eras[cycle - 1],
+                    element: elements[cycle - 1],
+                    year: baseYear + Math.floor((year - baseYear) / 20) * 20
+                };
+            },
+
+            getGreatConjunction: function(birthDate) {
+                const year = birthDate.getFullYear();
+                const conjunctions = [1842, 1861, 1881, 1901, 1921, 1940, 1961, 1981, 2000, 2020, 2040, 2060];
+                
+                let lastConj = 1842;
+                for(let c of conjunctions) {
+                    if(year >= c) lastConj = c;
+                    else break;
+                }
+                
+                const element = lastConj >= 2000 ? "風" : "土";
+                return {element: element, year: lastConj};
+            },
+
             getXDay: y => { let d=new Date(); d.setDate(d.getDate()+(y%30)+5); return d.toLocaleDateString(); },
             getPartner: y => ["Strategist","Innovator","Guardian"][y%3],
             getVoid: y => 2024 + (y%2)*2,
-            getKyusei: y => { let s=0; String(y).split('').forEach(n=>s+=parseInt(n)); while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0); let t=11-s; if(t>9) t-=9; if(t===0) t=9; return ["一白水星","二黒土星","三碧木星","四緑木星","五黄土星","六白金星","七赤金星","八白土星","九紫火星"][t-1]; },
-            getJukkan: y => ["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y%10],
             getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1} }
         };
 
@@ -394,14 +559,25 @@
                 setTimeout(()=>this.analyze(),3000);
             },
             analyze: function() {
-                const y = this.date.getFullYear();
-                const k = Astro.getKyusei(y);
-                const j = Astro.getJukkan(y);
+                const birthDate = this.date;
+                const year = birthDate.getFullYear();
+                
+                const kyusei = Astro.getKyusei(birthDate);
+                const kanshi = Astro.getKanshi(birthDate);
+                const jupiter = Astro.getPlanetPosition(birthDate, 'jupiter');
+                const saturn = Astro.getPlanetPosition(birthDate, 'saturn');
+                const mars = Astro.getPlanetPosition(birthDate, 'mars');
+                const venus = Astro.getPlanetPosition(birthDate, 'venus');
+                const moonPhase = Astro.getMoonPhase(birthDate);
+                const lionsGate = Astro.getLionsGate(birthDate);
+                const sangenKyuun = Astro.getSangenKyuun(birthDate);
+                const greatConj = Astro.getGreatConjunction(birthDate);
+                
                 const t = LANG[this.lang];
                 
-                document.getElementById('res-birthdate').innerText = this.date.toLocaleDateString().replace(/\//g,'.');
+                document.getElementById('res-birthdate').innerText = birthDate.toLocaleDateString().replace(/\//g,'.');
 
-                const typeIdx = y%3;
+                const typeIdx = year%3;
                 document.getElementById('st-title').innerText = t.stT[typeIdx];
                 document.getElementById('st-body').innerText = t.stB[typeIdx];
                 document.querySelector('.strategy-container').style.borderLeftColor = ["#9D00FF","#ff3366","#D4AF37"][typeIdx];
@@ -413,39 +589,40 @@
                 let items = [];
                 
                 if(this.lang === 'ja') {
-                    const kDesc = DICT_JA_DETAIL.kyusei[k] || "分析中...";
-                    const jDesc = DICT_JA_DETAIL.jukkan[j] || "分析中...";
+                    const kDesc = DICT_JA_DETAIL.kyusei[kyusei] || "分析中...";
+                    const jDesc = DICT_JA_DETAIL.jukkan[kanshi.kan + "(" + kanshi.gogyo + ")"] || "分析中...";
+                    
                     items = [
-                        {t:"九星気学",v:k,d:kDesc,a:"詳細は深層分析へ"},
-                        {t:"十干十二支",v:j,d:jDesc,a:"バイオリズムを確認"},
-                        {t:"木星位置",v:"双子座",d:"情報・移動の拡大",a:"マルチタスク推奨"},
-                        {t:"土星位置",v:"魚座",d:"精神的基盤の再構築",a:"内省の時間を"},
-                        {t:"火星",v:"Active",d:"情熱の所在",a:"衝動を作品へ"},
-                        {t:"金星",v:"8年周期",d:"価値観の刷新",a:"過去の成功の再利用"},
-                        {t:"月相",v:"29.5日",d:"感情リズム",a:"直感に従う"},
-                        {t:"ライオンズゲート",v:"Open",d:"宇宙線の流入",a:"変化を恐れない"},
-                        {t:"歳差運動",v:"水瓶座",d:"文明のシフト",a:"個の確立"},
-                        {t:"座標",v:"Solar",d:"時間ID",a:"運命の起点"},
-                        {t:"三元九運",v:"第九運",d:"火の時代",a:"可視化が鍵"},
-                        {t:"八卦",v:"震",d:"雷の瞬発力",a:"即断即決"},
-                        {t:"Gコンジャンクション",v:"風",d:"情報社会",a:"所有より共有"}
+                        {t:"九星気学",v:kyusei,d:kDesc,a:"詳細は深層分析へ"},
+                        {t:"十干十二支",v:kanshi.full + " (" + kanshi.gogyo + ")",d:jDesc,a:"バイオリズムを確認"},
+                        {t:"木星位置",v:jupiter ? jupiter.name : "計算中",d:"拡大と成長の方向性",a:jupiter ? "この分野に注目" : "計算中"},
+                        {t:"土星位置",v:saturn ? saturn.name : "計算中",d:"試練と基盤の場所",a:saturn ? "ここを鍛える" : "計算中"},
+                        {t:"火星",v:mars ? mars.name : "計算中",d:"情熱とエネルギーの注ぎ先",a:mars ? "行動の方向" : "計算中"},
+                        {t:"金星",v:venus ? venus.name : "計算中",d:"愛と価値観の傾向",a:venus ? "美を見出す場所" : "計算中"},
+                        {t:"月相",v:moonPhase.name,d:`位相角: ${Math.floor(moonPhase.phase)}度`,a:"感情のリズム"},
+                        {t:"ライオンズゲート",v:lionsGate,d:"宇宙エネルギーの流入状態",a:lionsGate==="Open"||lionsGate==="Peak"?"変容のチャンス":"通常期"},
+                        {t:"歳差運動",v:"水瓶座時代",d:"約2150年続く文明の大枠",a:"個の確立と共有の時代"},
+                        {t:"座標",v:`${birthDate.getFullYear()}.${String(birthDate.getMonth()+1).padStart(2,'0')}.${String(birthDate.getDate()).padStart(2,'0')}`,d:"あなたの宇宙時間ID",a:"この瞬間は二度と来ない"},
+                        {t:"三元九運",v:sangenKyuun.era,d:`${sangenKyuun.element}の時代（${sangenKyuun.year}年～）`,a:sangenKyuun.element==="火"?"可視化が鍵":"時代の特性を活用"},
+                        {t:"八卦",v:"震（雷）",d:"動きと瞬発力の象徴",a:"即断即決が吉"},
+                        {t:"Gコンジャンクション",v:greatConj.element + "の時代",d:`${greatConj.year}年の会合から`,a:greatConj.element==="風"?"情報と共有":"物質と所有"}
                     ];
                 } else {
                     const it = t.items;
                     items = [
-                        {t:it.k,v:k,d:"Character Analysis",a:"Check details"},
-                        {t:it.j,v:j,d:"Bio-rhythm",a:"Check flow"},
-                        {t:it.jup,v:"Gemini",d:"Expansion",a:"Multi-task"},
-                        {t:it.sat,v:"Pisces",d:"Foundation",a:"Reflection"},
-                        {t:it.mars,v:"Active",d:"Passion",a:"Action"},
-                        {t:it.ven,v:"8y Cycle",d:"Value",a:"Review"},
-                        {t:it.moon,v:"29.5d",d:"Emotion",a:"Intuition"},
-                        {t:it.gate,v:"Open",d:"Cosmic Ray",a:"Change"},
-                        {t:it.pre,v:"Aquarius",d:"Civilization",a:"Identity"},
-                        {t:it.co,v:"Solar",d:"Origin",a:"Start"},
-                        {t:it.era,v:"Fire",d:"Visibility",a:"Show"},
-                        {t:it.bag,v:"Thunder",d:"Speed",a:"Decision"},
-                        {t:it.gc,v:"Wind",d:"Information",a:"Share"}
+                        {t:it.k,v:kyusei,d:"Character Analysis",a:"Check details"},
+                        {t:it.j,v:kanshi.full,d:"Bio-rhythm",a:"Check flow"},
+                        {t:it.jup,v:jupiter ? jupiter.en : "Calculating",d:"Expansion",a:"Focus here"},
+                        {t:it.sat,v:saturn ? saturn.en : "Calculating",d:"Foundation",a:"Build this"},
+                        {t:it.mars,v:mars ? mars.en : "Calculating",d:"Passion",a:"Take action"},
+                        {t:it.ven,v:venus ? venus.en : "Calculating",d:"Value",a:"Find beauty"},
+                        {t:it.moon,v:moonPhase.name,d:`Phase: ${Math.floor(moonPhase.phase)}°`,a:"Emotional rhythm"},
+                        {t:it.gate,v:lionsGate,d:"Cosmic energy influx",a:lionsGate==="Open"||lionsGate==="Peak"?"Transformation time":"Normal period"},
+                        {t:it.pre,v:"Aquarius Age",d:"Civilization shift",a:"Individuality"},
+                        {t:it.co,v:`${birthDate.getFullYear()}.${String(birthDate.getMonth()+1).padStart(2,'0')}.${String(birthDate.getDate()).padStart(2,'0')}`,d:"Time ID",a:"Unique moment"},
+                        {t:it.era,v:sangenKyuun.element,d:`Era from ${sangenKyuun.year}`,a:"Use era energy"},
+                        {t:it.bag,v:"Thunder",d:"Speed & Action",a:"Quick decision"},
+                        {t:it.gc,v:greatConj.element + " Era",d:`From ${greatConj.year}`,a:greatConj.element==="風"?"Information":"Material"}
                     ];
                 }
 
@@ -462,9 +639,7 @@
                 document.getElementById('input-container').style.opacity=1; document.getElementById('input-container').style.pointerEvents='auto';
             },
             ui: {
-                showMVP: function() {
-                    // DISABLED
-                },
+                showMVP: function() {},
                 hideMVP: function() { document.getElementById('mvp-screen').classList.remove('active'); document.getElementById('result-overlay').classList.add('active'); }
             },
             audio: {
