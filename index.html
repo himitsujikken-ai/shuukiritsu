@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v15.0</title>
+    <title>周期律分析 | Cosmic Neural Network v16.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -93,7 +93,7 @@
         .birth-label { font-family: var(--f-en); font-size: 0.75rem; color: var(--c-accent); letter-spacing: 0.3em; margin-bottom: 5px; }
         .birth-value { font-family: var(--f-en); font-size: 2.5rem; font-weight: 300; letter-spacing: 0.1em; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
-        /* PHASE INDICATOR (NEW) */
+        /* PHASE INDICATOR */
         .phase-indicator {
             margin: 0 auto 40px auto; max-width: 900px;
             display: flex; align-items: center; justify-content: space-between;
@@ -158,7 +158,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v15.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v16.0</p>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
     </div>
 
@@ -314,7 +314,26 @@
                 const aspects = ["木星-土星 トライン(120°)", "火星-冥王星 コンジャンクション(0°)", "金星-海王星 セクスタイル(60°)", "太陽-月 スクエア(90°)", "水星 逆行中"];
                 return aspects[seed % aspects.length];
             },
-            getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1} }
+            getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1} },
+            
+            // X-DAY Logic: Next Trine Day (Future Only)
+            getXDay: (y) => {
+                const myEto = y % 12;
+                const targetEto = (myEto + 4) % 12; 
+                const today = new Date();
+                let searchDate = new Date(today);
+                
+                for(let i=1; i<=30; i++) {
+                    searchDate.setDate(today.getDate() + 1);
+                    // Mock Eto Logic (Day+Month hash) for consistency
+                    let dayEtoMock = (searchDate.getDate() + searchDate.getMonth()) % 12;
+                    if(dayEtoMock === targetEto) {
+                        return searchDate.toLocaleDateString().replace(/\//g, '.');
+                    }
+                }
+                searchDate.setDate(today.getDate() + 5);
+                return searchDate.toLocaleDateString().replace(/\//g, '.');
+            }
         };
 
         /* --- APP LOGIC (108 PATTERNS) --- */
@@ -364,12 +383,12 @@
                     const bagua = Astro.getRealBagua(k);
                     const house = Astro.getHouse(time, m);
                     const aspect = Astro.getAspects(y, m, this.date.getDate());
+                    const xDay = Astro.getXDay(y);
 
                     // --- 1. DETERMINE SEASON ---
                     let season = (m>=3 && m<=5)?"春":(m>=6 && m<=8)?"夏":(m>=9 && m<=11)?"秋":"冬";
 
-                    // --- 2. DETERMINE PHASE (Att/Def/Trans) ---
-                    // Simple Logic: (CurrentYear + BirthStarNum) % 3
+                    // --- 2. DETERMINE PHASE ---
                     const phaseVal = (currentYear + kNum) % 3;
                     let phase = { name: "", color: "", advice: "" };
                     
@@ -381,11 +400,11 @@
                         phase = {name: "TRANSITION (転換期)", color: "var(--c-trans)", advice: "現在は「転換」の周期です。古い衣を脱ぎ捨て、次のステージへの準備をする時。水面下での活動が吉。"};
                     }
 
-                    // --- 3. GET BASE STRATEGY (36 Pattern) ---
+                    // --- 3. GET BASE STRATEGY ---
                     const key = k + "-" + season;
                     const baseStrat = this.getStrategyText(key);
 
-                    // --- 4. FUSION (108 Pattern Output) ---
+                    // --- 4. FUSION ---
                     document.getElementById('res-birthdate').innerText = this.date.toLocaleDateString().replace(/\//g, '.');
                     
                     // Phase UI
@@ -419,7 +438,7 @@
                         {t:"金星", v:"8年周期", d:"金融・美意識の再評価。", a:"過去のパターンの刷新。"},
                         {t:"月相", v:"29.5日", d:"内面的なバイオリズム。", a:"直感に従うこと。"},
                         {t:"ライオンズゲート", v:"Closed", d:"宇宙エネルギーは安定期。", a:"地道な積み上げを。"},
-                        {t:"座標", v:"Solar", d:"あなたのユニークな時間座標ID。", a:"運命の起点。"},
+                        {t:"X-DAY (直近の転機)", v:xDay, d:"バイオリズムが最大化する絶対吉日。", a:"重要な決断や契約に最適。"},
                         {t:"三元九運", v:"第九運", d:"火の時代。精神性とテクノロジー。", a:"「可視化」が鍵。"},
                         {t:"Gコンジャンクション", v:"風", d:"物質から情報へ。", a:"シェアするビジネスモデル。"}
                     ];
@@ -513,8 +532,7 @@
             },
             resume: function() { if(this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
             toggle: function() { if(this.ctx) this.g.gain.setTargetAtTime(this.g.gain.value>0?0:0.1, this.ctx.currentTime, 0.1); },
-            ramp: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
-            reset: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
+            ramp: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); }
         };
 
         /* --- VISUAL ENGINE --- */
