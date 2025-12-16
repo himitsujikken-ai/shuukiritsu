@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v18.2</title>
+    <title>周期律分析 | Cosmic Neural Network v18.3</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -166,18 +166,18 @@
             cursor: not-allowed; transition: 0.3s; opacity: 0.8;
         }
 
-        /* SYSTEM LOG (ADDED) */
+        /* SYSTEM LOG */
         #version-log {
             position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
             width: 80%; max-width: 600px; height: 100px;
-            font-family: var(--f-en); font-size: 0.7rem; color: #445;
-            overflow-y: auto; text-align: center; opacity: 0.7;
+            font-family: var(--f-jp); font-size: 0.75rem; color: #556;
+            overflow-y: auto; text-align: center; opacity: 0.8;
             border-top: 1px solid #223; padding-top: 10px; z-index: 150;
         }
         #version-log::-webkit-scrollbar { width: 4px; }
-        #version-log::-webkit-scrollbar-thumb { background: #223; }
+        #version-log::-webkit-scrollbar-thumb { background: #334; }
         .log-entry { margin-bottom: 4px; }
-        .log-ver { color: var(--c-accent); margin-right: 8px; }
+        .log-ver { color: var(--c-accent); margin-right: 8px; font-family: var(--f-en); }
 
         /* FOOTER */
         .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 8, 15, 0.95); border-top: 1px solid #334; padding: 20px; display: flex; justify-content: center; gap: 20px; z-index: 40; backdrop-filter: blur(10px); }
@@ -191,16 +191,17 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v18.2</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v18.3</p>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
         
         <div id="version-log">
-            <div class="log-entry"><span class="log-ver">v18.2</span>Deep Dive Animation & Audio Optimization</div>
-            <div class="log-entry"><span class="log-ver">v17.0</span>Double X-DAY System Integrated</div>
-            <div class="log-entry"><span class="log-ver">v16.0</span>Logic Expansion (Trine/Void)</div>
-            <div class="log-entry"><span class="log-ver">v15.0</span>Matrix Strategy System (108 Patterns)</div>
-            <div class="log-entry"><span class="log-ver">v9.x</span>Multilingual Core & Global City DB</div>
-            <div class="log-entry"><span class="log-ver">v1.0</span>Initial Release</div>
+            <div class="log-entry"><span class="log-ver">v18.3</span>リセット機能の修正とログの日本語化</div>
+            <div class="log-entry"><span class="log-ver">v18.2</span>深層ダイブ演出の追加と音響最適化</div>
+            <div class="log-entry"><span class="log-ver">v17.0</span>ダブルX-DAYシステムの実装</div>
+            <div class="log-entry"><span class="log-ver">v16.0</span>三合・空亡ロジックの拡張</div>
+            <div class="log-entry"><span class="log-ver">v15.0</span>マトリクス戦略システム (108パターン)</div>
+            <div class="log-entry"><span class="log-ver">v9.0</span>多言語コアエンジンと世界都市DB</div>
+            <div class="log-entry"><span class="log-ver">v1.0</span>初期リリース</div>
         </div>
     </div>
 
@@ -368,7 +369,7 @@
                 const today = new Date();
                 let search = new Date(today);
                 for(let i=1; i<=60; i++) {
-                    search.setDate(today.getDate() + 1);
+                    search.setDate(today.getDate() + i);
                     let dayEtoMock = (search.getDate() + search.getMonth()) % 12;
                     if(dayEtoMock === targetEto) {
                         return search.toLocaleDateString().replace(/\//g, '.');
@@ -381,7 +382,7 @@
                 const today = new Date();
                 let search = new Date(today);
                 for(let i=1; i<=30; i++) {
-                    search.setDate(today.getDate() + 1);
+                    search.setDate(today.getDate() + i);
                     let dayNum = (search.getFullYear()+search.getMonth()+1+search.getDate()) % 9 || 9;
                     if(dayNum === lp) return search.toLocaleDateString().replace(/\//g, '.');
                 }
@@ -396,7 +397,7 @@
                 document.getElementById('start-screen').style.opacity=0;
                 setTimeout(()=>document.getElementById('start-screen').style.display='none',800);
                 this.visual = new VisualEngine();
-                app.audio.init();
+                if(this.audio) this.audio.init();
                 const sel = document.getElementById('inp-city');
                 Object.keys(CITY_DB).forEach(r => {
                     const g = document.createElement('optgroup'); g.label = r.toUpperCase();
@@ -415,7 +416,8 @@
                 this.date = new Date(d);
                 document.getElementById('input-container').style.opacity=0;
                 document.getElementById('input-container').style.pointerEvents='none';
-                app.audio.resume(); app.audio.ramp();
+                this.isTuning = true;
+                if(this.audio) { this.audio.resume(); this.audio.ramp(); }
                 document.getElementById('synchro-overlay').style.opacity=1;
                 
                 // DEEP DIVE SEQUENCE (6s)
@@ -584,36 +586,56 @@
                 return db[key] || {title:"分析中", body:"データ処理中..."};
             },
 
-            // --- AUDIO ---
-            audio: {
-                ctx:null, g:null, f:null,
-                init: function() {
-                    try {
-                        const AC=window.AudioContext||window.webkitAudioContext; 
-                        this.ctx=new AC();
-                        const b=this.ctx.createBuffer(1,44100,44100); 
-                        const d=b.getChannelData(0);
-                        for(let i=0;i<44100;i++) d[i]=(Math.random()*2-1)*0.5;
-                        const n=this.ctx.createBufferSource(); 
-                        n.buffer=b; n.loop=true;
-                        this.f=this.ctx.createBiquadFilter(); 
-                        this.f.type='lowpass'; 
-                        this.f.frequency.value=100;
-                        this.g=this.ctx.createGain(); 
-                        this.g.gain.value=0.4; /* Fixed High Gain */
-                        n.connect(this.f); 
-                        this.f.connect(this.g); 
-                        this.g.connect(this.ctx.destination);
-                        n.start();
-                    } catch(e) {
-                        console.warn('Audio init failed:', e);
-                    }
-                },
-                resume: function() { if(this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
-                toggle: function() { if(this.ctx && this.g) this.g.gain.setTargetAtTime(this.g.gain.value>0.01?0:0.4, this.ctx.currentTime, 0.1); },
-                ramp: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
-                reset: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
+            // --- RESET FUNCTION (FIXED) ---
+            reset: function() {
+                // Hide Overlay
+                document.getElementById('result-overlay').classList.remove('active');
+                // Show Input
+                const inp = document.getElementById('input-container');
+                inp.style.opacity = 1;
+                inp.style.pointerEvents = 'auto';
+                // Audio Reset
+                if(this.audio) this.audio.reset();
+                // Flag Reset
+                this.isTuning = false;
+            },
+
+            export: function() {
+                html2canvas(document.getElementById('capture-target'),{backgroundColor:'#020305'}).then(c=>{
+                    const a=document.createElement('a');a.href=c.toDataURL();a.download='chart.png';a.click();
+                });
             }
+        };
+
+        /* --- AUDIO --- */
+        app.audio = {
+            ctx:null, g:null, f:null,
+            init: function() {
+                try {
+                    const AC=window.AudioContext||window.webkitAudioContext; 
+                    this.ctx=new AC();
+                    const b=this.ctx.createBuffer(1,44100,44100); 
+                    const d=b.getChannelData(0);
+                    for(let i=0;i<44100;i++) d[i]=(Math.random()*2-1)*0.5;
+                    const n=this.ctx.createBufferSource(); 
+                    n.buffer=b; n.loop=true;
+                    this.f=this.ctx.createBiquadFilter(); 
+                    this.f.type='lowpass'; 
+                    this.f.frequency.value=100;
+                    this.g=this.ctx.createGain(); 
+                    this.g.gain.value=0.4; /* High Gain */
+                    n.connect(this.f); 
+                    this.f.connect(this.g); 
+                    this.g.connect(this.ctx.destination);
+                    n.start();
+                } catch(e) {
+                    console.warn('Audio init failed:', e);
+                }
+            },
+            resume: function() { if(this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
+            toggle: function() { if(this.ctx && this.g) this.g.gain.setTargetAtTime(this.g.gain.value>0.01?0:0.4, this.ctx.currentTime, 0.1); },
+            ramp: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
+            reset: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
         };
 
         /* --- VISUAL ENGINE --- */
