@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v20.0</title>
+    <title>周期律分析 | Cosmic Neural Network v21.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -189,11 +189,18 @@
         /* PREMIUM GATE */
         .premium-gate { margin-top: 100px; padding: 60px 40px; text-align: center; background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(0,0,0,0) 70%); border: 1px solid rgba(212, 175, 55, 0.3); }
         .premium-gate h3 { font-family: var(--f-serif); color: var(--c-gold); font-size: 1.8rem; margin-bottom: 20px; letter-spacing: 0.1em; }
-        .premium-gate p { color: #ccc; margin-bottom: 40px; font-size: 1rem; line-height: 2.0; max-width: 600px; margin: 0 auto; }
+        .premium-gate p { color: #ccc; margin-bottom: 40px; font-size: 1rem; line-height: 2.0; max-width: 600px; margin-left: auto; margin-right: auto; }
         .premium-btn { 
             background: #0a0a0a; border: 1px solid #444; color: #666; 
             padding: 18px 50px; font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: 0.3em; 
             cursor: not-allowed; transition: 0.3s; opacity: 0.8;
+        }
+        .premium-btn:hover:not([disabled]) { 
+            background: rgba(212, 175, 55, 0.1); 
+            border-color: var(--c-gold); 
+            color: var(--c-gold); 
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            transform: translateY(-3px);
         }
 
         /* SYSTEM LOG */
@@ -235,7 +242,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v20.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v21.0</p>
         
         <div class="start-options">
             <div class="opt-group">
@@ -250,6 +257,7 @@
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
         
         <div id="version-log">
+            <div class="log-entry"><span class="log-ver">v21.0</span>音分析連携・SNS連携・深層レイヤーアクセス実装</div>
             <div class="log-entry"><span class="log-ver">v20.0</span>スマートスタート画面と音響最適化</div>
             <div class="log-entry"><span class="log-ver">v19.0</span>SNS連携・カレンダー保存・履歴機能</div>
             <div class="log-entry"><span class="log-ver">v18.0</span>深層ダイブ演出とシステムログ</div>
@@ -333,8 +341,8 @@
 
                 <div class="premium-gate">
                     <h3>深層レイヤー (THE HIDDEN LAYER)</h3>
-                    <p>この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。<br>なぜ、この時代を選んだのか？ 誰と出会う運命なのか？<br>13次元のさらに奥、魂の青写真にアクセスしますか？</p>
-                    <button class="premium-btn">準備中 (COMING SOON)</button>
+                    <p>この現実は、あなたが生まれる前に交わした「契約」の結果かもしれません。<br>なぜ、この時代を選んだのか？ 誰と出会う運命なのか？<br>13次元のさらに奥へ。あなたの名前に秘められた音響周波数が、魂の青写真を解き明かします。</p>
+                    <button class="premium-btn" style="cursor:pointer; opacity:1; border-color:var(--c-gold); color:var(--c-gold);" onclick="app.jumpToSound()">🎵 おなまえ音分析へアクセス (UNLOCK SOUND LAYER)</button>
                 </div>
             </div>
 
