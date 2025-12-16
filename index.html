@@ -349,6 +349,7 @@
 
             <div class="action-bar">
                 <button class="action-btn" onclick="app.ui.toggleHistory()">📜 HISTORY</button>
+                <button class="action-btn" style="border-color:var(--c-gold); color:var(--c-gold);" onclick="app.jumpToSound()">🎵 おなまえ音分析__Astro-resonance (Sound)</button>
                 <button class="action-btn" onclick="app.export()">📷 SAVE</button>
                 <button class="action-btn" onclick="app.reset()">↺ RESET</button>
             </div>
@@ -713,7 +714,18 @@
                 inp.style.pointerEvents = 'auto';
                 if(this.audio) this.audio.reset();
                 this.isTuning = false;
+            },//
+            //jumpToSound: function() {
+                const dVal = document.getElementById('inp-date').value; 
+                if(!dVal) { alert("日付が設定されていません"); return; }
+                const cleanDate = dVal.replace(/-/g, '');
+                
+                // ★一旦仮のURLです。ドメイン取得後に書き換えます
+                const targetUrl = "https://astro-resonance.vercel.app"; 
+                
+                window.location.href = targetUrl + "?dob=" + cleanDate;
             },
+            //
 
             export: function() {
                 html2canvas(document.getElementById('capture-target'),{backgroundColor:'#020305'}).then(c=>{
