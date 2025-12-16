@@ -473,7 +473,7 @@
             lang: 'ja', 
             visual: null, 
             date: null,
-            audioEnabled: false, // Start muted by default
+            audioEnabled: false,
             isTuning: false,
             
             setStartLang: function(l, evt) {
@@ -481,7 +481,6 @@
                 document.querySelectorAll('.opt-group:first-child .opt-btn').forEach(b=>b.classList.remove('active'));
                 evt.target.classList.add('active');
                 
-                // Update fonts
                 document.body.style.fontFamily = (l==='zh')?'var(--f-zh)':(l==='hi')?'var(--f-hi)':(l==='ja')?'var(--f-jp)':'var(--f-en)';
             },
 
@@ -492,26 +491,21 @@
             },
 
             init: function() {
-                // Fade out start screen
                 document.getElementById('start-screen').style.opacity=0;
                 setTimeout(()=>document.getElementById('start-screen').style.display='none',800);
                 
-                // Init Visuals
                 this.visual = new VisualEngine();
                 
-                // Init Audio based on selection
                 if(this.audioEnabled) {
                     app.audio.init();
                     document.getElementById('btn-audio').innerText = "AUDIO: ON";
                 } else {
-                    // Audio obj exists but ctx is not started or volume 0
                     app.audio.init();
                     app.audio.mute = true;
                     if(app.audio.ctx) app.audio.g.gain.value = 0;
                     document.getElementById('btn-audio').innerText = "AUDIO: OFF";
                 }
                 
-                // Cities
                 const sel = document.getElementById('inp-city');
                 Object.keys(CITY_DB).forEach(r => {
                     const g = document.createElement('optgroup'); g.label = r.toUpperCase();
@@ -520,7 +514,6 @@
                 });
             },
             
-            // In-app language switcher (if needed, but logic removed from header)
             setLang: function(l, evt) {
                 this.lang = l;
                 document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -535,7 +528,6 @@
                 document.getElementById('input-container').style.pointerEvents='none';
                 this.isTuning = true;
                 
-                // Audio Handling
                 if(this.audioEnabled && app.audio.ctx) {
                     app.audio.resume(); 
                     app.audio.ramp();
@@ -543,7 +535,6 @@
                 
                 document.getElementById('synchro-overlay').style.opacity=1;
                 
-                // DEEP DIVE SEQUENCE (6s)
                 const msgs = {
                     ja: ["アカシックレコード接続中...", "量子パラメーター同期...", "ブループリント展開..."],
                     en: ["ACCESSING AKASHIC RECORDS...", "CALIBRATING QUANTUM FIELD...", "DOWNLOADING BLUEPRINT..."],
@@ -663,9 +654,7 @@
                 }
             },
 
-            // --- 36 PATTERN STRATEGY ---
             getStrategyText: function(key) {
-                // Simplified for code stability, usually 36 patterns
                 return {title:"宇宙の羅針盤", body:"あなたの生まれた瞬間のエネルギーは、現在の宇宙配置と共鳴しています。今は自分自身の内なる声に従い、新しい一歩を踏み出すのに最適な時期です。恐れずに進んでください。"};
             },
 
@@ -714,18 +703,17 @@
                 inp.style.pointerEvents = 'auto';
                 if(this.audio) this.audio.reset();
                 this.isTuning = false;
-            },//
-            //jumpToSound: function() {
+            },
+
+            jumpToSound: function() {
                 const dVal = document.getElementById('inp-date').value; 
                 if(!dVal) { alert("日付が設定されていません"); return; }
                 const cleanDate = dVal.replace(/-/g, '');
                 
-                // ★一旦仮のURLです。ドメイン取得後に書き換えます
                 const targetUrl = "https://astro-resonance2.vercel.app"; 
                 
                 window.location.href = targetUrl + "?dob=" + cleanDate;
             },
-            //
 
             export: function() {
                 html2canvas(document.getElementById('capture-target'),{backgroundColor:'#020305'}).then(c=>{
@@ -750,7 +738,7 @@
                     this.f.type='lowpass'; 
                     this.f.frequency.value=100;
                     this.g=this.ctx.createGain(); 
-                    this.g.gain.value=0.15; /* Balanced Volume */
+                    this.g.gain.value=0.15;
                     n.connect(this.f); 
                     this.f.connect(this.g); 
                     this.g.connect(this.ctx.destination);
