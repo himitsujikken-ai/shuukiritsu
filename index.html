@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v16.0</title>
+    <title>周期律分析 | Cosmic Neural Network v17.1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
         /* --- CORE DESIGN TOKENS --- */
         :root {
             --c-bg: #020205; --c-accent: #00f0ff; --c-accent-glow: rgba(0, 240, 255, 0.6);
-            --c-gold: #D4AF37; --c-card-bg: rgba(10, 14, 24, 0.95); --c-border: rgba(0, 240, 255, 0.3);
+            --c-gold: #D4AF37; --c-red: #ff3366; --c-purple: #bb66ff;
+            --c-card-bg: rgba(10, 14, 24, 0.95); --c-border: rgba(0, 240, 255, 0.3);
             --c-attack: #ff3366; --c-defense: #4488ff; --c-trans: #bb66ff;
             --f-en: 'Rajdhani', sans-serif; --f-jp: 'Noto Sans JP', sans-serif;
             --f-serif: 'Shippori Mincho', serif;
@@ -89,7 +90,7 @@
         .result-scroll::-webkit-scrollbar-thumb { background: #334; border-radius: 3px; }
 
         /* BIRTH DISPLAY */
-        .birth-display { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #223; }
+        .birth-display { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #223; }
         .birth-label { font-family: var(--f-en); font-size: 0.75rem; color: var(--c-accent); letter-spacing: 0.3em; margin-bottom: 5px; }
         .birth-value { font-family: var(--f-en); font-size: 2.5rem; font-weight: 300; letter-spacing: 0.1em; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
@@ -110,6 +111,25 @@
         .param-head { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #eee; }
         .param-bar-bg { width: 100%; height: 3px; background: #223; overflow: hidden; }
         .param-bar-fill { height: 100%; background: var(--c-accent); width: 0%; transition: width 1.5s ease-out; box-shadow: 0 0 8px var(--c-accent); }
+
+        /* X-DAY SECTION */
+        .xday-section { margin-bottom: 60px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .xday-title { font-family: 'Cinzel', serif; text-align: center; color: var(--c-gold); letter-spacing: 0.3em; margin-bottom: 30px; font-size: 1.2rem; }
+        .xday-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; }
+        
+        .xday-card {
+            background: rgba(15, 12, 5, 0.9); border: 1px solid #443; border-top: 3px solid var(--c-gold);
+            padding: 25px; border-radius: 4px; display: flex; flex-direction: column;
+            transition: transform 0.3s;
+        }
+        .xday-card.personal { background: rgba(10, 5, 15, 0.9); border-color: #334; border-top-color: var(--c-purple); }
+        .xday-card:hover { transform: translateY(-5px); }
+        
+        .xday-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .xday-type { font-family: var(--f-en); font-size: 0.8rem; letter-spacing: 0.2em; color: #aaa; }
+        .xday-date { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #fff; font-weight: 700; text-shadow: 0 0 10px currentColor; }
+        .xday-desc { font-size: 0.9rem; line-height: 1.8; color: #ccc; text-align: justify; margin-bottom: 15px; }
+        .xday-tag { font-size: 0.75rem; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 2px; align-self: flex-start; }
 
         /* STRATEGY TEXT */
         .strategy-container { 
@@ -158,7 +178,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v16.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v17.1</p>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
     </div>
 
@@ -198,19 +218,24 @@
                     <div class="birth-value" id="res-birthdate">----.--.--</div>
                 </div>
 
+                <div class="dashboard-box">
+                    <div class="dash-title">Cycle Dashboard</div>
+                    <div class="param-grid" id="param-grid"></div>
+                </div>
+
                 <div class="phase-indicator" id="phase-box">
                     <div class="phase-label">CURRENT STRATEGIC PHASE</div>
                     <div class="phase-val" id="phase-val">CALCULATING...</div>
                 </div>
 
+                <div class="xday-section" id="xday-section">
+                    <div class="xday-title">X-DAY ANALYSIS (DOUBLE CORE)</div>
+                    <div class="xday-container" id="xday-grid"></div>
+                </div>
+
                 <div class="strategy-container">
                     <div class="strategy-title" id="st-title">ANALYZING...</div>
                     <div class="strategy-body" id="st-body"></div>
-                </div>
-
-                <div class="dashboard-box">
-                    <div class="dash-title">Cycle Dashboard</div>
-                    <div class="param-grid" id="param-grid"></div>
                 </div>
 
                 <div class="grid-header">13 DIMENSIONS</div>
@@ -316,27 +341,35 @@
             },
             getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1} },
             
-            // X-DAY Logic: Next Trine Day (Future Only)
-            getXDay: (y) => {
-                const myEto = y % 12;
-                const targetEto = (myEto + 4) % 12; 
+            // X-DAY Logic: Social (Trine + Moon)
+            getSocialXDay: (y) => {
+                const targetEto = (y % 12 + 4) % 12; 
                 const today = new Date();
-                let searchDate = new Date(today);
-                
-                for(let i=1; i<=30; i++) {
-                    searchDate.setDate(today.getDate() + 1);
-                    // Mock Eto Logic (Day+Month hash) for consistency
-                    let dayEtoMock = (searchDate.getDate() + searchDate.getMonth()) % 12;
+                let search = new Date(today);
+                for(let i=1; i<=60; i++) {
+                    search.setDate(today.getDate() + 1);
+                    let dayEtoMock = (search.getDate() + search.getMonth()) % 12;
                     if(dayEtoMock === targetEto) {
-                        return searchDate.toLocaleDateString().replace(/\//g, '.');
+                        return search.toLocaleDateString().replace(/\//g, '.');
                     }
                 }
-                searchDate.setDate(today.getDate() + 5);
-                return searchDate.toLocaleDateString().replace(/\//g, '.');
+                return "2025.06.15"; // Fallback
+            },
+            // X-DAY Logic: Personal (LifePath)
+            getPersonalXDay: (y,m,d) => {
+                let lp = (y+m+d) % 9 || 9;
+                const today = new Date();
+                let search = new Date(today);
+                for(let i=1; i<=30; i++) {
+                    search.setDate(today.getDate() + 1);
+                    let dayNum = (search.getFullYear()+search.getMonth()+1+search.getDate()) % 9 || 9;
+                    if(dayNum === lp) return search.toLocaleDateString().replace(/\//g, '.');
+                }
+                return "2025.06.04"; // Fallback
             }
         };
 
-        /* --- APP LOGIC (108 PATTERNS) --- */
+        /* --- APP LOGIC --- */
         const app = {
             lang: 'ja', visual: null, date: null,
             
@@ -352,13 +385,11 @@
                     sel.appendChild(g);
                 });
             },
-
             setLang: function(l, evt) {
                 this.lang = l;
                 document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
                 if(evt) evt.target.classList.add('active');
             },
-
             startSequence: function() {
                 const d = document.getElementById('inp-date').value;
                 if(!d) { alert("Date required"); return; }
@@ -369,11 +400,11 @@
                 document.getElementById('synchro-overlay').style.opacity=1;
                 setTimeout(() => this.analyze(), 3000);
             },
-
             analyze: function() {
                 try {
                     const y = this.date.getFullYear();
                     const m = this.date.getMonth() + 1;
+                    const d = this.date.getDate();
                     const time = document.getElementById('inp-time').value;
                     const currentYear = new Date().getFullYear();
                     
@@ -382,8 +413,10 @@
                     const j = Astro.getJukkan(y);
                     const bagua = Astro.getRealBagua(k);
                     const house = Astro.getHouse(time, m);
-                    const aspect = Astro.getAspects(y, m, this.date.getDate());
-                    const xDay = Astro.getXDay(y);
+                    const aspect = Astro.getAspects(y, m, d);
+                    
+                    const xSocial = Astro.getSocialXDay(y);
+                    const xPersonal = Astro.getPersonalXDay(y, m, d);
 
                     // --- 1. DETERMINE SEASON ---
                     let season = (m>=3 && m<=5)?"春":(m>=6 && m<=8)?"夏":(m>=9 && m<=11)?"秋":"冬";
@@ -391,7 +424,6 @@
                     // --- 2. DETERMINE PHASE ---
                     const phaseVal = (currentYear + kNum) % 3;
                     let phase = { name: "", color: "", advice: "" };
-                    
                     if(phaseVal === 0) {
                         phase = {name: "ATTACK (攻勢期)", color: "var(--c-attack)", advice: "現在は「攻め」の周期です。多少のリスクは取ってでも前に進むべき時。迷いは禁物です。"};
                     } else if (phaseVal === 1) {
@@ -400,11 +432,11 @@
                         phase = {name: "TRANSITION (転換期)", color: "var(--c-trans)", advice: "現在は「転換」の周期です。古い衣を脱ぎ捨て、次のステージへの準備をする時。水面下での活動が吉。"};
                     }
 
-                    // --- 3. GET BASE STRATEGY ---
+                    // --- 3. STRATEGY ---
                     const key = k + "-" + season;
                     const baseStrat = this.getStrategyText(key);
 
-                    // --- 4. FUSION ---
+                    // --- 4. RENDER ---
                     document.getElementById('res-birthdate').innerText = this.date.toLocaleDateString().replace(/\//g, '.');
                     
                     // Phase UI
@@ -414,18 +446,33 @@
                     pVal.style.textShadow = `0 0 15px ${phase.color}`;
                     document.getElementById('phase-box').style.borderColor = phase.color;
 
+                    // X-DAY Double Core
+                    document.getElementById('xday-grid').innerHTML = `
+                        <div class="xday-card" style="border-top-color:var(--c-gold)">
+                            <div class="xday-head"><span class="xday-type">SOCIAL EXPANSION</span><span class="xday-tag">MACRO</span></div>
+                            <div class="xday-date">${xSocial}</div>
+                            <div class="xday-desc">あなたの干支と宇宙の膨張リズムが重なる日です。社会的な「追い風」が最大化します。契約やリリースなど、他者を巻き込むアクションに最適です。</div>
+                        </div>
+                        <div class="xday-card personal">
+                            <div class="xday-head"><span class="xday-type">SOUL RESONANCE</span><span class="xday-tag">MICRO</span></div>
+                            <div class="xday-date" style="color:var(--c-purple); text-shadow:0 0 10px var(--c-purple)">${xPersonal}</div>
+                            <div class="xday-desc">あなたの固有振動数と時空周波数が完全に同期します。直感が冴え渡り、"運命"を感じる出来事が起きやすい日。個人的な決断はこの日に行ってください。</div>
+                        </div>
+                    `;
+
                     // Strategy Text
                     document.getElementById('st-title').innerText = baseStrat.title;
                     document.getElementById('st-body').innerText = baseStrat.body + "\n\n" + "【現在の戦略指針】\n" + phase.advice;
                     document.querySelector('.strategy-container').style.borderLeftColor = phase.color;
 
-                    // Grid
+                    // Dashboard
                     const pGrid = document.getElementById('param-grid'); pGrid.innerHTML = "";
                     CYCLES.forEach(c => {
                         const s = Astro.getStats(this.date, c.days);
                         pGrid.innerHTML += `<div class="param-item"><div class="param-head"><span>${c.name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div></div>`;
                     });
 
+                    // Grid
                     const grid = document.getElementById('grid-container'); grid.innerHTML = "";
                     const items = [
                         {t:"九星気学", v:k, d:DICT_JA.kyusei[k].desc, a:DICT_JA.kyusei[k].adv},
@@ -438,7 +485,6 @@
                         {t:"金星", v:"8年周期", d:"金融・美意識の再評価。", a:"過去のパターンの刷新。"},
                         {t:"月相", v:"29.5日", d:"内面的なバイオリズム。", a:"直感に従うこと。"},
                         {t:"ライオンズゲート", v:"Closed", d:"宇宙エネルギーは安定期。", a:"地道な積み上げを。"},
-                        {t:"X-DAY (直近の転機)", v:xDay, d:"バイオリズムが最大化する絶対吉日。", a:"重要な決断や契約に最適。"},
                         {t:"三元九運", v:"第九運", d:"火の時代。精神性とテクノロジー。", a:"「可視化」が鍵。"},
                         {t:"Gコンジャンクション", v:"風", d:"物質から情報へ。", a:"シェアするビジネスモデル。"}
                     ];
@@ -526,13 +572,14 @@
                 for(let i=0;i<44100;i++) d[i]=(Math.random()*2-1)*0.5;
                 const n=this.ctx.createBufferSource(); n.buffer=b; n.loop=true;
                 this.f=this.ctx.createBiquadFilter(); this.f.type='lowpass'; this.f.frequency.value=100;
-                this.g=this.ctx.createGain(); this.g.gain.value=0.1;
+                this.g=this.ctx.createGain(); this.g.gain.value=0.4; /* High Gain for Impact */
                 n.connect(this.f); this.f.connect(this.g); this.g.connect(this.ctx.destination);
                 n.start();
             },
             resume: function() { if(this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
-            toggle: function() { if(this.ctx) this.g.gain.setTargetAtTime(this.g.gain.value>0?0:0.1, this.ctx.currentTime, 0.1); },
-            ramp: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); }
+            toggle: function() { if(this.ctx) this.g.gain.setTargetAtTime(this.g.gain.value>0.01?0:0.4, this.ctx.currentTime, 0.1); },
+            ramp: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
+            reset: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
         };
 
         /* --- VISUAL ENGINE --- */
