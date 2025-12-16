@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v25.0</title>
+    <title>周期律分析 | Cosmic Neural Network v26.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -69,7 +69,7 @@
         .param-bar-bg { width: 100%; height: 3px; background: #223; }
         .param-bar-fill { height: 100%; background: var(--c-accent); width: 0%; box-shadow: 0 0 8px var(--c-accent); }
 
-        /* PROCESS LOG (JAPANESE) */
+        /* PROCESS LOG */
         .process-log { background: #08080c; border-left: 3px solid #666; padding: 20px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; color: #0f0; margin-bottom: 30px; opacity: 0.95; box-shadow: 0 0 20px rgba(0,0,0,0.5); line-height: 1.6; }
         .log-line { margin-bottom: 8px; border-bottom: 1px dashed #223; padding-bottom: 4px; display:flex; justify-content:space-between; flex-wrap:wrap;}
         .log-key { color: #889; min-width:140px; }
@@ -104,7 +104,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v25.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v26.0</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -116,7 +116,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v25.0: JAPANESE LOGIC & SENSORY FIX</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v26.0: Full Data Logic & Pure Noise Engine</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -254,12 +254,10 @@
             },
             getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100)} },
             
-            // --- UPDATED: Japanese Logic ---
             calculateCNL: (y, m, d) => {
                 let scores = { Wood: 10, Fire: 10, Earth: 10, Metal: 10, Water: 10 };
                 const kNum = Astro.getKyuseiNum(y);
                 
-                // Score weighting
                 if([3,4].includes(kNum)) scores.Wood += 40;
                 if(kNum === 9) scores.Fire += 40;
                 if([2,5,8].includes(kNum)) scores.Earth += 40;
@@ -279,7 +277,6 @@
                 const active = scores.Wood + scores.Fire;
                 const passive = scores.Metal + scores.Water;
                 
-                // Japanese Logs
                 logs.push({k: "【エネルギー均衡値】", v: `能動(陽): ${active} / 受動(陰): ${passive}`});
 
                 if(active > 50 && passive > 50) {
@@ -306,37 +303,52 @@
                 init: function() {
                     const AC=window.AudioContext||window.webkitAudioContext; 
                     this.ctx=new AC();
+                    // Noise Buffer creation (pure white noise)
                     const b=this.ctx.createBuffer(1,44100,44100); 
                     const d=b.getChannelData(0);
                     for(let i=0;i<44100;i++) d[i]=(Math.random()*2-1)*0.5;
-                    const n=this.ctx.createBufferSource(); 
-                    n.buffer=b; n.loop=true;
+                    this.buffer = b;
+
+                    // Filter setup
                     this.f=this.ctx.createBiquadFilter(); 
                     this.f.type='lowpass'; 
                     this.f.frequency.value=100;
+                    
                     this.g=this.ctx.createGain(); 
                     this.g.gain.value=0.6; 
-                    n.connect(this.f); this.f.connect(this.g); this.g.connect(this.ctx.destination);
-                    n.start();
+                    
+                    this.f.connect(this.g); 
+                    this.g.connect(this.ctx.destination);
                 },
                 toggle: function() {
                     if(this.ctx) this.g.gain.setTargetAtTime(this.g.gain.value ? 0 : 0.6, this.ctx.currentTime, 0.1);
                 },
-                // Updated: Analysis Start Sound
                 playScanSound: function() {
                     if(!this.ctx) return;
                     if(this.ctx.state === 'suspended') this.ctx.resume();
-                    const osc = this.ctx.createOscillator();
-                    const g = this.ctx.createGain();
-                    osc.connect(g); g.connect(this.ctx.destination);
-                    osc.frequency.setValueAtTime(200, this.ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.5);
-                    g.gain.setValueAtTime(0.3, this.ctx.currentTime);
-                    g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
-                    osc.start(); osc.stop(this.ctx.currentTime + 0.5);
+
+                    // Create source from pre-generated noise buffer
+                    const src = this.ctx.createBufferSource();
+                    src.buffer = this.buffer;
+                    src.loop = true;
                     
-                    // Background ramp
-                    if(this.f) this.f.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime+3);
+                    // Separate envelope gain for smooth attack (No POP!)
+                    const env = this.ctx.createGain();
+                    env.gain.setValueAtTime(0, this.ctx.currentTime);
+                    // 0.05s attack time to remove pop
+                    env.gain.linearRampToValueAtTime(0.8, this.ctx.currentTime + 0.05);
+                    env.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 2.5);
+
+                    src.connect(this.f);
+                    this.f.connect(env);
+                    env.connect(this.ctx.destination);
+
+                    // Filter sweep
+                    this.f.frequency.setValueAtTime(100, this.ctx.currentTime);
+                    this.f.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 2);
+
+                    src.start();
+                    src.stop(this.ctx.currentTime + 3);
                 },
                 reset: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
             },
@@ -363,7 +375,7 @@
                 document.getElementById('input-container').style.opacity = 0;
                 document.getElementById('input-container').style.pointerEvents = 'none';
                 
-                // Sound Trigger Fix
+                // Sound Trigger (Fixed to remove pop)
                 if(this.audioEnabled) {
                      if(!this.audio.ctx) this.audio.init();
                      this.audio.playScanSound(); 
@@ -388,7 +400,6 @@
                 const cnl = Astro.calculateCNL(y, m, day);
                 const chart = document.getElementById('cnl-chart');
                 chart.innerHTML = "";
-                // Localized labels
                 const labels = {Wood:'木行<br>(拡大)', Fire:'火行<br>(情熱)', Earth:'土行<br>(基盤)', Metal:'金行<br>(規律)', Water:'水行<br>(柔軟)'};
                 const colors = {Wood:'#4d8', Fire:'#f34', Earth:'#da4', Metal:'#eee', Water:'#48f'};
                 Object.keys(cnl.norm).forEach(key => {
@@ -402,13 +413,14 @@
                     logDiv.innerHTML += `<div class="log-line"><span class="log-key">${l.k}:</span> <span class="log-val ${l.alert?'log-alert':''}">${l.v}</span></div>`;
                 });
 
-                // 3. Phase & Strategy
+                // 3. Phase & Strategy (FIXED: Full 36 Pattern Data)
                 const phaseVal = (new Date().getFullYear() + kNum) % 3;
                 let phase = phaseVal === 0 ? {n:"ATTACK (攻勢期)",c:"var(--c-attack)"} : phaseVal === 1 ? {n:"DEFENSE (守勢期)",c:"var(--c-defense)"} : {n:"TRANSITION (転換期)",c:"var(--c-trans)"};
                 const pVal = document.getElementById('phase-val');
                 pVal.innerText = phase.n; pVal.style.color = phase.c; pVal.style.textShadow = `0 0 15px ${phase.c}`;
                 document.getElementById('phase-box').style.borderColor = phase.c;
 
+                // Ensure the key generation matches the object keys perfectly
                 const strat = this.getStrategyText(k + "-" + season);
                 document.getElementById('st-title').innerText = strat.title;
                 document.getElementById('st-body').innerText = strat.body;
@@ -452,17 +464,56 @@
                 document.getElementById('result-overlay').classList.add('active');
                 if(this.audioEnabled) this.audio.reset();
             },
+            
+            // FULL 36 PATTERN DATA RESTORED
             getStrategyText: function(key) {
-                // Strategy DB (Simplified for brevity, full list assumed)
                 const strategies = {
                      "一白水星-春": { title: "潜流の覚醒", body: "春の成長エネルギーと水の柔軟性が融合します。表面的な動きより、水面下での戦略的準備が功を奏する時。" },
                      "一白水星-夏": { title: "冷静なる火消し", body: "夏の熱気に対し、あなたの冷静さが際立ちます。周囲が暴走する中、クールな判断力で危機を回避できる時。" },
                      "一白水星-秋": { title: "深淵への潜行", body: "秋の収穫期に、あなたは内面の深みへ向かいます。これまでの経験を統合し、新たな知恵へ昇華させる時。" },
                      "一白水星-冬": { title: "凍結と純化", body: "冬と水の共鳴。静寂の中で本質が研ぎ澄まされます。無駄を削ぎ落とし、核心だけを残す時期。" },
-                     // ... (Other patterns similar to previous versions) ...
+                     
+                     "二黒土星-春": { title: "大地の目覚め", body: "春の芽吹きと土の育成力が最高潮に。あなたの「育てる力」が開花します。焦らず着実に。" },
+                     "二黒土星-夏": { title: "忍耐の果実", body: "夏の暑さに耐え、地道に育成を続ける時。華やかさはなくとも、あなたの誠実さが信頼を生みます。" },
+                     "二黒土星-秋": { title: "収穫の女神", body: "あなたの季節が来ました。これまでの努力が実を結びます。感謝を受け取り、次の世代へバトンを。" },
+                     "二黒土星-冬": { title: "大地の休息", body: "冬の土は静かに養分を蓄えます。今は無理をせず、心身を休める時。来春への構想を練りましょう。" },
+ 
+                     "三碧木星-春": { title: "雷鳴轟く始動", body: "春の雷が天地を揺るがします。新規事業、転職、独立、何でも「始める」ことに向いています。" },
+                     "三碧木星-夏": { title: "疾風怒濤", body: "夏のエネルギーと雷の瞬発力が爆発します。スピード重視。同時並行で複数のプロジェクトを回せる時期。" },
+                     "三碧木星-秋": { title: "実りの精算", body: "春夏の猛進を振り返り、結果を精算する時。成功も失敗も全て学びです。勢いだけでなく継続力を。" },
+                     "三碧木星-冬": { title: "雷の沈黙", body: "冬の雷は鳴りません。あなたにとっては試練の時。じっと耐え、次の春を待つ忍耐が必要です。" },
+ 
+                     "四緑木星-春": { title: "風に乗る縁", body: "春風が新しい出会いを運びます。人脈が急拡大する予感。積極的に交流会や勉強会へ。" },
+                     "四緑木星-夏": { title: "信用という涼風", body: "夏の暑さの中、あなたの爽やかさが際立ちます。誠実な対応が信用を積み上げる時。" },
+                     "四緑木星-秋": { title: "縁の収穫祭", body: "これまで築いた人脈が実を結びます。紹介や推薦で、新しい機会が訪れるでしょう。" },
+                     "四緑木星-冬": { title: "凪の内省", body: "冬の風は穏やか。人間関係を見直す時期です。本当に大切な人との絆を深め、整理を。" },
+ 
+                     "五黄土星-春": { title: "帝王の目覚め", body: "破壊と創造の春。古い体制を壊し、新しい秩序を作る時。改革は痛みを伴いますが、突き進んでください。" },
+                     "五黄土星-夏": { title: "灼熱の支配", body: "夏の暑さと五黄のパワーが融合。圧倒的な存在感で周囲を圧倒します。独善に注意。" },
+                     "五黄土星-秋": { title: "覇道の総括", body: "ここまでの戦いを振り返る時。本当の強さは、自分の弱さを認められること。" },
+                     "五黄土星-冬": { title: "帝王の孤独", body: "冬の五黄は孤高です。この孤独があなたを更に強くします。一人で考え、決断する時間を大切に。" },
+ 
+                     "六白金星-春": { title: "天の号令", body: "春の始まりに、あなたは新しい使命を受け取ります。高潔な理想を掲げ、組織を導いてください。" },
+                     "六白金星-夏": { title: "正義の炎", body: "夏の太陽のように、正義を貫く時。不正や怠慢を許さず、厳しく律してください。" },
+                     "六白金星-秋": { title: "完璧なる収穫", body: "あなたの基準の高さが実を結ぶ時。妥協なき品質管理が評価されます。" },
+                     "六白金星-冬": { title: "天の静寂", body: "冬の空は高く静か。あなたも精神の高みへ。瞑想や哲学的思索に向いています。" },
+ 
+                     "七赤金星-春": { title: "悦楽の開花", body: "春の喜びと七赤の楽しさが共鳴。人を楽しませ、自分も楽しむ時期。楽しさを収益化する方法を。" },
+                     "七赤金星-夏": { title: "黄金の収穫", body: "夏の輝きと金の収穫。あなたの話術と人脈が利益を生む時。交渉事が面白いように決まります。" },
+                     "七赤金星-秋": { title: "豊穣の宴", body: "秋の収穫を祝う時。これまでの人脈と努力が金銭的な実りに。感謝を込めて周囲に還元を。" },
+                     "七赤金星-冬": { title: "宴の終わり", body: "冬の到来。楽しい時期は一旦終了。ここからは地道な努力が必要です。財布の紐を引き締めて。" },
+ 
+                     "八白土星-春": { title: "山動き始める", body: "重い山が動き出す春。大きな変革の始まりです。転職、起業、引越し、何か人生を変える決断を。" },
+                     "八白土星-夏": { title: "不動の忍耐", body: "夏の暑さにも動じない山。あなたの忍耐力が試されます。どっしりと構えてください。" },
+                     "八白土星-秋": { title: "改革の実現", body: "春に始めた変革が形になる時。山が動けば地形が変わります。あなたの決断が新しい秩序を生みます。" },
+                     "八白土星-冬": { title: "静寂の山岳", body: "冬山は静かで厳しい。あなたも内に籠り、じっくりと次の改革を構想する時。焦らず準備を。" },
+ 
+                     "九紫火星-春": { title: "太陽の昇天", body: "春の太陽が全てを照らします。あなたの魅力と直感が最高潮。恐れず、自分を表現してください。" },
+                     "九紫火星-夏": { title: "炎の絶頂", body: "夏と火の共鳴。情熱が燃え盛ります。エネルギーは無限大ですが、燃え尽きに注意。" },
+                     "九紫火星-秋": { title: "夕陽の美学", body: "秋の夕陽は美しい。あなたの美意識が研ぎ澄まされる時期。これまでの経験を芸術や表現に昇華させましょう。" },
                      "九紫火星-冬": { title: "灯火の導き", body: "冬の暗闇の中、あなたは灯火となります。小さくとも確かな光で、道を照らしてください。" }
                 };
-                return strategies[key] || { title: "宇宙の羅針盤", body: "現在、宇宙の配置とあなたのエネルギーは特異点にあります。直感を信じて進んでください。" };
+                return strategies[key] || { title: "宇宙の羅針盤", body: "生年月日の入力値を確認してください。" };
             },
             jumpToSound: function() {
                 const d = document.getElementById('inp-date').value.replace(/-/g, '');
