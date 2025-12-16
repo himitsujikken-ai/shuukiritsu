@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v17.1</title>
+    <title>周期律分析 | Cosmic Neural Network v18.2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -71,9 +71,9 @@
         }
         .synchro-text { 
             font-family: var(--f-serif); font-size: 2.5rem; color: #fff; letter-spacing: 0.3em; margin-bottom: 15px;
-            text-shadow: 0 0 20px var(--c-accent), 0 0 40px var(--c-accent); animation: pulse 2s infinite;
+            text-shadow: 0 0 20px var(--c-accent), 0 0 40px var(--c-accent); animation: pulse 2s infinite; text-align: center;
         }
-        .synchro-sub { font-family: var(--f-en); font-size: 0.9rem; color: #aaa; letter-spacing: 0.2em; }
+        .synchro-sub { font-family: var(--f-en); font-size: 0.9rem; color: #aaa; letter-spacing: 0.2em; text-align: center; }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
 
         /* RESULT PANEL */
@@ -166,6 +166,19 @@
             cursor: not-allowed; transition: 0.3s; opacity: 0.8;
         }
 
+        /* SYSTEM LOG (ADDED) */
+        #version-log {
+            position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: 80%; max-width: 600px; height: 100px;
+            font-family: var(--f-en); font-size: 0.7rem; color: #445;
+            overflow-y: auto; text-align: center; opacity: 0.7;
+            border-top: 1px solid #223; padding-top: 10px; z-index: 150;
+        }
+        #version-log::-webkit-scrollbar { width: 4px; }
+        #version-log::-webkit-scrollbar-thumb { background: #223; }
+        .log-entry { margin-bottom: 4px; }
+        .log-ver { color: var(--c-accent); margin-right: 8px; }
+
         /* FOOTER */
         .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 8, 15, 0.95); border-top: 1px solid #334; padding: 20px; display: flex; justify-content: center; gap: 20px; z-index: 40; backdrop-filter: blur(10px); }
         .action-btn { background: transparent; border: 1px solid #556; color: #889; padding: 12px 40px; font-family: var(--f-en); cursor: pointer; transition: 0.3s; letter-spacing: 0.1em; }
@@ -178,8 +191,17 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v17.1</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v18.2</p>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
+        
+        <div id="version-log">
+            <div class="log-entry"><span class="log-ver">v18.2</span>Deep Dive Animation & Audio Optimization</div>
+            <div class="log-entry"><span class="log-ver">v17.0</span>Double X-DAY System Integrated</div>
+            <div class="log-entry"><span class="log-ver">v16.0</span>Logic Expansion (Trine/Void)</div>
+            <div class="log-entry"><span class="log-ver">v15.0</span>Matrix Strategy System (108 Patterns)</div>
+            <div class="log-entry"><span class="log-ver">v9.x</span>Multilingual Core & Global City DB</div>
+            <div class="log-entry"><span class="log-ver">v1.0</span>Initial Release</div>
+        </div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -207,8 +229,8 @@
         </div>
 
         <div id="synchro-overlay">
-            <div class="synchro-text">意識同調中...</div>
-            <div class="synchro-sub">宇宙サイクルとベクトルを調整しています</div>
+            <div class="synchro-text" id="t-sync">意識同調中...</div>
+            <div class="synchro-sub" id="t-sync-sub">宇宙サイクルとベクトルを調整しています</div>
         </div>
 
         <div id="result-overlay">
@@ -341,7 +363,6 @@
             },
             getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1} },
             
-            // X-DAY Logic: Social (Trine + Moon)
             getSocialXDay: (y) => {
                 const targetEto = (y % 12 + 4) % 12; 
                 const today = new Date();
@@ -353,9 +374,8 @@
                         return search.toLocaleDateString().replace(/\//g, '.');
                     }
                 }
-                return "2025.06.15"; // Fallback
+                return "2025.06.15";
             },
-            // X-DAY Logic: Personal (LifePath)
             getPersonalXDay: (y,m,d) => {
                 let lp = (y+m+d) % 9 || 9;
                 const today = new Date();
@@ -365,14 +385,13 @@
                     let dayNum = (search.getFullYear()+search.getMonth()+1+search.getDate()) % 9 || 9;
                     if(dayNum === lp) return search.toLocaleDateString().replace(/\//g, '.');
                 }
-                return "2025.06.04"; // Fallback
+                return "2025.06.04";
             }
         };
 
         /* --- APP LOGIC --- */
         const app = {
             lang: 'ja', visual: null, date: null,
-            
             init: function() {
                 document.getElementById('start-screen').style.opacity=0;
                 setTimeout(()=>document.getElementById('start-screen').style.display='none',800);
@@ -398,7 +417,29 @@
                 document.getElementById('input-container').style.pointerEvents='none';
                 app.audio.resume(); app.audio.ramp();
                 document.getElementById('synchro-overlay').style.opacity=1;
-                setTimeout(() => this.analyze(), 3000);
+                
+                // DEEP DIVE SEQUENCE (6s)
+                const msgs = [
+                    {t:"ACCESSING AKASHIC RECORDS...", s:"魂の記憶領域へ接続中..."},
+                    {t:"CALIBRATING QUANTUM FIELD...", s:"量子パラメーターを同期中..."},
+                    {t:"DOWNLOADING BLUEPRINT...", s:"ブループリントの展開..."}
+                ];
+                let i=0;
+                
+                // Init first msg
+                document.getElementById('t-sync').innerText = msgs[0].t;
+                document.getElementById('t-sync-sub').innerText = msgs[0].s;
+
+                const interval = setInterval(()=>{
+                    i++;
+                    if(i < msgs.length) {
+                        document.getElementById('t-sync').innerText = msgs[i].t;
+                        document.getElementById('t-sync-sub').innerText = msgs[i].s;
+                    } else {
+                        clearInterval(interval);
+                        this.analyze();
+                    }
+                }, 2000);
             },
             analyze: function() {
                 try {
@@ -418,10 +459,8 @@
                     const xSocial = Astro.getSocialXDay(y);
                     const xPersonal = Astro.getPersonalXDay(y, m, d);
 
-                    // --- 1. DETERMINE SEASON ---
                     let season = (m>=3 && m<=5)?"春":(m>=6 && m<=8)?"夏":(m>=9 && m<=11)?"秋":"冬";
 
-                    // --- 2. DETERMINE PHASE ---
                     const phaseVal = (currentYear + kNum) % 3;
                     let phase = { name: "", color: "", advice: "" };
                     if(phaseVal === 0) {
@@ -432,21 +471,17 @@
                         phase = {name: "TRANSITION (転換期)", color: "var(--c-trans)", advice: "現在は「転換」の周期です。古い衣を脱ぎ捨て、次のステージへの準備をする時。水面下での活動が吉。"};
                     }
 
-                    // --- 3. STRATEGY ---
                     const key = k + "-" + season;
                     const baseStrat = this.getStrategyText(key);
 
-                    // --- 4. RENDER ---
                     document.getElementById('res-birthdate').innerText = this.date.toLocaleDateString().replace(/\//g, '.');
                     
-                    // Phase UI
                     const pVal = document.getElementById('phase-val');
                     pVal.innerText = phase.name;
                     pVal.style.color = phase.color;
                     pVal.style.textShadow = `0 0 15px ${phase.color}`;
                     document.getElementById('phase-box').style.borderColor = phase.color;
 
-                    // X-DAY Double Core
                     document.getElementById('xday-grid').innerHTML = `
                         <div class="xday-card" style="border-top-color:var(--c-gold)">
                             <div class="xday-head"><span class="xday-type">SOCIAL EXPANSION</span><span class="xday-tag">MACRO</span></div>
@@ -460,19 +495,16 @@
                         </div>
                     `;
 
-                    // Strategy Text
                     document.getElementById('st-title').innerText = baseStrat.title;
                     document.getElementById('st-body').innerText = baseStrat.body + "\n\n" + "【現在の戦略指針】\n" + phase.advice;
                     document.querySelector('.strategy-container').style.borderLeftColor = phase.color;
 
-                    // Dashboard
                     const pGrid = document.getElementById('param-grid'); pGrid.innerHTML = "";
                     CYCLES.forEach(c => {
                         const s = Astro.getStats(this.date, c.days);
                         pGrid.innerHTML += `<div class="param-item"><div class="param-head"><span>${c.name}</span><span>${s.p}%</span></div><div class="param-bar-bg"><div class="param-bar-fill" style="width:${s.p}%;background:${c.color}"></div></div></div>`;
                     });
 
-                    // Grid
                     const grid = document.getElementById('grid-container'); grid.innerHTML = "";
                     const items = [
                         {t:"九星気学", v:k, d:DICT_JA.kyusei[k].desc, a:DICT_JA.kyusei[k].adv},
@@ -498,16 +530,18 @@
                             </div>`;
                     });
 
+                    this.isTuning = false;
+                    if(this.audio) this.audio.reset();
                     document.getElementById('synchro-overlay').style.opacity=0;
                     document.getElementById('result-overlay').classList.add('active');
                 
                 } catch(err) {
+                    this.isTuning = false;
                     alert("Analysis Error: " + err.message);
                     console.error(err);
                 }
             },
 
-            // --- 36 PATTERN DB ---
             getStrategyText: function(key) {
                 const db = {
                     "一白水星-春":{title:"静水深流の覚醒", body:"春の雪解け水のように、あなたの知性は静かに、しかし確実に世界へ浸透し始めています。今は派手な行動よりも、水面下での根回しや知識の蓄積が、後の大河となる源泉です。"},
@@ -550,36 +584,36 @@
                 return db[key] || {title:"分析中", body:"データ処理中..."};
             },
 
-            reset: function() {
-                document.getElementById('result-overlay').classList.remove('active');
-                document.getElementById('input-container').style.opacity=1;
-                document.getElementById('input-container').style.pointerEvents='auto';
-            },
-
-            export: function() {
-                html2canvas(document.getElementById('capture-target'),{backgroundColor:'#020305'}).then(c=>{
-                    const a=document.createElement('a');a.href=c.toDataURL();a.download='chart.png';a.click();
-                });
+            // --- AUDIO ---
+            audio: {
+                ctx:null, g:null, f:null,
+                init: function() {
+                    try {
+                        const AC=window.AudioContext||window.webkitAudioContext; 
+                        this.ctx=new AC();
+                        const b=this.ctx.createBuffer(1,44100,44100); 
+                        const d=b.getChannelData(0);
+                        for(let i=0;i<44100;i++) d[i]=(Math.random()*2-1)*0.5;
+                        const n=this.ctx.createBufferSource(); 
+                        n.buffer=b; n.loop=true;
+                        this.f=this.ctx.createBiquadFilter(); 
+                        this.f.type='lowpass'; 
+                        this.f.frequency.value=100;
+                        this.g=this.ctx.createGain(); 
+                        this.g.gain.value=0.4; /* Fixed High Gain */
+                        n.connect(this.f); 
+                        this.f.connect(this.g); 
+                        this.g.connect(this.ctx.destination);
+                        n.start();
+                    } catch(e) {
+                        console.warn('Audio init failed:', e);
+                    }
+                },
+                resume: function() { if(this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
+                toggle: function() { if(this.ctx && this.g) this.g.gain.setTargetAtTime(this.g.gain.value>0.01?0:0.4, this.ctx.currentTime, 0.1); },
+                ramp: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
+                reset: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
             }
-        };
-
-        /* --- AUDIO --- */
-        app.audio = {
-            ctx:null, g:null, f:null,
-            init: function() {
-                const AC=window.AudioContext||window.webkitAudioContext; this.ctx=new AC();
-                const b=this.ctx.createBuffer(1,44100,44100); const d=b.getChannelData(0);
-                for(let i=0;i<44100;i++) d[i]=(Math.random()*2-1)*0.5;
-                const n=this.ctx.createBufferSource(); n.buffer=b; n.loop=true;
-                this.f=this.ctx.createBiquadFilter(); this.f.type='lowpass'; this.f.frequency.value=100;
-                this.g=this.ctx.createGain(); this.g.gain.value=0.4; /* High Gain for Impact */
-                n.connect(this.f); this.f.connect(this.g); this.g.connect(this.ctx.destination);
-                n.start();
-            },
-            resume: function() { if(this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
-            toggle: function() { if(this.ctx) this.g.gain.setTargetAtTime(this.g.gain.value>0.01?0:0.4, this.ctx.currentTime, 0.1); },
-            ramp: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
-            reset: function() { if(this.ctx) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
         };
 
         /* --- VISUAL ENGINE --- */
