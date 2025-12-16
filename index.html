@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v21.0</title>
+    <title>周期律分析 | Cosmic Neural Network v21.1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&family=Noto+Sans+Devanagari:wght@300;400&display=swap" rel="stylesheet">
     <style>
@@ -242,7 +242,7 @@
 
     <div id="start-screen">
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v21.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v21.1</p>
         
         <div class="start-options">
             <div class="opt-group">
@@ -257,6 +257,7 @@
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
         
         <div id="version-log">
+            <div class="log-entry"><span class="log-ver">v21.1</span>X-DAYロジックユニーク化・BGMゲイン強化</div>
             <div class="log-entry"><span class="log-ver">v21.0</span>音分析連携・SNS連携・深層レイヤーアクセス実装</div>
             <div class="log-entry"><span class="log-ver">v20.0</span>スマートスタート画面と音響最適化</div>
             <div class="log-entry"><span class="log-ver">v19.0</span>SNS連携・カレンダー保存・履歴機能</div>
@@ -441,29 +442,33 @@
             },
             getStats: (b,d) => { const f=(new Date()-b)/(1000*60*60*24); return{p:Math.floor((f%d)/d*100),c:Math.floor(f/d)+1} },
             
-            getSocialXDay: (y) => {
-                const targetEto = (y % 12 + 4) % 12; 
-                const today = new Date();
-                let search = new Date(today);
-                for(let i=1; i<=60; i++) {
-                    search.setDate(today.getDate() + i);
-                    let dayEtoMock = (search.getDate() + search.getMonth()) % 12;
-                    if(dayEtoMock === targetEto) {
-                        return search.toLocaleDateString().replace(/\//g, '.');
-                    }
-                }
-                return "2025.06.15";
+            // 【DEBUG FIX】: 入力された年月日すべてに依存するユニークな日付算出ロジックへ変更
+            getSocialXDay: (y, m, d) => {
+                // 年月日の組み合わせによるユニークシード
+                const seed = (y * 13) + (m * 27) + (d * 7); 
+                // 今日から14日〜73日後
+                const offset = (seed % 60) + 14; 
+                
+                const targetDate = new Date();
+                targetDate.setDate(targetDate.getDate() + offset);
+                
+                return targetDate.toLocaleDateString('ja-JP', {
+                    year: 'numeric', month: '2-digit', day: '2-digit'
+                }).replace(/\//g, '.');
             },
-            getPersonalXDay: (y,m,d) => {
-                let lp = (y+m+d) % 9 || 9;
+
+            // 【DEBUG FIX】: ライフパス数と誕生日付に基づく固有日付算出ロジック
+            getPersonalXDay: (y, m, d) => {
+                const lp = (y + m + d) % 9 || 9;
                 const today = new Date();
-                let search = new Date(today);
-                for(let i=1; i<=30; i++) {
-                    search.setDate(today.getDate() + i);
-                    let dayNum = (search.getFullYear()+search.getMonth()+1+search.getDate()) % 9 || 9;
-                    if(dayNum === lp) return search.toLocaleDateString().replace(/\//g, '.');
-                }
-                return "2025.06.04";
+                // 今日から3日〜30日後
+                const offset = (lp * 3) + (d % 7) + 3;
+                
+                today.setDate(today.getDate() + offset);
+                
+                return today.toLocaleDateString('ja-JP', {
+                    year: 'numeric', month: '2-digit', day: '2-digit'
+                }).replace(/\//g, '.');
             }
         };
 
@@ -480,13 +485,13 @@
                 document.querySelectorAll('.opt-group .opt-btn').forEach(b=>b.classList.remove('active'));
                 evt.target.classList.add('active');
                 
-                // SOUND ONを選択した時点で即座に音を開始
+                // 【DEBUG FIX】: 初期ゲインを0.6に設定し、インパクトを強化
                 if(isOn && !this.audio.ctx) {
                     this.audio.init();
                     this.audio.resume();
                 } else if(isOn && this.audio.ctx) {
                     this.audio.mute = false;
-                    this.audio.g.gain.setTargetAtTime(0.15, this.audio.ctx.currentTime, 0.1);
+                    this.audio.g.gain.setTargetAtTime(0.6, this.audio.ctx.currentTime, 0.1);
                     this.audio.resume();
                 } else if(!isOn && this.audio.ctx) {
                     this.audio.mute = true;
@@ -498,12 +503,10 @@
                 document.getElementById('start-screen').style.opacity=0;
                 setTimeout(()=>document.getElementById('start-screen').style.display='none',800);
                 
-                // visualが既に初期化されていない場合のみ初期化
                 if(!this.visual) {
                     this.visual = new VisualEngine();
                 }
                 
-                // audioが既に初期化されていない場合のみ初期化
                 if(!app.audio.ctx) {
                     app.audio.init();
                 }
@@ -540,7 +543,6 @@
                 
                 document.getElementById('synchro-overlay').style.opacity=1;
                 
-                // 日本語固定
                 const txts = ["アカシックレコード接続中...", "量子パラメーター同期...", "ブループリント展開..."];
                 let i=0;
                 document.getElementById('t-sync').innerText = txts[0];
@@ -570,7 +572,9 @@
                     const bagua = Astro.getRealBagua(k);
                     const house = Astro.getHouse(time, m);
                     const aspect = Astro.getAspects(y, m, d);
-                    const xSocial = Astro.getSocialXDay(y);
+                    
+                    // 【DEBUG FIX】: 3つの引数(y,m,d)を渡し、ユニークな結果を得る
+                    const xSocial = Astro.getSocialXDay(y, m, d);
                     const xPersonal = Astro.getPersonalXDay(y, m, d);
 
                     let season = (m>=3 && m<=5)?"春":(m>=6 && m<=8)?"夏":(m>=9 && m<=11)?"秋":"冬";
@@ -897,7 +901,8 @@
                     this.f.type='lowpass'; 
                     this.f.frequency.value=100;
                     this.g=this.ctx.createGain(); 
-                    this.g.gain.value=0.15;
+                    // 【DEBUG FIX】: 初期ゲインを0.6に増強
+                    this.g.gain.value=0.6; 
                     n.connect(this.f); 
                     this.f.connect(this.g); 
                     this.g.connect(this.ctx.destination);
@@ -907,10 +912,14 @@
             resume: function() { if(this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
             toggle: function() { 
                 this.mute = !this.mute;
-                if(this.ctx && this.g) this.g.gain.setTargetAtTime(this.mute?0:0.15, this.ctx.currentTime, 0.1);
+                // 【DEBUG FIX】: ON時のゲインを0.6に統一
+                if(this.ctx && this.g) this.g.gain.setTargetAtTime(this.mute?0:0.6, this.ctx.currentTime, 0.1);
                 document.getElementById('btn-audio').innerText = this.mute ? "AUDIO: OFF" : "AUDIO: ON";
             },
-            ramp: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime+3); },
+            ramp: function() { 
+                // 【DEBUG FIX】: 演出効果を高めるため周波数スイープを強化
+                if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime+3); 
+            },
             reset: function() { if(this.ctx && this.f) this.f.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime+1); }
         };
 
@@ -964,7 +973,6 @@
             }
         }
         
-        // ページ読み込み時にvisualを即座に開始
         window.addEventListener('DOMContentLoaded', function() {
             app.visual = new VisualEngine();
         });
