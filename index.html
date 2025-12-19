@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v40.0</title>
+    <title>周期律分析 | Cosmic Neural Network v41.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -105,7 +105,7 @@
     <div id="start-screen">
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v40.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v41.0</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -117,7 +117,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v40.0: Perfected Core & Stability</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v41.0: Real Starfield Background</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -206,8 +206,7 @@
     <script>
         // --- CONSTANTS ---
         const CONFIG = {
-            STAR_COUNT: 20000,
-            MICRO_BUCKYBALL_COUNT: 13
+            STARFIELD_IMAGE: '/mnt/user-data/uploads/01-650x488_jpg.webp'
         };
 
         const CITY_DB = {
@@ -349,7 +348,6 @@
                     osc.connect(g); g.connect(this.ctx.destination);
                     osc.start(); osc.stop(this.ctx.currentTime + 0.2);
                 },
-                // START IDLE HUM (Brown Noise Style @ 60Hz Rumble - CONFIRMED WORKING)
                 startHum: function() {
                     if(!this.ensureAudioContext()) return;
                     if(this.humSource) return; 
@@ -387,7 +385,6 @@
                     src.buffer = this.buffer;
                     src.loop = true;
                     
-                    // Independent filter for scan sound to avoid conflict with hum
                     const scanFilter = this.ctx.createBiquadFilter();
                     scanFilter.type = 'lowpass';
                     
@@ -452,7 +449,6 @@
                 document.getElementById('input-container').style.opacity = 0;
                 document.getElementById('input-container').style.pointerEvents = 'none';
                 
-                // Sound Trigger
                 if(this.audioEnabled) {
                      if(!this.audio.ctx) this.audio.init();
                      this.audio.playScanSound(); 
@@ -614,14 +610,15 @@
         class VisualEngine {
             constructor() {
                 this.scene = new THREE.Scene();
-                this.scene.fog = new THREE.FogExp2(0x020205, 0.001);
+                this.scene.fog = new THREE.FogExp2(0x020205, 0.0003); // Lighter fog for visibility
                 this.camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 4000);
-                this.camera.position.set(0, 30, 50); this.camera.lookAt(0, 0, 0);
+                this.camera.position.set(0, 0, 40); 
+                this.camera.lookAt(0, 0, 0);
                 this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
                 document.getElementById('canvas-wrapper').appendChild(this.renderer.domElement);
                 
-                // 1. BUCKYBALLS (Main)
+                // 1. BUCKYBALLS (Main) - Keep as is
                 const g1 = new THREE.DodecahedronGeometry(2.2,0);
                 const m1 = new THREE.MeshBasicMaterial({color:0x00ffff, wireframe:true, transparent:true, opacity:0.8});
                 this.c1=new THREE.Mesh(g1,m1); this.scene.add(this.c1);
@@ -629,59 +626,41 @@
                 const m2 = new THREE.MeshBasicMaterial({color:0x0088ff, wireframe:true, transparent:true, opacity:0.4});
                 this.c2=new THREE.Mesh(g2,m2); this.scene.add(this.c2);
 
-                // 2. STARS (Concentric Disc - Slow Orbit)
-                // Corrected: Removed duplicate redundant loop
-                const positions = [];
-                for(let i=0; i<CONFIG.STAR_COUNT; i++) {
-                    const r = THREE.MathUtils.randFloat(200, 2500); 
-                    const theta = THREE.MathUtils.randFloat(0, Math.PI * 2); 
-                    const x = r * Math.cos(theta);
-                    const z = r * Math.sin(theta);
-                    const y = THREE.MathUtils.randFloatSpread(r * 0.15); 
-                    positions.push(x, y, z);
-                }
-                const sG = new THREE.BufferGeometry();
-                sG.setAttribute('position',new THREE.Float32BufferAttribute(positions, 3));
-                
-                this.s1=new THREE.Points(sG,new THREE.PointsMaterial({color:0xffffff, size:1.5, transparent:true, opacity:0.8}));
-                this.s1.rotation.x = Math.PI * 0.1; 
-                this.s1.rotation.z = Math.PI * 0.05;
-                this.scene.add(this.s1);
-
-                // 3. MICRO BUCKYBALLS (Floating Particles)
-                this.micros = [];
-                const mg = new THREE.IcosahedronGeometry(0.2,0);
-                const mm = new THREE.MeshBasicMaterial({color:0x88ccff, wireframe:true});
-                
-                for(let i=0; i<CONFIG.MICRO_BUCKYBALL_COUNT; i++) { 
-                    const m = new THREE.Mesh(mg, mm);
-                    const r = 10 + Math.random() * 15; 
-                    const theta = Math.random() * Math.PI * 2; 
-                    const y = THREE.MathUtils.randFloatSpread(20); 
-                    
-                    m.position.set(r * Math.cos(theta), y, r * Math.sin(theta));
-                    this.scene.add(m);
-                    
-                    const speed = 0.002 + Math.random() * 0.005;
-                    this.micros.push({m:m, r:r, theta:theta, y:y, s:speed, rotS:Math.random()*0.02});
-                }
+                // 2. STARFIELD BACKGROUND (Sphere with texture)
+                const loader = new THREE.TextureLoader();
+                loader.load(
+                    CONFIG.STARFIELD_IMAGE,
+                    (texture) => {
+                        const starGeo = new THREE.SphereGeometry(3000, 64, 64);
+                        const starMat = new THREE.MeshBasicMaterial({
+                            map: texture,
+                            side: THREE.BackSide,  // Render inside of sphere
+                            transparent: true,
+                            opacity: 0.6
+                        });
+                        this.starfield = new THREE.Mesh(starGeo, starMat);
+                        this.scene.add(this.starfield);
+                    },
+                    undefined,
+                    (err) => {
+                        console.error('Starfield texture loading failed:', err);
+                    }
+                );
 
                 this.animate();
             }
             animate() {
                 requestAnimationFrame(this.animate.bind(this));
-                this.c1.rotation.y += 0.003; this.c2.rotation.y -= 0.003;
                 
-                this.s1.rotation.y -= 0.00005; 
+                // Buckyballs rotation
+                this.c1.rotation.y += 0.003; 
+                this.c2.rotation.y -= 0.003;
                 
-                this.micros.forEach(o => {
-                    o.m.rotation.x += o.rotS; 
-                    o.m.rotation.y += o.rotS;
-                    o.theta += o.s;
-                    o.m.position.x = o.r * Math.cos(o.theta);
-                    o.m.position.z = o.r * Math.sin(o.theta);
-                    o.m.position.y = o.y; 
-                });
+                // Starfield rotation - EXTREMELY SLOW (almost imperceptible)
+                if(this.starfield) {
+                    this.starfield.rotation.y += 0.00001;  // 1/100th of original speed
+                }
+                
                 this.renderer.render(this.scene, this.camera);
             }
             // Cleanup method for memory leak prevention
@@ -692,7 +671,10 @@
                 if(this.scene) {
                     this.scene.traverse(obj => {
                         if(obj.geometry) obj.geometry.dispose();
-                        if(obj.material) obj.material.dispose();
+                        if(obj.material) {
+                            if(obj.material.map) obj.material.map.dispose();
+                            obj.material.dispose();
+                        }
                     });
                 }
             }
