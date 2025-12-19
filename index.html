@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v38.0</title>
+    <title>周期律分析 | Cosmic Neural Network v39.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -105,7 +105,7 @@
     <div id="start-screen">
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v38.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v39.0</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -117,7 +117,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v38.0: Micro Buckyballs Fixed (13 Orbiters)</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v39.0: Slow Concentric Orbit (1/6 Speed)</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -615,27 +615,35 @@
                 const m2 = new THREE.MeshBasicMaterial({color:0x0088ff, wireframe:true, transparent:true, opacity:0.4});
                 this.c2=new THREE.Mesh(g2,m2); this.scene.add(this.c2);
 
-                // 2. STARS (Spiral Galaxy with Elliptical Orbit Motion)
+                // 2. STARS (Concentric Disc - Slow Orbit)
                 const sG = new THREE.BufferGeometry(); const sP = [];
-                const count = 30000;
-                for(let i=0; i<count; i++) {
-                    const r = THREE.MathUtils.randFloat(100, 3000); 
-                    const theta = THREE.MathUtils.randFloat(0, Math.PI * 2) + (r / 400); 
+                for(let i=0;i<30000;i++) sP.push(
+                    THREE.MathUtils.randFloatSpread(2000), 
+                    THREE.MathUtils.randFloatSpread(1200), // Thickness
+                    THREE.MathUtils.randFloatSpread(2000)
+                );
+                // REVERTING TO SIMPLE DISC to ensure "Concentric" feel without spiral arms
+                // Actually, randFloatSpread is a box. For concentric disc, we need polar coordinates.
+                // Let's fix this to ensure it looks like a proper disc/galaxy.
+                const positions = [];
+                for(let i=0; i<30000; i++) {
+                    const r = THREE.MathUtils.randFloat(200, 2500); 
+                    const theta = THREE.MathUtils.randFloat(0, Math.PI * 2); // No spiral offset
                     const x = r * Math.cos(theta);
                     const z = r * Math.sin(theta);
-                    const y = THREE.MathUtils.randFloatSpread(300 * (1 - Math.min(r/3000, 0.8))); 
-                    sP.push(x, y, z);
+                    const y = THREE.MathUtils.randFloatSpread(r * 0.15); // Slight thickness
+                    positions.push(x, y, z);
                 }
-                sG.setAttribute('position',new THREE.Float32BufferAttribute(sP,3));
-                // Size 1.5 for clear visibility
-                this.s1=new THREE.Points(sG,new THREE.PointsMaterial({color:0xffffff, size:1.5, transparent:true, opacity:0.8}));
+                sG.setAttribute('position',new THREE.Float32BufferAttribute(positions, 3));
                 
-                // Tilt the entire galaxy
-                this.s1.rotation.x = Math.PI * 0.3; 
-                this.s1.rotation.z = Math.PI * 0.1;
+                // Size 1.5 for visibility
+                this.s1=new THREE.Points(sG,new THREE.PointsMaterial({color:0xffffff, size:1.5, transparent:true, opacity:0.8}));
+                // Tilt
+                this.s1.rotation.x = Math.PI * 0.1; 
+                this.s1.rotation.z = Math.PI * 0.05;
                 this.scene.add(this.s1);
 
-                // 3. MICRO BUCKYBALLS (Orbiting Satellites - 13 Count, No Vertical Bob)
+                // 3. MICRO BUCKYBALLS (Floating Particles) - 13 Count, Orbiting
                 this.micros = [];
                 const mg = new THREE.IcosahedronGeometry(0.2,0);
                 const mm = new THREE.MeshBasicMaterial({color:0x88ccff, wireframe:true});
@@ -664,8 +672,8 @@
                 requestAnimationFrame(this.animate.bind(this));
                 this.c1.rotation.y += 0.003; this.c2.rotation.y -= 0.003;
                 
-                // Rotate the tilted galactic disc
-                this.s1.rotation.y -= 0.0003; 
+                // Rotate the star disc VERY SLOWLY (1/6th speed)
+                this.s1.rotation.y -= 0.00005; 
                 
                 // Animate Micro Buckyballs (Orbit)
                 this.micros.forEach(o => {
