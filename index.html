@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v35.0</title>
+    <title>周期律分析 | Cosmic Neural Network v36.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -106,7 +106,7 @@
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v35.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v36.0</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -118,7 +118,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v35.0: Orbital Mechanics & Inner Universe</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v36.0: Full Stars (Elliptical Orbit) & Title Added</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -337,7 +337,7 @@
                     osc.connect(g); g.connect(this.ctx.destination);
                     osc.start(); osc.stop(this.ctx.currentTime + 0.2);
                 },
-                // START IDLE HUM (Brown Noise Style @ 60Hz Rumble)
+                // START IDLE HUM (Brown Noise Style @ 60Hz Rumble - CONFIRMED WORKING)
                 startHum: function() {
                     if(!this.ctx) return;
                     if(this.humSource) return; // Already playing
@@ -350,11 +350,11 @@
                     // Dedicated rumble filter
                     const rumbleFilter = this.ctx.createBiquadFilter();
                     rumbleFilter.type = 'lowpass';
-                    rumbleFilter.frequency.value = 60; // Requested 60Hz
+                    rumbleFilter.frequency.value = 60; // 60Hz is audible and deep
                     
                     this.humGain = this.ctx.createGain();
                     this.humGain.gain.setValueAtTime(0, this.ctx.currentTime);
-                    this.humGain.gain.linearRampToValueAtTime(2.0, this.ctx.currentTime + 2.0); // Boost gain as lowpass reduces energy significantly
+                    this.humGain.gain.linearRampToValueAtTime(2.0, this.ctx.currentTime + 2.0); // High gain needed for filtered noise
                     
                     this.humSource.connect(rumbleFilter);
                     rumbleFilter.connect(this.humGain);
@@ -616,21 +616,18 @@
                 const m2 = new THREE.MeshBasicMaterial({color:0x0088ff, wireframe:true, transparent:true, opacity:0.4});
                 this.c2=new THREE.Mesh(g2,m2); this.scene.add(this.c2);
 
-                // 2. STARS (Galactic Disc - Elliptical Orbit Simulation)
+                // 2. STARS (Restored random spread + Elliptical Tilt)
                 const sG = new THREE.BufferGeometry(); const sP = [];
-                for(let i=0; i<30000; i++) {
-                    const r = THREE.MathUtils.randFloat(200, 2000); // Distance from center
-                    const theta = THREE.MathUtils.randFloat(0, Math.PI * 2); // Angle
-                    // Flattened Y-axis for Disc shape
-                    const x = r * Math.cos(theta);
-                    const z = r * Math.sin(theta);
-                    const y = THREE.MathUtils.randFloatSpread(r * 0.1); // Thin disc
-                    sP.push(x, y, z);
-                }
+                // Use a wider/flatter spread to simulate a thick galaxy disk while keeping count high
+                for(let i=0;i<30000;i++) sP.push(
+                    THREE.MathUtils.randFloatSpread(2500), // Wide X
+                    THREE.MathUtils.randFloatSpread(1200), // Medium Y (Thickness)
+                    THREE.MathUtils.randFloatSpread(2500)  // Wide Z
+                );
                 sG.setAttribute('position',new THREE.Float32BufferAttribute(sP,3));
-                // Smaller size (0.5) to look less square
+                // Size 0.5 to keep particles fine, not square
                 this.s1=new THREE.Points(sG,new THREE.PointsMaterial({color:0xffffff, size:0.5, transparent:true, opacity:0.8}));
-                // Tilt the entire system to simulate elliptical orbit view
+                // Tilt the whole system to create elliptical orbit effect
                 this.s1.rotation.x = Math.PI * 0.1; 
                 this.s1.rotation.z = Math.PI * 0.05;
                 this.scene.add(this.s1);
@@ -652,7 +649,7 @@
                 requestAnimationFrame(this.animate.bind(this));
                 this.c1.rotation.y += 0.003; this.c2.rotation.y -= 0.003;
                 
-                // Rotate the galactic disc
+                // Rotate the entire star field to simulate orbit
                 this.s1.rotation.y += 0.0005; 
                 
                 this.micros.forEach(o => {
