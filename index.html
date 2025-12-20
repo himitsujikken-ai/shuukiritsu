@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v44.1</title>
+    <title>周期律分析 | Cosmic Neural Network v44.2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -105,7 +105,7 @@
     <div id="start-screen">
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.1</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.2</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -117,7 +117,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.1: Visuals Restored + Hakke Logic</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.2: Dynamic House & Hakke Logic</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -233,7 +233,6 @@
                 "八白土星": "山のように動じず、改革を行う星。現状維持を良しとしません。",
                 "九紫火星": "太陽のように全てを明らかにする情熱家。直感と美意識に優れます。"
             },
-            // Logic Added Here
             hakke: {
                 1: {n:"坎 (Kan)", d:"水・悩み・知性・秘密"},     
                 2: {n:"坤 (Kon)", d:"地・母性・従順・育成"},     
@@ -244,6 +243,21 @@
                 7: {n:"兌 (Da)", d:"沢・悦び・言論・金銭"},      
                 8: {n:"艮 (Gon)", d:"山・停止・変化・継承"},     
                 9: {n:"離 (Li)", d:"火・明知・離合・美"}         
+            },
+            // NEW: House Explanations
+            houses: {
+                1: {n:"第1ハウス", d:"アイデンティティと個性の確立。<br>「自分とは何か」を問い、自ら道を切り拓く強い意志が試される領域です。"},
+                2: {n:"第2ハウス", d:"所有と才能、そして経済的価値。<br>持って生まれた資質を磨き、具体的な豊かさへと変換することがテーマです。"},
+                3: {n:"第3ハウス", d:"知性とコミュニケーションの交流。<br>好奇心のままに学び、言葉を通じて周囲とネットワークを築く学びの場です。"},
+                4: {n:"第4ハウス", d:"家庭とルーツ、魂の安息地。<br>深夜の太陽のように、内面の基盤を固め、身近な人々を守り育む力が宿ります。"},
+                5: {n:"第5ハウス", d:"創造性と自己表現、そして愛。<br>人生を舞台として楽しみ、情熱や遊び心を通じて輝きを放つクリエイティブな座です。"},
+                6: {n:"第6ハウス", d:"奉仕と健康、日々のルーティン。<br>完璧な実務能力と自己管理により、他者や社会の役に立つことで魂が磨かれます。"},
+                7: {n:"第7ハウス", d:"パートナーシップと他者との調和。<br>夕日が沈む西の地平線。対人関係を通じて自分を知り、社会との接点を見出します。"},
+                8: {n:"第8ハウス", d:"継承と融合、深層心理の変容。<br>他者と深く関わることで限界を超え、受け継いだものを再生させる変革の領域です。"},
+                9: {n:"第9ハウス", d:"探求と哲学、精神的な旅路。<br>理想を追い求め、未知の世界や高度な学問を通じて視野を広げる冒険の座です。"},
+                10: {n:"第10ハウス", d:"社会的成功とキャリアの頂点。<br>真昼の太陽が照らす天頂。公的な使命を果たし、社会に確かな足跡を残す権威の場所です。"},
+                11: {n:"第11ハウス", d:"未来への希望と同志の連帯。<br>既存の枠を超え、同じ志を持つ仲間と共に理想郷を築き上げる改革の領域です。"},
+                12: {n:"第12ハウス", d:"潜在意識と秘密、浄化の時。<br>夜明け前の静寂。見えない世界と繋がり、過去を癒やし、次のサイクルへ備える魂の部屋です。"}
             }
         };
 
@@ -260,6 +274,27 @@
                 let t=11-s; if(t>9)t-=9; if(t===0)t=9; return t;
             },
             getJukkan: y => ["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y%10],
+            // NEW: House Calculation based on Solar Time
+            getSunHouse: (h) => {
+                // Approximate Solar House System:
+                // 04-06: H1 (Sunrise)
+                // 06-08: H12
+                // ...
+                // 10-12: H10 (Noon)
+                // ...
+                // 16-18: H7 (Sunset)
+                // ...
+                // 22-00: H4 (Midnight)
+                
+                // Simplified mapping array (Index = Hour)
+                // 0,1->3rd | 2,3->2nd | 4,5->1st | 6,7->12th | 8,9->11th | 10,11->10th
+                // 12,13->9th | 14,15->8th | 16,17->7th | 18,19->6th | 20,21->5th | 22,23->4th
+                const map = [
+                    3,3, 2,2, 1,1, 12,12, 11,11, 10,10,
+                    9,9, 8,8, 7,7, 6,6, 5,5, 4,4
+                ];
+                return map[parseInt(h)];
+            },
             getSocialXDay: (y, m, d) => {
                 const seed = (y * 13) + (m * 27) + (d * 7); 
                 const offset = (seed % 60) + 14; 
@@ -453,9 +488,14 @@
             },
             startSequence: function() {
                 const d = document.getElementById('inp-date').value;
+                const t = document.getElementById('inp-time').value; // Get Time
                 if(!d) { 
                     alert("生年月日を入力してください"); 
                     return; 
+                }
+                if(!t) {
+                    alert("出生時間を入力してください（不明な場合は12:00としてください）");
+                    return;
                 }
                 
                 const date = new Date(d);
@@ -464,6 +504,7 @@
                     return;
                 }
                 this.date = date;
+                this.time = t; // Store time
                 
                 document.getElementById('input-container').style.opacity = 0;
                 document.getElementById('input-container').style.pointerEvents = 'none';
@@ -488,6 +529,10 @@
                 const k = Astro.getKyusei(y);
                 const kNum = Astro.getKyuseiNum(y);
                 const season = (m>=3 && m<=5)?"春":(m>=6 && m<=8)?"夏":(m>=9 && m<=11)?"秋":"冬";
+                
+                // Calculate House based on Time
+                const hour = parseInt(this.time.split(':')[0]);
+                const houseNum = Astro.getSunHouse(hour);
                 
                 // 1. CNL Logic
                 const cnl = Astro.calculateCNL(y, m, day);
@@ -518,7 +563,7 @@
                 document.getElementById('st-body').innerHTML = strat.body; 
                 document.querySelector('.strategy-container').style.borderLeftColor = phase.c;
 
-                // 4. Params & Grid (DYNAMIC HAKKE)
+                // 4. Params & Grid (DYNAMIC HAKKE & HOUSE)
                 document.getElementById('res-birthdate').innerText = d.toLocaleDateString().replace(/\//g, '.');
                 const pGrid = document.getElementById('param-grid'); pGrid.innerHTML = "";
                 CYCLES.forEach(c => {
@@ -529,7 +574,8 @@
                 const grid = document.getElementById('grid-container'); grid.innerHTML = "";
                 const items = [
                     {t:"九星気学", v:k, d:DICT_JA.kyusei[k]}, {t:"十干", v:Astro.getJukkan(y), d:"生まれ持った役割"}, 
-                    {t:"八卦", v:DICT_JA.hakke[kNum].n, d:DICT_JA.hakke[kNum].d}, {t:"ハウス", v:"第1ハウス", d:"自己の領域"},
+                    {t:"八卦", v:DICT_JA.hakke[kNum].n, d:DICT_JA.hakke[kNum].d}, 
+                    {t:"太陽ハウス", v:DICT_JA.houses[houseNum].n, d:DICT_JA.houses[houseNum].d}, // Dynamic House
                     {t:"アスペクト", v:"木星トライン", d:"幸運の角度"}, {t:"木星位置", v:"双子座", d:"情報と移動"}, 
                     {t:"土星位置", v:"魚座", d:"精神的基盤"}, {t:"金星", v:"8年周期", d:"美と金融"},
                     {t:"月相", v:"29.5日", d:"内面リズム"}, {t:"ライオンズゲート", v:"Closed", d:"宇宙エネルギー"}, 
