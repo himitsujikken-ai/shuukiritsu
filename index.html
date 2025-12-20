@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v45.0</title>
+    <title>周期律分析 | Cosmic Neural Network v45.1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -144,7 +144,7 @@
     <div id="start-screen">
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v45.0</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v45.1</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -156,7 +156,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v45.0: Fully Dynamic Logic & Explanation</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v45.1: Mobile Audio Fix</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -202,7 +202,7 @@
                 <div class="integrated-box">
                     <div class="dash-head">
                         <span class="dash-title">COSMIC NEURAL LOGIC (CNL)</span>
-                        <span class="dash-sub">SYSTEM MONITOR v45.0</span>
+                        <span class="dash-sub">SYSTEM MONITOR v45.1</span>
                     </div>
                     
                     <div class="chart-area">
@@ -428,7 +428,7 @@
                 const n = (y + m + d) % 5;
                 return n; 
             },
-            // NEW: Moon Phase Calc
+            // Dynamic Calculations
             getMoonPhase: () => {
                 const now = new Date();
                 const newMoon = new Date('2000-01-06T18:14:00');
@@ -443,7 +443,6 @@
                 else if(p > 21 && p < 24) t = "下弦 (Last Quarter)";
                 return {v: t, d: `現在の月齢: ${p.toFixed(1)}`};
             },
-            // NEW: Lions Gate Calc
             getLionsGate: () => {
                 const now = new Date();
                 const m = now.getMonth() + 1;
@@ -454,7 +453,6 @@
                 }
                 return "CLOSED";
             },
-            // NEW: Era Calc
             getEra: () => {
                 const y = new Date().getFullYear();
                 if(y >= 2024) return {s: "第九運", g: "風の時代 (Air)"};
@@ -514,7 +512,7 @@
                      logs.push({k: "【ステータス】", v: "均衡状態。標準的なペースで進行してください。"});
                 }
                 
-                // NEW: Dynamic Score Calculation
+                // Dynamic Score Calculation
                 const baseScore = (active + passive) / 2;
                 const todayMod = (new Date().getDate() % 10);
                 const impact = Math.floor(baseScore + (todayMod * 2.5));
@@ -527,18 +525,15 @@
             audioEnabled: false,
             audio: {
                 ctx:null, g:null, f:null, mute:false, humSource:null, humGain:null,
-                ensureAudioContext: function() {
-                    if(!this.ctx) return false;
-                    if(this.ctx.state === 'suspended') {
-                        this.ctx.resume();
-                    }
+                ensureContext: function() {
+                    if(!this.ctx) this.init();
+                    if(this.ctx.state === 'suspended') this.ctx.resume();
                     return true;
                 },
                 init: function() {
                     const AC = window.AudioContext || window.webkitAudioContext;
                     this.ctx = new AC();
-                    this.ensureAudioContext();
-
+                    
                     const b = this.ctx.createBuffer(1, 44100, 44100);
                     const d = b.getChannelData(0);
                     for(let i=0; i<44100; i++) d[i] = (Math.random()*2-1)*0.5;
@@ -553,12 +548,12 @@
                     this.g.connect(this.ctx.destination);
                 },
                 toggle: function() {
-                    if(this.ensureAudioContext()) {
+                    if(this.ensureContext()) {
                         this.g.gain.setTargetAtTime(this.g.gain.value ? 0 : 0.6, this.ctx.currentTime, 0.1);
                     }
                 },
                 playBlip: function() {
-                    if(!this.ensureAudioContext()) return;
+                    if(!this.ensureContext()) return;
                     const osc = this.ctx.createOscillator();
                     const g = this.ctx.createGain();
                     osc.type = 'sine';
@@ -569,23 +564,21 @@
                     osc.connect(g); g.connect(this.ctx.destination);
                     osc.start(); osc.stop(this.ctx.currentTime + 0.2);
                 },
-                // START IDLE HUM (Brown Noise Style @ 60Hz Rumble)
                 startHum: function() {
-                    if(!this.ensureAudioContext()) return;
+                    if(!this.ensureContext()) return;
                     if(this.humSource) return; 
                     
                     this.humSource = this.ctx.createBufferSource();
                     this.humSource.buffer = this.buffer;
                     this.humSource.loop = true;
 
-                    // Dedicated rumble filter
                     const rumbleFilter = this.ctx.createBiquadFilter();
                     rumbleFilter.type = 'lowpass';
-                    rumbleFilter.frequency.value = 60; // 60Hz is audible and deep
+                    rumbleFilter.frequency.value = 60; 
                     
                     this.humGain = this.ctx.createGain();
                     this.humGain.gain.setValueAtTime(0, this.ctx.currentTime);
-                    this.humGain.gain.linearRampToValueAtTime(2.0, this.ctx.currentTime + 2.0); // High gain needed for filtered noise
+                    this.humGain.gain.linearRampToValueAtTime(2.0, this.ctx.currentTime + 2.0); 
                     
                     this.humSource.connect(rumbleFilter);
                     rumbleFilter.connect(this.humGain);
@@ -602,13 +595,12 @@
                     }
                 },
                 playScanSound: function() {
-                    if(!this.ensureAudioContext()) return;
+                    if(!this.ensureContext()) return;
 
                     const src = this.ctx.createBufferSource();
                     src.buffer = this.buffer;
                     src.loop = true;
                     
-                    // Independent filter for scan sound to avoid conflict with hum
                     const scanFilter = this.ctx.createBiquadFilter();
                     scanFilter.type = 'lowpass';
                     
@@ -636,12 +628,11 @@
                 document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('active'));
                 e.target.classList.add('active');
                 if(isOn) {
-                    if(!this.audio.ctx) this.audio.init();
+                    this.audio.init();
                     this.audio.playBlip();
-                    // Start the comforting 60Hz rumble after blip
                     setTimeout(() => this.audio.startHum(), 200);
                 } else {
-                    if(this.audio.ctx) this.audio.stopHum();
+                    this.audio.stopHum();
                 }
             },
             init: function() {
@@ -649,10 +640,9 @@
                 setTimeout(()=>document.getElementById('start-screen').style.display='none', 800);
                 if(!this.visual) this.visual = new VisualEngine();
                 
-                // Initialize Audio but NO BOOT SOUND
+                // Force Context Resume on init if audio is already enabled
                 if(this.audioEnabled) {
-                    if(!this.audio.ctx) this.audio.init();
-                    // If already enabled, ensure hum is running
+                    this.audio.ensureContext();
                     this.audio.startHum();
                 }
                 
@@ -661,30 +651,19 @@
             },
             startSequence: function() {
                 const d = document.getElementById('inp-date').value;
-                const t = document.getElementById('inp-time').value; // Get Time
-                if(!d) { 
-                    alert("生年月日を入力してください"); 
-                    return; 
-                }
-                if(!t) {
-                    alert("出生時間を入力してください（不明な場合は12:00としてください）");
-                    return;
-                }
+                const t = document.getElementById('inp-time').value; 
+                if(!d) { alert("生年月日を入力してください"); return; }
+                if(!t) { alert("出生時間を入力してください（不明な場合は12:00としてください）"); return; }
                 
-                const date = new Date(d);
-                if(isNaN(date.getTime())) {
-                    alert("有効な日付を入力してください");
-                    return;
-                }
-                this.date = date;
-                this.time = t; // Store time
+                this.date = new Date(d);
+                this.time = t; 
                 
                 document.getElementById('input-container').style.opacity = 0;
                 document.getElementById('input-container').style.pointerEvents = 'none';
                 
-                // Sound Trigger
+                // FORCE RESUME ON TAP
                 if(this.audioEnabled) {
-                     if(!this.audio.ctx) this.audio.init();
+                     this.audio.ensureContext(); 
                      this.audio.playScanSound(); 
                 }
                 
@@ -712,7 +691,6 @@
                 const venIdx = Astro.getVenusSign(m, day); 
                 const aspIdx = Astro.getAspect(y, m, day);
                 
-                // NEW: Dynamic Calculations
                 const moon = Astro.getMoonPhase();
                 const lion = Astro.getLionsGate();
                 const era = Astro.getEra();
@@ -746,7 +724,7 @@
                 document.getElementById('st-body').innerHTML = strat.body; 
                 document.querySelector('.strategy-container').style.borderLeftColor = phase.c;
 
-                // 4. Params & Grid (ALL DYNAMIC + TOOLTIPS)
+                // 4. Params & Grid
                 document.getElementById('res-birthdate').innerText = d.toLocaleDateString().replace(/\//g, '.');
                 const pGrid = document.getElementById('param-grid'); pGrid.innerHTML = "";
                 CYCLES.forEach(c => {
@@ -764,7 +742,6 @@
                     {t:"木星位置", v:DICT_JA.zodiac[jupIdx].n, d:DICT_JA.zodiac[jupIdx].d}, 
                     {t:"土星位置", v:DICT_JA.zodiac[satIdx].n, d:"精神的基盤"}, 
                     {t:"金星位置", v:DICT_JA.zodiac[venIdx].n, d:"美と金融"}, 
-                    // Dynamic Values
                     {t:"月相", v:moon.v, d:moon.d}, 
                     {t:"ライオンズゲート", v:lion, d:"宇宙エネルギー"}, 
                     {t:"三元九運", v:era.s, d:"火の時代"}, 
@@ -772,7 +749,7 @@
                     {t:"CNLスコア", v:cnl.score + " Pt", d:"矛盾調停完了"}
                 ];
                 items.forEach(i => {
-                    const exp = EXPLANATIONS[i.t] || i.d; // Fallback
+                    const exp = EXPLANATIONS[i.t] || i.d; 
                     grid.innerHTML += `
                     <div class="info-card" onclick="this.classList.toggle('active')">
                         <div class="card-label">${i.t}</div>
@@ -800,7 +777,7 @@
                 if(this.audioEnabled) this.audio.reset();
             },
             
-            // FULL 36 PATTERN DATA
+            // FULL 36 PATTERN DATA (Restored)
             getStrategyText: function(key) {
                 const s = {
                     "一白水星-春": { title: "潜流の覚醒と新たな脈動", body: "一白水星の持つ「水」の柔軟性と、春の「木」の成長エネルギーが融合する季節です。<br>雪解け水が川となり、やがて大河へと繋がるように、あなたの運命も静かながら力強い流れの中にあります。表面的な派手さはありませんが、水面下での戦略的準備が驚くほどの成果を生むでしょう。<br>今は焦って結果を求める時ではありません。地下深くで根を張るように、知識と人脈を蓄えてください。<br>古い殻を破り、新しい形へと変化することを恐れないでください。水は器に合わせて形を変えますが、その本質は変わりません。<br>あなたの柔軟な思考こそが、硬直した現状を打破する鍵となります。<br>周囲の喧騒に惑わされず、自身の内なる声に耳を傾け、静かに、しかし確実に前進してください。" },
