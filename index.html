@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v44.4</title>
+    <title>周期律分析 | Cosmic Neural Network v44.5</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -105,7 +105,7 @@
     <div id="start-screen">
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.4</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.5</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -117,7 +117,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.4: All Parameters Dynamic</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.5: Enhanced Jukkan & Full Strategy</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -270,6 +270,18 @@
                 {n:"スクエア (90°)", d:"【葛藤・活動】摩擦が原動力となり、現状を打破する力を生み出します。"},
                 {n:"トライン (120°)", d:"【調和・幸運】エネルギーがスムーズに流れ、物事が自然と発展します。"},
                 {n:"オポジション (180°)", d:"【緊張・客観】対立を通じて視点が広がり、バランス感覚が養われます。"}
+            ],
+            jukkan: [
+                {n:"庚 (Kanoe)", d:"【鋼鉄の革命家】<br>信念を貫く強さと改革の精神。斧のように道を切り拓くスピード感があります。"}, 
+                {n:"辛 (Kanoto)", d:"【磨かれた宝石】<br>繊細な美意識と高いプライド。試練を乗り越えるたびに輝きを増す高貴な魂です。"}, 
+                {n:"壬 (Mizunoe)", d:"【悠久の大海】<br>スケールの大きな自由人。あらゆるものを飲み込み、変化し続ける知恵を持ちます。"}, 
+                {n:"癸 (Mizunoto)", d:"【天からの雨露】<br>慈愛に満ちた知性派。静かに降り注ぎ、時間をかけて岩をも穿つ忍耐力があります。"}, 
+                {n:"甲 (Kinoe)", d:"【天を目指す大樹】<br>曲がったことが嫌いなリーダー。向上心が強く、一歩ずつ確実に成長し続けます。"}, 
+                {n:"乙 (Kinoto)", d:"【したたかな草花】<br>柔軟な協調性と環境適応力。踏まれても立ち上がる、驚異的な粘り強さを秘めています。"}, 
+                {n:"丙 (Hinoe)", d:"【地上の太陽】<br>隠し事のできないカリスマ。その場にいるだけで周囲を明るく照らす中心的な存在です。"}, 
+                {n:"丁 (Hinoto)", d:"【静寂の灯火】<br>内なる情熱と鋭い洞察力。暗闇を照らすように、本質を見抜くミステリアスな知性です。"}, 
+                {n:"戊 (Tsuchinoe)", d:"【不動の山岳】<br>圧倒的な存在感と包容力。動じない安定感で多くの人を惹きつける頼れる親分肌です。"}, 
+                {n:"己 (Tsuchinoto)", d:"【肥沃な田畑】<br>多才な育成者。あらゆる養分を取り込み、人を育て、成果を実らせる教育的な才があります。"} 
             ]
         };
 
@@ -285,38 +297,25 @@
                 while(s>9)s=String(s).split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);
                 let t=11-s; if(t>9)t-=9; if(t===0)t=9; return t;
             },
-            getJukkan: y => ["庚(金)","辛(金)","壬(水)","癸(水)","甲(木)","乙(木)","丙(火)","丁(火)","戊(土)","己(土)"][y%10],
+            getJukkanNum: y => y % 10,
             getSunHouse: (h) => {
                 const map = [3,3, 2,2, 1,1, 12,12, 11,11, 10,10, 9,9, 8,8, 7,7, 6,6, 5,5, 4,4];
                 return map[parseInt(h)];
             },
             getJupiterSign: (y) => {
-                const signs = [0,1,2,3,4,5,6,7,8,9,10,11]; 
                 return (y + 9) % 12; 
             },
-            // NEW: Saturn Sign (Approx 29.5 years cycle)
             getSaturnSign: (y) => {
-                // 2023 March Saturn entered Pisces (Index 11)
-                // Approx calculation: (Year - 1924) / 29.5 * 12
-                // 1924 was Scorpio/Sagittarius
                 return Math.floor(((y - 1900) * 0.406)) % 12; 
             },
-            // NEW: Venus Sign (Sun sign +/- 2)
             getVenusSign: (m, d) => {
-                // 1. Calculate approximate Sun Sign Index
-                // 3/21 is Aries(0). 
-                // Simple approx: (Month - 3) ... needs day adjustment
                 let sunIdx = m - 3;
                 if(d < 21) sunIdx -= 1;
                 if(sunIdx < 0) sunIdx += 12;
-                
-                // 2. Add variation for Venus (-2 to +2 signs from Sun)
-                // Use Day as seed for pseudo-random but consistent shift
                 const shift = (d % 5) - 2; 
                 let vIdx = sunIdx + shift;
                 if(vIdx < 0) vIdx += 12;
                 if(vIdx > 11) vIdx -= 12;
-                
                 return vIdx;
             },
             getAspect: (y, m, d) => {
@@ -561,9 +560,10 @@
                 // Calculate Dynamic Vars
                 const hour = parseInt(this.time.split(':')[0]);
                 const houseNum = Astro.getSunHouse(hour);
+                const jukanNum = Astro.getJukkanNum(y);
                 const jupIdx = Astro.getJupiterSign(y);
-                const satIdx = Astro.getSaturnSign(y); // SATURN
-                const venIdx = Astro.getVenusSign(m, day); // VENUS
+                const satIdx = Astro.getSaturnSign(y); 
+                const venIdx = Astro.getVenusSign(m, day); 
                 const aspIdx = Astro.getAspect(y, m, day);
                 
                 // 1. CNL Logic
@@ -605,17 +605,17 @@
 
                 const grid = document.getElementById('grid-container'); grid.innerHTML = "";
                 const items = [
-                    {t:"九星気学", v:k, d:DICT_JA.kyusei[k]}, {t:"十干", v:Astro.getJukkan(y), d:"生まれ持った役割"}, 
+                    {t:"九星気学", v:k, d:DICT_JA.kyusei[k]}, 
+                    // UPDATED: Jukkan Detail
+                    {t:"十干", v:DICT_JA.jukkan[jukanNum].n, d:DICT_JA.jukkan[jukanNum].d}, 
                     {t:"八卦", v:DICT_JA.hakke[kNum].n, d:DICT_JA.hakke[kNum].d}, 
                     {t:"太陽ハウス", v:DICT_JA.houses[houseNum].n, d:DICT_JA.houses[houseNum].d}, 
                     
-                    // Dynamic JUPITER & ASPECT
                     {t:"アスペクト", v:DICT_JA.aspects[aspIdx].n, d:DICT_JA.aspects[aspIdx].d}, 
                     {t:"木星位置", v:DICT_JA.zodiac[jupIdx].n, d:DICT_JA.zodiac[jupIdx].d}, 
                     
-                    // Dynamic SATURN & VENUS
                     {t:"土星位置", v:DICT_JA.zodiac[satIdx].n, d:"精神的基盤"}, 
-                    {t:"金星位置", v:DICT_JA.zodiac[venIdx].n, d:"美と金融"}, // Fixed Title & Logic
+                    {t:"金星位置", v:DICT_JA.zodiac[venIdx].n, d:"美と金融"}, 
                     
                     {t:"月相", v:"29.5日", d:"内面リズム"}, {t:"ライオンズゲート", v:"Closed", d:"宇宙エネルギー"}, 
                     {t:"三元九運", v:"第九運", d:"火の時代"}, {t:"Gコンジャンクション", v:"風", d:"情報革命"},
