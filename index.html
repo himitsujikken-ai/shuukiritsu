@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v44.5</title>
+    <title>周期律分析 | Cosmic Neural Network v44.6</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -81,12 +81,37 @@
         .strategy-title { font-family: var(--f-serif); font-size: 1.8rem; margin-bottom: 20px; color: #fff; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
         .strategy-body { font-size: 1.0rem; line-height: 2.2; color: #ddd; text-align: justify; white-space: pre-wrap; font-feature-settings: "palt"; }
         
+        /* CARD INTERACTION */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top:30px; }
-        .info-card { background: var(--c-card-bg); border: 1px solid var(--c-border); padding: 20px; transition:0.3s; display:flex; flex-direction:column; gap:5px; }
+        .info-card { 
+            background: var(--c-card-bg); border: 1px solid var(--c-border); padding: 20px; transition:0.3s; 
+            display:flex; flex-direction:column; gap:5px; position: relative; overflow: hidden; cursor: pointer;
+        }
         .info-card:hover { transform:translateY(-5px); border-color:#fff; }
-        .card-label { font-size:0.75rem; color:#889; letter-spacing:0.1em; }
-        .card-value { font-size:1.1rem; color:#fff; font-family:var(--f-serif); font-weight:bold; }
-        .card-desc { font-size:0.85rem; color:#aaa; margin-top:5px; line-height:1.5; }
+        .info-card.active { border-color: var(--c-gold); }
+        
+        .card-label { font-size:0.75rem; color:#889; letter-spacing:0.1em; transition:0.3s; }
+        .card-value { font-size:1.1rem; color:#fff; font-family:var(--f-serif); font-weight:bold; transition:0.3s; }
+        .card-desc { font-size:0.85rem; color:#aaa; margin-top:5px; line-height:1.5; transition:0.3s; }
+
+        /* TOOLTIP OVERLAY */
+        .card-tooltip {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 8, 16, 0.98); 
+            padding: 20px;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+            z-index: 10;
+            font-size: 0.8rem; line-height: 1.8; color: #fff; text-align: justify;
+            border: 1px solid var(--c-gold);
+        }
+        /* Mouse Hover or Class Active (Tap) */
+        .info-card:hover .card-tooltip, .info-card.active .card-tooltip {
+            opacity: 1; pointer-events: auto;
+        }
+        .info-card:hover .card-label, .info-card:hover .card-value, .info-card:hover .card-desc { opacity: 0.1; }
+        .info-card.active .card-label, .info-card.active .card-value, .info-card.active .card-desc { opacity: 0.1; }
+
 
         /* X-DAYS */
         .xday-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; margin-top:30px; }
@@ -105,7 +130,7 @@
     <div id="start-screen">
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.5</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.6</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -117,7 +142,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.5: Enhanced Jukkan & Full Strategy</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.6: Hover/Tap Descriptions</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -169,6 +194,7 @@
                 <div class="process-log" id="cnl-log"></div>
 
                 <div style="font-family:'Cinzel',serif; text-align:center; color:#667; letter-spacing:0.3em; margin:60px 0 30px 0; border-top:1px dashed #334; padding-top:30px;">13 DIMENSIONS</div>
+                <div style="font-size:0.7rem; text-align:center; color:#556; margin-bottom:20px;">(Mouseover or Tap for Details)</div>
                 <div class="grid-container" id="grid-container"></div>
 
                 <div style="font-family:'Cinzel',serif; text-align:center; color:var(--c-gold); letter-spacing:0.3em; margin:60px 0 30px 0; font-size:1.2rem;">X-DAY ANALYSIS</div>
@@ -285,6 +311,23 @@
             ]
         };
 
+        // NEW: Detailed Explanations Map
+        const EXPLANATIONS = {
+            "九星気学": "古代中国から伝わる気学。生年月日から割り出される9つのエネルギータイプにより、運勢のバイオリズムや基本的な性格、相性を分析します。",
+            "十干": "「木・火・土・金・水」の五行をさらに「兄（陽）」「弟（陰）」に分けた10種類の要素。天からのエネルギーを表し、本来の役割や精神性を象徴します。",
+            "八卦": "九星と八卦は密接な関係（後天定位）があります。",
+            "太陽ハウス": "「ハウス（活動領域）」を出生時間（Time）に基づいて動的に算出するようにロジックを書き換えます。 本来、厳密なハウス計算には「緯度・経度」が必要ですが、今回は入力された出生時間から**「太陽がどの方角（ハウス）にあったか」を割り出す『ソーラー・ハウス法』**を採用します。これにより、生まれ時間が昼なら「社会的成功（10室）」、夜なら「家庭・内面（4室）」といった正しい傾向が表示されるようになります。",
+            "アスペクト": "本来は惑星間の角度ですが、ここでは「数秘術的な角度」として、生年月日の数字の組み合わせから「幸運角（トライン）」や「緊張角（スクエア）」などを算出するロジックに変更します。",
+            "木星位置": "木星は約12年で太陽を一周します（1つの星座に約1年滞在）。生まれた西暦から、その年の木星のサイン（牡羊座～魚座）と意味を算出するようにします。",
+            "土星位置": "土星は約29.5年で1周します。生まれた西暦から概算して、その時の滞在星座を割り出します。",
+            "金星位置": "金星は地球から見て「太陽から大きく離れない（最大48度）」という特徴があります。そのため、「太陽星座（誕生月）」を割り出し、そこから前後2つ以内の範囲で位置を決定するロジックを組みます。これにより、占星術的に矛盾のない（太陽と反対側に金星があるなどのあり得ない配置にならない）正しい値を算出します。",
+            "月相": "月の満ち欠け（29.5日周期）は、潮の満ち引きや生物のバイオリズムに深く影響します。あなたの内面的な感情や無意識のリズムを表しています。",
+            "ライオンズゲート": "毎年8月8日前後に最大化するとされる宇宙のエネルギーゲート。シリウスと太陽が特定の配置になり、霊的な覚醒や意識の変容を促すと信じられています。",
+            "三元九運": "風水における時間の概念「三元九運」。2024年からは「第九運（火の時代）」に入り、精神性、美、知性、テクノロジーが重視される時代への転換点を示します。",
+            "Gコンジャンクション": "木星と土星が重なる現象（グレート・コンジャンクション）。約200年続いた「土の時代」から「風の時代（情報・個・ネットワーク）」へのパラダイムシフトを象徴します。",
+            "CNLスコア": "Cosmic Neural Logicによる独自解析値。あなたの生年月日が持つ「拡大（陽）」と「収縮（陰）」のエネルギーバランスを数値化し、現在の最適戦略を導き出します。"
+        };
+
         const Astro = {
             getKyusei: y => {
                 let s=0; String(y).split('').forEach(n=>s+=parseInt(n));
@@ -303,6 +346,7 @@
                 return map[parseInt(h)];
             },
             getJupiterSign: (y) => {
+                const signs = [0,1,2,3,4,5,6,7,8,9,10,11]; 
                 return (y + 9) % 12; 
             },
             getSaturnSign: (y) => {
@@ -595,7 +639,7 @@
                 document.getElementById('st-body').innerHTML = strat.body; 
                 document.querySelector('.strategy-container').style.borderLeftColor = phase.c;
 
-                // 4. Params & Grid (ALL DYNAMIC)
+                // 4. Params & Grid (ALL DYNAMIC + TOOLTIPS)
                 document.getElementById('res-birthdate').innerText = d.toLocaleDateString().replace(/\//g, '.');
                 const pGrid = document.getElementById('param-grid'); pGrid.innerHTML = "";
                 CYCLES.forEach(c => {
@@ -606,28 +650,29 @@
                 const grid = document.getElementById('grid-container'); grid.innerHTML = "";
                 const items = [
                     {t:"九星気学", v:k, d:DICT_JA.kyusei[k]}, 
-                    // UPDATED: Jukkan Detail
                     {t:"十干", v:DICT_JA.jukkan[jukanNum].n, d:DICT_JA.jukkan[jukanNum].d}, 
                     {t:"八卦", v:DICT_JA.hakke[kNum].n, d:DICT_JA.hakke[kNum].d}, 
                     {t:"太陽ハウス", v:DICT_JA.houses[houseNum].n, d:DICT_JA.houses[houseNum].d}, 
-                    
                     {t:"アスペクト", v:DICT_JA.aspects[aspIdx].n, d:DICT_JA.aspects[aspIdx].d}, 
                     {t:"木星位置", v:DICT_JA.zodiac[jupIdx].n, d:DICT_JA.zodiac[jupIdx].d}, 
-                    
                     {t:"土星位置", v:DICT_JA.zodiac[satIdx].n, d:"精神的基盤"}, 
                     {t:"金星位置", v:DICT_JA.zodiac[venIdx].n, d:"美と金融"}, 
-                    
-                    {t:"月相", v:"29.5日", d:"内面リズム"}, {t:"ライオンズゲート", v:"Closed", d:"宇宙エネルギー"}, 
-                    {t:"三元九運", v:"第九運", d:"火の時代"}, {t:"Gコンジャンクション", v:"風", d:"情報革命"},
+                    {t:"月相", v:"29.5日", d:"内面リズム"}, 
+                    {t:"ライオンズゲート", v:"Closed", d:"宇宙エネルギー"}, 
+                    {t:"三元九運", v:"第九運", d:"火の時代"}, 
+                    {t:"Gコンジャンクション", v:"風", d:"情報革命"},
                     {t:"CNLスコア", v:"Optimized", d:"矛盾調停完了"}
                 ];
-                items.forEach(i => grid.innerHTML += `
-                    <div class="info-card">
+                items.forEach(i => {
+                    const exp = EXPLANATIONS[i.t] || i.d; // Fallback
+                    grid.innerHTML += `
+                    <div class="info-card" onclick="this.classList.toggle('active')">
                         <div class="card-label">${i.t}</div>
                         <div class="card-value">${i.v}</div>
                         <div class="card-desc">${i.d}</div>
+                        <div class="card-tooltip">${exp}</div>
                     </div>
-                `);
+                `});
 
                 // 5. X-Days
                 const xSoc = Astro.getSocialXDay(y,m,day);
