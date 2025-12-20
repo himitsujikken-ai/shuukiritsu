@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>周期律分析 | Cosmic Neural Network v44.7</title>
+    <title>周期律分析 | Cosmic Neural Network v44.8</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -133,7 +133,7 @@
     <div id="start-screen">
         <div style="font-family:'Shippori Mincho', serif; font-size:1.2rem; letter-spacing:0.5em; color:var(--c-gold); margin-bottom:10px; text-shadow:0 0 10px rgba(212,175,55,0.5);">内なる宇宙の可視化</div>
         <h1 style="font-family:'Shippori Mincho', serif; font-size:3rem; letter-spacing:0.2em; background:linear-gradient(to bottom, #fff, #aaccff); -webkit-background-clip:text; color:transparent; margin-bottom:10px;">周期律分析</h1>
-        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.7</p>
+        <p style="font-family:'Rajdhani'; letter-spacing:0.4em; color:var(--c-accent); margin-bottom:50px; font-size:0.9rem;">COSMIC NEURAL NETWORK v44.8</p>
         
         <div style="display:flex; gap:40px; margin-bottom:40px; z-index:150;">
             <div style="text-align:center;">
@@ -145,7 +145,7 @@
             </div>
         </div>
         <button class="submit-btn" style="width:auto; padding:18px 60px;" onclick="app.init()">INITIALIZE SYSTEM</button>
-        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.7: Logic Explanation Added</div>
+        <div style="position:absolute; bottom:80px; text-align:center; font-size:0.7rem; color:#556;">v44.8: Updated Tooltips</div>
     </div>
 
     <div id="canvas-wrapper"></div>
@@ -222,6 +222,7 @@
                         </li>
                     </ul>
                 </div>
+
                 <div style="font-family:'Cinzel',serif; text-align:center; color:#667; letter-spacing:0.3em; margin:60px 0 30px 0; border-top:1px dashed #334; padding-top:30px;">13 DIMENSIONS</div>
                 <div style="font-size:0.7rem; text-align:center; color:#556; margin-bottom:20px;">(Mouseover or Tap for Details)</div>
                 <div class="grid-container" id="grid-container"></div>
@@ -344,8 +345,10 @@
         const EXPLANATIONS = {
             "九星気学": "古代中国から伝わる気学。生年月日から割り出される9つのエネルギータイプにより、運勢のバイオリズムや基本的な性格、相性を分析します。",
             "十干": "「木・火・土・金・水」の五行をさらに「兄（陽）」「弟（陰）」に分けた10種類の要素。天からのエネルギーを表し、本来の役割や精神性を象徴します。",
-            "八卦": "九星と八卦は密接な関係（後天定位）があります。",
-            "太陽ハウス": "「ハウス（活動領域）」を出生時間（Time）に基づいて動的に算出するようにロジックを書き換えます。 本来、厳密なハウス計算には「緯度・経度」が必要ですが、今回は入力された出生時間から**「太陽がどの方角（ハウス）にあったか」を割り出す『ソーラー・ハウス法』**を採用します。これにより、生まれ時間が昼なら「社会的成功（10室）」、夜なら「家庭・内面（4室）」といった正しい傾向が表示されるようになります。",
+            // UPDATED: Beginner Friendly HAKKE Explanation
+            "八卦": "八卦（はっけ）とは、古代中国の哲学で、自然界や人間界のあらゆる現象を8つのシンボル（天・沢・火・雷・風・水・山・地）で表したものです。あなたの九星から導き出される八卦は、隠された内面の性質や、人生における行動指針を暗示しています。自分自身を深く知るための「魂の羅針盤」として活用してください。",
+            // UPDATED: Solar House System Explanation
+            "太陽ハウス": "本来、厳密なハウス計算には「緯度・経度」が必要ですが、今回は入力された出生時間から**「太陽がどの方角（ハウス）にあったか」を割り出す『ソーラー・ハウス法』**を採用しました。これにより、生まれ時間が昼なら「社会的成功（10室）」、夜なら「家庭・内面（4室）」といった正しい傾向が表示されるようになっています。",
             "アスペクト": "本来は惑星間の角度ですが、ここでは「数秘術的な角度」として、生年月日の数字の組み合わせから「幸運角（トライン）」や「緊張角（スクエア）」などを算出するロジックに変更します。",
             "木星位置": "木星は約12年で太陽を一周します（1つの星座に約1年滞在）。生まれた西暦から、その年の木星のサイン（牡羊座～魚座）と意味を算出するようにします。",
             "土星位置": "土星は約29.5年で1周します。生まれた西暦から概算して、その時の滞在星座を割り出します。",
